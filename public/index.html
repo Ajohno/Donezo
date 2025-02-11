@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CS4241 Assignment 3</title>
+    <meta charset="utf-8" />
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- get rid of favicon error -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+  </head>
+  <body>
+    <!-- Main Title -->
+    <h1>Donezo</h1>
+
+    <!-- User Authentication Area -->
+    <section
+      id="auth-section"
+      class="widget-background"
+      style="width: 494px; justify-self: center; margin-top: 5%"
+    >
+      <!-- Register Form -->
+      <form id="registerForm" style="margin-top: -14%">
+        <h3>Register</h3>
+        <label for="registerUsername">Username:</label>
+        <br />
+        <input
+          type="text"
+          id="registerUsername"
+          placeholder="Enter username"
+          required
+          style="width: 420px"
+        />
+        <br />
+        <label for="registerPassword">Password:</label>
+        <input
+          type="password"
+          id="registerPassword"
+          placeholder="Enter password"
+          required
+          style="width: 420px"
+        />
+        <br />
+        <button
+          class="defaultBtn"
+          style="margin-left: 30%; margin-top: 5%"
+          type="submit"
+        >
+          Register
+        </button>
+      </form>
+
+      <hr />
+
+      <!-- Login Form -->
+      <form id="loginForm" style="margin-top: -10%">
+        <h3>Login</h3>
+        <label for="loginUsername">Username:</label>
+        <input
+          type="text"
+          id="loginUsername"
+          placeholder="Enter username"
+          required
+          style="width: 420px"
+        />
+        <br />
+        <label for="loginPassword">Password:</label>
+        <input
+          type="password"
+          id="loginPassword"
+          placeholder="Enter password"
+          required
+          style="width: 420px"
+        />
+        <br />
+        <button
+          class="defaultBtn"
+          style="margin-left: 30%; margin-top: 5%"
+          type="submit"
+        >
+          Login
+        </button>
+      </form>
+
+      <br />
+    </section>
+
+    <!-- Hidden until login -->
+    <section id="main-section" style="display: none">
+      <section
+        class="widget-background"
+        style="width: 250px; height: 100px; display: flex; margin-top: -2%"
+      >
+        <article style="margin-left: 10%">
+          <!-- Display user status -->
+          <h3 id="authStatus" style="margin-top: -5%; font-size: 30px">
+            Not logged in
+          </h3>
+        </article>
+
+        <article>
+          <!-- Logout Button -->
+          <button
+            id="logoutBtn"
+            class="defaultBtn"
+            style="
+              display: none;
+              width: 92.5px;
+              height: 30px;
+              font-size: 20px;
+              margin-top: 50%;
+            "
+          >
+            Logout
+          </button>
+        </article>
+
+        <!-- Remaining Task Section -->
+        <section
+          class="widget-background"
+          style="
+            height: 124px;
+            justify-self: center;
+            margin-top: -3%;
+            display: flex;
+            margin-left: 180%;
+            padding-right: 30%;
+          "
+        >
+          <!-- Red area with the words -->
+          <article
+            class="rounded-box"
+            style="
+              background-color: #e26d67;
+              padding-right: 6%;
+              padding-left: 6%;
+            "
+          >
+            <h2>
+              Tasks <br />
+              Left:
+            </h2>
+          </article>
+
+          <!-- Area with the number of tasks left -->
+          <article>
+            <h2
+              class="item-counter"
+              style="color: #e26d67; font-size: 96px; margin-top: -3%"
+            >
+              <!-- 9 -->
+            </h2>
+          </article>
+        </section>
+      </section>
+
+      <!-- Area with the task list on the left and the new task form on the right -->
+      <div
+        style="display: flex; margin-top: 2%; justify-content: center; gap: 2%"
+      >
+        <!-- Task List -->
+        <section
+          class="widget-background scrollable"
+          style="
+            width: 592px;
+            height: 500px;
+            display: flex;
+            flex-direction: row;
+          "
+        >
+          <section style="display: flex; width: 100%">
+            <!-- Red section to check off items -->
+            <article
+              class="rounded-box"
+              style="
+                background-color: #e38884;
+                width: 10%;
+                min-height: 500px;
+                flex-grow: 1;
+                align-content: top;
+                display: flex;
+                flex-direction: column;
+                padding-top: 2%;
+              "
+            >
+              <!-- <button onclick="toggleTask(0)">✖</button>
+              <button></button>
+              <button></button> -->
+            </article>
+
+            <!-- Task list -->
+            <div class="task-list">
+              <!-- <div class="task-item done">This is a done task</div>
+              <div class="task-item done">This is a done task</div>
+              <div class="task-item done">This is a done task</div>
+              <div class="task-item">This task is not done</div>
+              <div class="task-item">This task is not done</div>
+              <div class="task-item">This task is not done</div>
+              <div class="task-item">This task is not done</div>
+              <div class="task-item">This task is not done</div>
+              <div class="task-item">This task is not done</div> -->
+            </div>
+            <!-- Template for the task list -->
+            <template id="task-template">
+              <!-- Buttons for update and delete -->
+              <!-- <button>x</button> -->
+              <div class="task-item">This task is not done</div>
+            </template>
+          </section>
+        </section>
+
+        <!-- New Task Form -->
+        <section class="widget-background" style="width: 592px">
+          <!-- New Form Header -->
+          <article
+            class="rounded-box"
+            style="background-color: #e38884; width: 100%"
+          >
+            <h2
+              style="justify-self: center; padding-top: 1%; padding-bottom: 1%"
+            >
+              Make a New Task
+            </h2>
+          </article>
+
+          <!-- New Task Form -->
+          <form>
+            <!-- Task Description -->
+            <label for="taskDescription">Task Description:</label>
+            <input type="text" id="taskDescription" placeholder="Enter Task" />
+
+            <br />
+            <br />
+            <!-- Due Date -->
+            <label for="dueDate">Due Date:</label>
+            <input type="date" id="dueDate" />
+
+            <br />
+
+            <!-- Form Buttons -->
+            <article style="display: flex; margin-top: 30%">
+              <button id="clearBtn">Clear</button>
+              <button id="submitBtn">Submit</button>
+            </article>
+          </form>
+        </section>
+      </div>
+    </section>
+  </body>
+</html>

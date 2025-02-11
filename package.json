@@ -1,0 +1,23 @@
+{
+  "name": "cs4241-c25-a2-short-stack",
+  "version": "0.1.0",
+  "description": "WPI CS4241-C25 Assignment A2",
+  "author": "",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@material-tailwind/html": "^2.3.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "mime": "^2.4.4",
+    "mongoose": "^8.10.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "engines": {
+    "node": "16.x"
+  }
+}

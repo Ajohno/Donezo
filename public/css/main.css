@@ -1,0 +1,214 @@
+body {
+    background:#F7E8D5;
+    color:white;
+    margin-top: -5%;
+}
+
+h1 {
+    color: #E26D67;
+    font-family: "Itim", serif;
+    text-decoration: underline;
+    font-size: 96px;
+    justify-self: center;
+}
+
+h2 {
+    color: white;
+    font-family: "Itim", serif;
+}
+
+h3 {
+    color:#E26D67;
+    font-size: 40px;
+    padding: 0%;
+    font-family: "Itim", serif;
+}
+
+.widget-background {
+    background-color: white;
+    border-radius: 10px;
+}
+
+.rounded-box {
+    border-radius: 10px;
+}
+
+.scrollable {
+    overflow-y: auto; /* Enables vertical scrolling */
+}
+
+label {
+    color: #E26D67;
+    font-size: 24px;
+    font-family: "Itim", serif;
+    margin-left: 2%;
+}
+
+input {
+    width: 500px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #E38884;
+    opacity: 50%;
+    /* border-radius: 10px; */
+    margin-left: 2%;
+}
+
+input::placeholder {
+    color: black;
+    font-style: italic;
+    font-weight: bold;
+}
+
+/* When input is focused */
+input:focus {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    font-weight: bold;
+}
+
+#clearBtn {
+    margin-left: 4%;
+    width: 185px;
+    height: 50px;
+    border-radius: 20px;
+    background-color: #FFC8C6;
+    color: white;
+    font-size: 32px;
+    font-family: "Itim", serif;
+}
+
+.defaultBtn {
+    margin-left: 4%;
+    width: 185px;
+    height: 50px;
+    border-radius: 20px;
+    background-color: #E26D67;
+    color: white;
+    font-size: 32px;
+    font-family: "Itim", serif;
+}
+
+.defaultBtn:hover {
+    background-color: #f07770;
+}
+
+.defaultBtn:active {
+    box-shadow: none;
+    transform: scale(0.8);
+}
+
+#submitBtn {
+    margin-left: 4%;
+    width: 185px;
+    height: 50px;
+    border-radius: 20px;
+    background-color: #E26D67;
+    color: white;
+    font-size: 32px;
+    font-family: "Itim", serif;
+}
+
+.edit-btn {
+    width: 70px;
+    height: 20px;
+    border-radius: 20px;
+    background-color: #E26D67;
+    color: white;
+    font-size: 16px;
+    font-family: "Itim", serif;
+    
+}
+
+.edit-btn:hover {
+    background-color: #f07770;
+}
+
+.edit-btn:active {
+    box-shadow: none;
+    transform: scale(0.8);
+}
+
+.delete-btn {
+    width: 70px;
+    height: 20px;
+    border-radius: 20px;
+    background-color: #E26D67;
+    color: white;
+    font-size: 16px;
+    font-family: "Itim", serif;
+    
+}
+
+.delete-btn:hover {
+    background-color: #f07770;
+}
+
+.delete-btn:active {
+    box-shadow: none;
+    transform: scale(0.8);
+}
+
+#clearBtn:hover {
+    background-color: #f5b7a8;
+}
+
+#submitBtn:hover {
+    background-color: #f07770;
+}
+
+#clearBtn:active {
+    box-shadow: none;
+    transform: scale(0.8);
+}
+
+#submitBtn:active {
+    box-shadow: none;
+    transform: scale(0.8);
+}
+
+/* Circular buttons */
+.rounded-box button {
+    margin-left: 15%;
+    margin-bottom: 0%;
+    width: 30px;
+    height: 30px;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #e38884;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    
+}
+
+.rounded-box button:hover {
+    background: #f5d5d4;
+}
+
+/* Individual task item */
+.task-item {
+    font-size: 18px;
+    color: #b56b66;
+    padding: 5px 10px;
+    /* display: flex;
+    align-items: center; */
+    border-bottom: 1px solid #e38884;
+    
+}
+
+/* Task list container */
+.task-list {
+    width: 100%;
+    padding: 10px;
+    /* display: flex;
+    flex-direction: column; */
+}
+
+/* Strikethrough for completed tasks */
+.task-item.done {
+    text-decoration: line-through;
+    color: #b56b66;
+    opacity: 0.6;
+}
