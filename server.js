@@ -186,7 +186,14 @@ app.get("/:file", (req, res) => {
     }
 });
 
-// Start the Express server
-app.listen(port, () => {
+if (require.main === module) {
+    // Only execute when this file is run directly (local dev)
+
+    // Start the Express server
+    app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-});
+    });
+}
+
+// Always export for Vercel
+module.exports = app;
