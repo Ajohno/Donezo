@@ -4,6 +4,7 @@
     <title>CS4241 Assignment 3</title>
     <meta charset="utf-8" />
     <script src="js/main.js"></script>
+    <link rel="stylesheet" href="css/tailwind.css" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -93,7 +94,7 @@
     </section>
 
     <!-- Hidden until login -->
-    <section id="main-section" style="display: none">
+    <section id="main-section" class="hidden">
       <section
         class="widget-background"
         style="width: 250px; height: 100px; display: flex; margin-top: -2%"
@@ -109,7 +110,7 @@
           <!-- Logout Button -->
           <button
             id="logoutBtn"
-            class="defaultBtn"
+            class="defaultBtn hidden"
             style="
               display: none;
               width: 92.5px;

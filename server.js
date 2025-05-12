@@ -1,9 +1,12 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");  
 const fs = require("fs");
 const mime = require("mime");
 const path = require("path");
 const connectDB = require("./config/database"); // Connects to MongoDB
 const session = require("express-session"); // Handles sessions for logged-in users
+const mongoose   = require("mongoose");
+const MongoStore = require("connect-mongo"); // Stores session data in MongoDB
 const passport = require("passport"); // Middleware for authentication
 const bcrypt = require("bcryptjs"); // Used to hash passwords
 const User = require("./config/models/user"); // User model for the database
@@ -22,6 +25,8 @@ connectDB();
 
 // Middleware -----------------------------------------------------------------------------------
 
+app.use(cookieParser()); // Parses cookies from the request first
+
 // Ensure a user is logged in before accessing routes
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -31,11 +36,24 @@ function ensureAuthenticated(req, res, next) {
 }
 
 // Session Handling
+// app.use(session({
+//     secret: process.env.SESSION_SECRET || "fallback_secret", // Encryption key
+//     resave: false, // Don't save session if nothing has changed
+//     saveUninitialized: false // Don't create session until something is stored
+// }));
+
+
+app.set("trust proxy", 1);   // good for Vercel / any proxy
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || "fallback_secret", // Encryption key
-    resave: false, // Don't save session if nothing has changed
-    saveUninitialized: false // Don't create session until something is stored
-}));
+    secret: process.env.SESSION_SECRET || "fallback_secret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      client: mongoose.connection.getClient()   // ← hand the live client over
+    })
+  }));
+
 
 app.use(passport.initialize());
 app.use(passport.session()); // Enables persistent login sessions
@@ -44,7 +62,9 @@ app.use(express.json()); // Middleware to parse JSON request body
 app.use(express.urlencoded({ extended: false })); // Parses form data
 
 // Serve static files from the "public" directory
-app.use(express.static("public"));
+//app.use(express.static("public"));
+
+
 
 // ROUTES -----------------------------------------------------------------------------------
 
@@ -68,9 +88,22 @@ app.post("/register", async (req, res) => {
 });
 
 // Login Route
-app.post("/login", passport.authenticate("local"), (req, res) => {
-    res.json({ message: "Logged in successfully", user: req.user });
-});
+// app.post("/login", passport.authenticate("local"), (req, res) => {
+//     res.json({ message: "Logged in successfully", user: req.user });
+// });
+
+app.post("/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+      if (err)   return next(err);
+      if (!user) return res.status(401).json({ error: info.message });
+  
+      req.logIn(user, (err) => {          // ensures the session is saved
+        if (err) return next(err);
+        res.json({ message: "Logged in successfully", user });
+      });
+    })(req, res, next);
+  });
+  
 
 // Logout Route
 app.get("/logout", (req, res) => {
@@ -176,15 +209,18 @@ app.get("/auth-status", (req, res) => {
 });
 
 // Serve other static files dynamically
-app.get("/:file", (req, res) => {
-    const filename = path.join(__dirname, "public", req.params.file);
-    if (fs.existsSync(filename)) {
-        res.type(mime.getType(filename));
-        res.sendFile(filename);
-    } else {
-        res.status(404).send("404 Error: File Not Found");
-    }
-});
+// app.get("/:file", (req, res) => {
+//     const filename = path.join(__dirname, "public", req.params.file);
+//     if (fs.existsSync(filename)) {
+//         res.type(mime.getType(filename));
+//         res.sendFile(filename);
+//     } else {
+//         res.status(404).send("404 Error: File Not Found");
+//     }
+// });
+
+app.use(express.static("public"));
+
 
 if (require.main === module) {
     // Only execute when this file is run directly (local dev)
