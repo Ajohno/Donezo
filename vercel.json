@@ -1,7 +1,6 @@
 {
     "version": 2,
     "installCommand": "npm install --include=dev",
-    "buildCommand": "npm run build:css", 
     "builds": [
       { "src": "server.js", "use": "@vercel/node" }
     ],
