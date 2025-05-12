@@ -113,14 +113,26 @@ async function checkAuthStatus() {
 // Function to get the tasks for the logged in user
 async function fetchTasks() {
     //const response = await fetch("/tasks");
+    // const response = await fetch("/tasks", { credentials: "include" });
+    // const tasks = await response.json();
+
+    // if (response.ok) {
+    //     updateTaskList(tasks);
+    // } else {
+    //     console.error("Error fetching tasks:", tasks.error);
+    //     alert("Please log in to see your tasks.");
+    // }
+
     const response = await fetch("/tasks", { credentials: "include" });
-    const tasks = await response.json();
 
     if (response.ok) {
+        const tasks = await response.json();
         updateTaskList(tasks);
+    } else if (response.status === 401) {
+        alert("Session expired - please log in again.");
     } else {
-        console.error("Error fetching tasks:", tasks.error);
-        alert("Please log in to see your tasks.");
+        console.error("Task fetch failed:", await response.text());
+        alert("Something went wrong while fetching tasks.");
     }
 }
 

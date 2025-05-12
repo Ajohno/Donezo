@@ -5,6 +5,8 @@ const mime = require("mime");
 const path = require("path");
 const connectDB = require("./config/database"); // Connects to MongoDB
 const session = require("express-session"); // Handles sessions for logged-in users
+const mongoose   = require("mongoose");
+const MongoStore = require("connect-mongo"); // Stores session data in MongoDB
 const passport = require("passport"); // Middleware for authentication
 const bcrypt = require("bcryptjs"); // Used to hash passwords
 const User = require("./config/models/user"); // User model for the database
@@ -34,11 +36,24 @@ function ensureAuthenticated(req, res, next) {
 }
 
 // Session Handling
+// app.use(session({
+//     secret: process.env.SESSION_SECRET || "fallback_secret", // Encryption key
+//     resave: false, // Don't save session if nothing has changed
+//     saveUninitialized: false // Don't create session until something is stored
+// }));
+
+
+app.set("trust proxy", 1);   // good for Vercel / any proxy
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || "fallback_secret", // Encryption key
-    resave: false, // Don't save session if nothing has changed
-    saveUninitialized: false // Don't create session until something is stored
-}));
+    secret: process.env.SESSION_SECRET || "fallback_secret",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      client: mongoose.connection.getClient()   // ← hand the live client over
+    })
+  }));
+
 
 app.use(passport.initialize());
 app.use(passport.session()); // Enables persistent login sessions
@@ -84,7 +99,7 @@ app.post("/login", (req, res, next) => {
   
       req.logIn(user, (err) => {          // ensures the session is saved
         if (err) return next(err);
-        return res.json({ message: "Logged in successfully", user });
+        res.json({ message: "Logged in successfully", user });
       });
     })(req, res, next);
   });
