@@ -1,9 +1,16 @@
 {
     "version": 2,
-    "installCommand": "npm install --include=dev",
     "builds": [
-      { "src": "server.js", "use": "@vercel/node" }
+      {
+        "src": "server.js",
+        "use": "@vercel/node",
+        "config": {
+          "installCommand": "npm install --include=dev"
+        }
+      }
     ],
+    "buildCommand": "npm run vercel-build",
+    "outputDirectory": "public",
     "routes": [
       { "src": "/public/(.*)", "dest": "/public/$1" },
       { "src": "/(.*)",        "dest": "server.js" }
