@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
             const response = await fetch("/login", {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })
             });
@@ -48,19 +49,22 @@ document.addEventListener("DOMContentLoaded", () => {
         
             if (response.ok) {
                 alert("✅ Login successful!");
+                //checkAuthStatus(); // Refresh UI
+                //fetchTasks(); //Show tasks immediately after login
                 checkAuthStatus(); // Refresh UI
-                fetchTasks(); //Show tasks immediately after login
             } else {
                 alert("❌ Login failed: " + data.error);
             }
         });
     }
 
+
     // Function to log out a user
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
-            await fetch("/logout");
+            //await fetch("/logout");
+            await fetch("/logout", { credentials: "include" });
             alert("Logged out successfully!");
             checkAuthStatus(); // Refresh UI
         });
@@ -77,7 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Function to check if a user is currently logged in
 async function checkAuthStatus() {
-    const response = await fetch("/auth-status");
+    //const response = await fetch("/auth-status");
+    // Says "checkAuthStatus() called" in the console
+    console.log("checkAuthStatus() called");
+    const response = await fetch("/auth-status", { credentials: "include" });
     const data = await response.json();
 
     const authSection = document.getElementById("auth-section");
@@ -98,12 +105,15 @@ async function checkAuthStatus() {
         logoutBtn.style.display = "none";
         document.querySelector(".task-list").innerHTML = ""; // Clear tasks when logged out
     }
+
+    
 }
 
 
 // Function to get the tasks for the logged in user
 async function fetchTasks() {
-    const response = await fetch("/tasks");
+    //const response = await fetch("/tasks");
+    const response = await fetch("/tasks", { credentials: "include" });
     const tasks = await response.json();
 
     if (response.ok) {
@@ -131,6 +141,7 @@ const submit = async function(event) {
     const response = await fetch("/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(json)
     });
 
@@ -175,6 +186,7 @@ function updateTaskList(tasks) {
                 //Send updated task to the server
                 const updateResponse = await fetch(`/tasks/${task._id}`, {
                     method: "PUT",
+                    credentials: "include",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ taskDescription: newDescription })
                 });
@@ -198,7 +210,8 @@ function updateTaskList(tasks) {
             const confirmDelete = confirm("Are you sure you want to delete this task?");
             if (confirmDelete) {
                 const deleteResponse = await fetch(`/tasks/${task._id}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    credentials: "include"
                 });
 
                 if (deleteResponse.ok) {

@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+/* optional CSS‑first config */
+@theme {
+  --color-primary: #4f46e5;
+}
