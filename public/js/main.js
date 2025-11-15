@@ -87,14 +87,14 @@ async function checkAuthStatus() {
 
     if (data.loggedIn) {
         authStatus.textContent = `Logged in as: ${data.user.username}`;
-        authSection.style.display = "none"; // Hide login/register section
-        mainSection.style.display = "block"; // Show main task page
+        authSection?.classList.add("hidden"); // Hide login/register section
+        mainSection?.classList.remove("hidden"); // Show main task page
         logoutBtn.style.display = "block";
         fetchTasks(); // Automatically load tasks if user is logged in
     } else {
         authStatus.textContent = "Not logged in";
-        authSection.style.display = "block"; // Show login/register section
-        mainSection.style.display = "none"; // Hide main task page
+        authSection?.classList.remove("hidden"); // Show login/register section
+        mainSection?.classList.add("hidden"); // Hide main task page
         logoutBtn.style.display = "none";
         document.querySelector(".task-list").innerHTML = ""; // Clear tasks when logged out
     }
