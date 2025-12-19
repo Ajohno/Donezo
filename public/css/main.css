@@ -1,15 +1,19 @@
 body {
-    background:#F7E8D5;
-    color:white;
-    margin-top: -5%;
+    margin: 0;
+    background: #F4E6D3;
+    color: #5B3A34;
+    font-family: "Itim", serif;
+}
+
+.hidden {
+    display: none !important;
 }
 
 h1 {
-    color: #E26D67;
-    font-family: "Itim", serif;
+    color: #C45D58;
     text-decoration: underline;
-    font-size: 96px;
-    justify-self: center;
+    font-size: 72px;
+    margin: 0;
 }
 
 h2 {
@@ -22,6 +26,238 @@ h3 {
     font-size: 40px;
     padding: 0%;
     font-family: "Itim", serif;
+}
+
+.hero-header {
+    background: #F3E2CD;
+    padding: 32px 0 16px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15);
+}
+
+#main-section {
+    padding: 24px 16px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 1%;
+}
+
+
+
+.auth-panel {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    margin-bottom: 48px;
+    padding: 0 16px;
+}
+
+.auth-card {
+    display: flex;
+    width: min(980px, 100%);
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 45px rgba(96, 51, 46, 0.15);
+    overflow: hidden;
+    border: 3px solid #F2DCC5;
+    position: relative;
+}
+
+.auth-card::after {
+    content: "";
+    position: absolute;
+    top: 48px;
+    bottom: 48px;
+    left: 50%;
+    width: 2px;
+    background: #F2DCC5;
+}
+
+.auth-pane {
+    flex: 1;
+    padding: 56px 60px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: stretch;
+}
+
+.auth-pane h2 {
+    font-size: 48px;
+    text-align: center;
+    margin: 0;
+    text-decoration: underline;
+}
+
+.auth-pane form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.auth-pane label {
+    font-size: 26px;
+    margin: 0;
+}
+
+.auth-pane--login {
+    background: #C46E63;
+    color: white;
+}
+
+.auth-pane--login h2,
+.auth-pane--login label {
+    color: white;
+}
+
+.auth-pane--register h2,
+.auth-pane--register label {
+    color: #C46E63;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 20px;
+    border-radius: 6px;
+    border: none;
+    font-family: "Itim", serif;
+    margin: 0;
+}
+
+.login-input {
+    background: white;
+    color: #666;
+}
+
+.login-input::placeholder {
+    color: #9B9B9B;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.register-input {
+    background: #C46E63;
+    color: white;
+    opacity: 0.8;
+}
+
+.register-input::placeholder {
+    color: white;
+    font-weight: normal;
+    font-style: normal;
+}
+
+.auth-button {
+    margin-top: 12px;
+    width: fit-content;
+    align-self: center;
+    padding: 8px 48px;
+    border-radius: 30px;
+    border: none;
+    font-size: 28px;
+    font-family: "Itim", serif;
+    background: #C46E63;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.auth-button--light {
+    background: white;
+    color: #C46E63;
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.auth-button:active {
+    transform: scale(0.97);
+    box-shadow: none;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    gap: 32px;
+    margin: 32px auto 16px;
+    flex-wrap: wrap;
+    max-width: 1220px;
+    padding: 0 24px;
+}
+
+.status-card {
+    width: 340px;
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+}
+
+.status-card h3 {
+    margin: 0;
+    font-size: 30px;
+    color: #E26D67;
+}
+
+.logout-btn {
+    width: 130px;
+    height: 44px;
+    font-size: 22px;
+    margin-left: 0;
+}
+
+.tasks-remaining {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    /* padding-top: 24px; */
+    padding-right: 36px;
+    /* padding-bottom: 24px; */
+    /* padding-left: 36px; */
+}
+
+.widget-background .tasks-remaining{
+    min-height: 130px;
+}
+
+.tasks-remaining__label {
+    background-color: #E26D67;
+    padding: 10px 34px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    min-height: 130px;
+}
+
+article.rounded-box.tasks-remaining__label {
+    height: 130px;
+    margin: 0;
+}
+
+.item-counter {
+    color: #E26D67;
+    font-size: 96px;
+    margin: 0;
+}
+
+@media (max-width: 900px) {
+    .auth-card {
+        flex-direction: column;
+    }
+
+    .auth-card::after {
+        display: none;
+    }
+
+    .auth-pane {
+        padding: 40px 32px 48px;
+    }
 }
 
 .widget-background {
@@ -116,6 +352,9 @@ input:focus {
     color: white;
     font-size: 16px;
     font-family: "Itim", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
 }
 
@@ -136,7 +375,18 @@ input:focus {
     color: white;
     font-size: 16px;
     font-family: "Itim", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 2%;
+    margin-bottom: 4px;
 }
 
 .delete-btn:hover {

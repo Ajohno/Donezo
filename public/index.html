@@ -17,132 +17,86 @@
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
   </head>
   <body>
-    <!-- Main Title -->
-    <h1>Donezo</h1>
+    <header class="hero-header">
+      <h1>Donezo</h1>
+    </header>
 
-    <!-- User Authentication Area -->
-    <section
-      id="auth-section"
-      class="widget-background"
-      style="width: 494px; justify-self: center; margin-top: 5%"
-    >
-      <!-- Register Form -->
-      <form id="registerForm" style="margin-top: -14%">
-        <h3>Register</h3>
-        <label for="registerUsername">Username:</label>
-        <br />
-        <input
-          type="text"
-          id="registerUsername"
-          placeholder="Enter username"
-          required
-          style="width: 420px"
-        />
-        <br />
-        <label for="registerPassword">Password:</label>
-        <input
-          type="password"
-          id="registerPassword"
-          placeholder="Enter password"
-          required
-          style="width: 420px"
-        />
-        <br />
-        <button
-          class="defaultBtn"
-          style="margin-left: 30%; margin-top: 5%"
-          type="submit"
-        >
-          Register
-        </button>
-      </form>
-
-      <hr />
-
-      <!-- Login Form -->
-      <form id="loginForm" style="margin-top: -10%">
-        <h3>Login</h3>
-        <label for="loginUsername">Username:</label>
-        <input
-          type="text"
-          id="loginUsername"
-          placeholder="Enter username"
-          required
-          style="width: 420px"
-        />
-        <br />
-        <label for="loginPassword">Password:</label>
-        <input
-          type="password"
-          id="loginPassword"
-          placeholder="Enter password"
-          required
-          style="width: 420px"
-        />
-        <br />
-        <button
-          class="defaultBtn"
-          style="margin-left: 30%; margin-top: 5%"
-          type="submit"
-        >
-          Login
-        </button>
-      </form>
-
-      <br />
+    <section id="auth-section" class="auth-panel">
+      <div class="auth-card">
+        <div class="auth-pane auth-pane--login">
+          <h2>Back to Work</h2>
+          <form id="loginForm">
+            <label for="loginUsername">Username:</label>
+            <input
+              type="text"
+              id="loginUsername"
+              class="auth-input login-input"
+              placeholder="Enter username"
+              required
+            />
+            <label for="loginPassword">Password:</label>
+            <input
+              type="password"
+              id="loginPassword"
+              class="auth-input login-input"
+              placeholder="Enter password"
+              required
+            />
+            <button class="auth-button auth-button--light" type="submit">
+              Sign In
+            </button>
+          </form>
+        </div>
+        <div class="auth-pane auth-pane--register">
+          <h2>Register</h2>
+          <form id="registerForm">
+            <label for="registerUsername">Username:</label>
+            <input
+              type="text"
+              id="registerUsername"
+              class="auth-input register-input"
+              placeholder="Enter username"
+              required
+            />
+            <label for="registerPassword">Password:</label>
+            <input
+              type="password"
+              id="registerPassword"
+              class="auth-input register-input"
+              placeholder="Enter password"
+              required
+            />
+            <button class="auth-button" type="submit">Register</button>
+          </form>
+        </div>
+      </div>
     </section>
 
     <!-- Hidden until login -->
-    <section id="main-section" style="display: none">
-      <section
-        class="widget-background"
-        style="width: 250px; height: 100px; display: flex; margin-top: -2%"
-      >
-        <article style="margin-left: 10%">
-          <!-- Display user status -->
-          <h3 id="authStatus" style="margin-top: -5%; font-size: 30px">
-            Not logged in
-          </h3>
-        </article>
+    <section id="main-section" class="hidden">
+      <div class="dashboard-header">
+        <section class="widget-background status-card">
+          <article>
+            <!-- Display user status -->
+            <h3 id="authStatus">Not logged in</h3>
+          </article>
 
-        <article>
-          <!-- Logout Button -->
-          <button
-            id="logoutBtn"
-            class="defaultBtn"
-            style="
-              display: none;
-              width: 92.5px;
-              height: 30px;
-              font-size: 20px;
-              margin-top: 50%;
-            "
-          >
-            Logout
-          </button>
-        </article>
+          <article>
+            <!-- Logout Button -->
+            <button
+              id="logoutBtn"
+              class="defaultBtn logout-btn"
+              style="display: none"
+            >
+              Logout
+            </button>
+          </article>
+        </section>
 
         <!-- Remaining Task Section -->
-        <section
-          class="widget-background"
-          style="
-            height: 124px;
-            justify-self: center;
-            margin-top: -3%;
-            display: flex;
-            margin-left: 180%;
-            padding-right: 30%;
-          "
-        >
+        <section class="widget-background tasks-remaining">
           <!-- Red area with the words -->
-          <article
-            class="rounded-box"
-            style="
-              background-color: #e26d67;
-              padding-right: 6%;
-              padding-left: 6%;
-            "
-          >
+          <article class="rounded-box tasks-remaining__label">
             <h2>
               Tasks <br />
               Left:
@@ -151,15 +105,12 @@
 
           <!-- Area with the number of tasks left -->
           <article>
-            <h2
-              class="item-counter"
-              style="color: #e26d67; font-size: 96px; margin-top: -3%"
-            >
+            <h2 class="item-counter">
               <!-- 9 -->
             </h2>
           </article>
         </section>
-      </section>
+      </div>
 
       <!-- Area with the task list on the left and the new task form on the right -->
       <div
