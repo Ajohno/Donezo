@@ -73,6 +73,10 @@ h3 {
     background: #F2DCC5;
 }
 
+.auth-card--links::after {
+    display: none; /* Remove divider for the simple link-only card */
+}
+
 .auth-pane {
     flex: 1;
     padding: 56px 60px 64px;
@@ -80,6 +84,12 @@ h3 {
     flex-direction: column;
     gap: 32px;
     align-items: stretch;
+}
+
+.auth-card--links .auth-pane {
+    justify-content: center; /* Center content in the simplified link card */
+    align-items: center;
+    text-align: center;
 }
 
 .auth-pane h2 {
@@ -244,6 +254,185 @@ article.rounded-box.tasks-remaining__label {
     color: #E26D67;
     font-size: 96px;
     margin: 0;
+}
+
+/* --- Cork + paper styling for standalone auth pages --- */
+.cork-page {
+    min-height: 100vh;
+    background-color: #d9b9a1; /* Cork base */
+    background-image:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.16) 0 20%, transparent 25%),
+        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.16) 0 18%, transparent 24%),
+        radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 0 12%, transparent 18%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 12px;
+    color: #6b4b3f;
+}
+
+.paper {
+    position: relative;
+    width: min(520px, 100%);
+    background: #f4eee5;
+    border: 1px solid #e1c7a5;
+    border-radius: 14px;
+    box-shadow:
+        0 18px 38px rgba(73, 45, 36, 0.2),
+        inset 0 0 0 1px rgba(255,255,255,0.45);
+    padding: 32px 30px 40px;
+    overflow: hidden;
+}
+
+.paper::before {
+    /* Thumbtack dot */
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 18px;
+    background: radial-gradient(circle at 30% 30%, #e87a72 0 35%, #c65a53 40% 60%, #8d3f3a 65% 100%);
+    border-radius: 50%;
+    box-shadow:
+        0 3px 4px rgba(0,0,0,0.22),
+        0 10px 26px rgba(0,0,0,0.1);
+}
+
+.paper::after {
+    /* Soft paper grain */
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 0);
+    background-size: 9px 9px;
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.paper-content {
+    position: relative;
+    z-index: 1; /* Keep text above the grain overlay */
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.paper-brand {
+    text-align: center;
+}
+
+.paper-brand h1 {
+    font-size: 52px;
+    color: #c6534e;
+    text-decoration: underline;
+    margin: 10px 0 0;
+}
+
+.paper-brand p {
+    margin: 4px 0 0;
+    font-size: 24px;
+    color: #7c594c;
+}
+
+.paper-form {
+    background: rgba(255,255,255,0.7);
+    border: 1px solid #d4b9a3;
+    border-radius: 12px;
+    padding: 18px 18px 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.paper-field label {
+    display: block;
+    font-size: 18px;
+    color: #7c594c;
+    margin-bottom: 6px;
+}
+
+.paper-field input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 17px;
+    border-radius: 8px;
+    border: 1px solid #c8b099;
+    background: linear-gradient(180deg, #f7f0df 0%, #f0e5cf 100%);
+    color: #5b3a34;
+    font-family: "Itim", serif;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.paper-field input:focus {
+    outline: 2px solid #e38884;
+    box-shadow: 0 0 0 3px rgba(227,136,132,0.28);
+}
+
+.paper-actions {
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 16px;
+    color: #7c594c;
+}
+
+.paper-actions a {
+    color: #c6534e;
+    text-decoration: underline;
+}
+
+.paper-button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px 0;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #d86f67 0%, #c65551 100%);
+    color: white;
+    font-size: 20px;
+    font-family: "Itim", serif;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.paper-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+}
+
+.paper-button:active {
+    transform: translateY(0);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.16);
+}
+
+.paper-footer {
+    text-align: center;
+    color: #7c594c;
+    font-size: 17px;
+}
+
+.paper-footer a {
+    color: #c6534e;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.paper-aux {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.paper-aux input[type="checkbox"] {
+    accent-color: #c6534e; /* Match palette while keeping native checkbox */
 }
 
 @media (max-width: 900px) {

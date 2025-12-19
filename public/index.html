@@ -22,52 +22,14 @@
     </header>
 
     <section id="auth-section" class="auth-panel">
-      <div class="auth-card">
+      <div class="auth-card auth-card--links">
         <div class="auth-pane auth-pane--login">
-          <h2>Back to Work</h2>
-          <form id="loginForm">
-            <label for="loginUsername">Username:</label>
-            <input
-              type="text"
-              id="loginUsername"
-              class="auth-input login-input"
-              placeholder="Enter username"
-              required
-            />
-            <label for="loginPassword">Password:</label>
-            <input
-              type="password"
-              id="loginPassword"
-              class="auth-input login-input"
-              placeholder="Enter password"
-              required
-            />
-            <button class="auth-button auth-button--light" type="submit">
-              Sign In
-            </button>
-          </form>
+          <h2>Already have an account?</h2>
+          <a class="auth-button auth-button--light" href="/login.html">Log In</a>
         </div>
         <div class="auth-pane auth-pane--register">
-          <h2>Register</h2>
-          <form id="registerForm">
-            <label for="registerUsername">Username:</label>
-            <input
-              type="text"
-              id="registerUsername"
-              class="auth-input register-input"
-              placeholder="Enter username"
-              required
-            />
-            <label for="registerPassword">Password:</label>
-            <input
-              type="password"
-              id="registerPassword"
-              class="auth-input register-input"
-              placeholder="Enter password"
-              required
-            />
-            <button class="auth-button" type="submit">Register</button>
-          </form>
+          <h2>New here?</h2>
+          <a class="auth-button" href="/register.html">Create Account</a>
         </div>
       </div>
     </section>

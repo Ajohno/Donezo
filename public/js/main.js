@@ -1,38 +1,59 @@
-// Ensure JavaScript runs only after the DOM is fully loaded
+// Auth and tasks behavior for Donezo
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Fully Loaded - JavaScript Running");
 
-    // Function for registering a new user
+    // Page flags let us adjust behavior for standalone login/register views
+    const isLoginPage = document.body.classList.contains("login-page");
+    const isRegisterPage = document.body.classList.contains("register-page");
+
+    // Registration handler (used on register.html)
     const registerForm = document.getElementById("registerForm");
     if (registerForm) {
         registerForm.addEventListener("submit", async (event) => {
             event.preventDefault();
-    
-            // Get username and password 
-            const username = document.getElementById("registerUsername").value;
+
+            // Pull values from the illustrated fields
+            const name = document.getElementById("registerName")?.value.trim();
+            const email = document.getElementById("registerEmail")?.value.trim();
             const password = document.getElementById("registerPassword").value;
-    
+            const confirmPassword = document.getElementById("registerConfirm").value;
+
+            // Simple client-side guard to match the confirm password box
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            // Backend expects a username; keep it aligned to the email field
+            const usernameFallback = document.getElementById("registerUsername")?.value?.trim();
+            const username = email || usernameFallback || name;
+            if (!username) {
+                alert("Please enter an email.");
+                return;
+            }
+
             const response = await fetch("/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ username, password })
             });
-    
+
             const data = await response.json();
-    
+
             // Check if registration went alright
             if (response.ok) {
                 alert("Registration successful! Please log in.");
+                window.location.href = "/login.html";
             } else {
                 alert("Registration failed: " + data.error);
             }
         });
     }
 
-    // Function to log in a user
+    // Login handler (used on login.html)
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
+        loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
         
             const username = document.getElementById("loginUsername").value;
@@ -47,16 +68,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
         
             if (response.ok) {
-                alert("✅ Login successful!");
-                checkAuthStatus(); // Refresh UI
-                fetchTasks(); //Show tasks immediately after login
+                alert("Login successful!");
+                // Auth pages should move you to the dashboard once logged in
+                window.location.href = "/";
             } else {
-                alert("❌ Login failed: " + data.error);
+                alert("Login failed: " + data.error);
             }
         });
     }
 
-    // Function to log out a user
+    // Function to log out a user (dashboard only)
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
@@ -86,17 +107,37 @@ async function checkAuthStatus() {
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (data.loggedIn) {
-        authStatus.textContent = `Logged in as: ${data.user.username}`;
-        authSection?.classList.add("hidden"); // Hide login/register section
+        // Keep login/register pages from showing when already authenticated
+        if (document.body.classList.contains("login-page") || document.body.classList.contains("register-page")) {
+            window.location.href = "/";
+            return;
+        }
+
+        if (authStatus) {
+            authStatus.textContent = `Logged in as: ${data.user.username}`;
+        }
+        authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
         mainSection?.classList.remove("hidden"); // Show main task page
-        logoutBtn.style.display = "block";
-        fetchTasks(); // Automatically load tasks if user is logged in
+        if (logoutBtn) {
+            logoutBtn.style.display = "block";
+        }
+        if (mainSection) {
+            fetchTasks(); // Automatically load tasks if user is logged in
+        }
     } else {
-        authStatus.textContent = "Not logged in";
-        authSection?.classList.remove("hidden"); // Show login/register section
+        // Only toggle dashboard sections if they are present on the page
+        if (authStatus) {
+            authStatus.textContent = "Not logged in";
+        }
+        authSection?.classList.remove("hidden"); // Show login/register CTA
         mainSection?.classList.add("hidden"); // Hide main task page
-        logoutBtn.style.display = "none";
-        document.querySelector(".task-list").innerHTML = ""; // Clear tasks when logged out
+        if (logoutBtn) {
+            logoutBtn.style.display = "none";
+        }
+        const taskList = document.querySelector(".task-list");
+        if (taskList) {
+            taskList.innerHTML = ""; // Clear tasks when logged out
+        }
     }
 }
 
@@ -152,6 +193,9 @@ const submit = async function(event) {
 // Function to update the UI with fetched tasks
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
+    if (!listOfTasks) {
+        return; // Avoid errors on pages without the dashboard
+    }
     listOfTasks.innerHTML = ""; // Clear existing task list
 
     const taskTemplate = document.querySelector("#task-template");
@@ -180,10 +224,10 @@ function updateTaskList(tasks) {
                 });
         
                 if (updateResponse.ok) {
-                    console.log("✅ Task updated successfully");
+                    console.log("Task updated successfully");
                     fetchTasks(); // Automatically reload the task list after editing
                 } else {
-                    console.error("❌ Error updating task");
+                    console.error("Error updating task");
                 }
             }
         });
@@ -202,10 +246,10 @@ function updateTaskList(tasks) {
                 });
 
                 if (deleteResponse.ok) {
-                    console.log("🗑️ Task deleted successfully");
+                    console.log("Task deleted successfully");
                     fetchTasks(); // Refresh task list after deletion
                 } else {
-                    console.error("❌ Error deleting task");
+                    console.error("Error deleting task");
                 }
             }
         });
@@ -220,6 +264,8 @@ function updateTaskList(tasks) {
     });
 
     // Update the task counter
-    document.querySelector(".item-counter").innerHTML = tasks.length.toString();
+    const counter = document.querySelector(".item-counter");
+    if (counter) {
+        counter.innerHTML = tasks.length.toString();
+    }
 }
-
