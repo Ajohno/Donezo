@@ -352,6 +352,9 @@ input:focus {
     color: white;
     font-size: 16px;
     font-family: "Itim", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
 }
 
@@ -372,7 +375,18 @@ input:focus {
     color: white;
     font-size: 16px;
     font-family: "Itim", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 2%;
+    margin-bottom: 4px;
 }
 
 .delete-btn:hover {

@@ -210,9 +210,12 @@ function updateTaskList(tasks) {
             }
         });
 
-        // Append Edit and Delete button to the task
-        clone.prepend(deleteButton);
-        clone.prepend(editButton);
+        // Append Edit and Delete buttons beside each other
+        const actionsContainer = document.createElement("div");
+        actionsContainer.classList.add("task-actions");
+        actionsContainer.appendChild(editButton);
+        actionsContainer.appendChild(deleteButton);
+        clone.prepend(actionsContainer);
         listOfTasks.appendChild(clone);
     });
 
