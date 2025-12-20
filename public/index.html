@@ -3,8 +3,11 @@
   <head>
     <title>Donezo</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="js/main.js"></script>
+    <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/stickies.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -22,12 +25,16 @@
     </header>
 
     <section id="auth-section" class="auth-panel">
-      <div class="auth-card auth-card--links">
-        <div class="auth-pane auth-pane--login">
+      <div class="cork-page auth-card auth-card--links">
+        <!-- Login auth section -->
+        <div class="auth-pane paper auth-pane--login">
           <h2>Already have an account?</h2>
-          <a class="auth-button auth-button--light" href="/login.html">Log In</a>
+          <a class="auth-button auth-button--light" href="/login.html"
+            >Log In</a
+          >
         </div>
-        <div class="auth-pane auth-pane--register">
+        <!-- Register auth section -->
+        <div class="auth-pane paper auth-pane--register">
           <h2>New here?</h2>
           <a class="auth-button" href="/register.html">Create Account</a>
         </div>

@@ -1,97 +1,130 @@
+/* =========================================================
+   main.css
+   - Everything EXCEPT sticky notes / tape / corkboard textures
+   - Core typography, layout, auth UI, dashboard widgets, tasks
+   ========================================================= */
+
+/* =========================================================
+   GLOBAL BASE STYLES
+   - Sets default page background, text color, and font
+   ========================================================= */
 body {
-    margin: 0;
-    background: #F4E6D3;
-    color: #5B3A34;
-    font-family: "Itim", serif;
+    margin: 0;                    /* Remove default browser body margin */
+    background: #F4E6D3;          /* Warm paper-like background color */
+    color: #5B3A34;               /* Default text color (brown) */
+    font-family: "Itim", serif;   /* Playful handwritten font for the app */
 }
 
+/* Utility class: force-hide any element (overrides other display rules) */
 .hidden {
     display: none !important;
 }
 
+/* =========================================================
+   HEADING STYLES
+   - Default heading typography + colors
+   ========================================================= */
 h1 {
-    color: #C45D58;
-    text-decoration: underline;
-    font-size: 72px;
-    margin: 0;
+    color: #C45D58;               /* Brand red/pink */
+    text-decoration: underline;   /* Underlined title style */
+    font-size: 72px;              /* Large hero heading */
+    margin: 0;                    /* Remove default spacing */
 }
 
 h2 {
-    color: white;
+    color: white;                 /* Default h2 is white (used in colored panes) */
     font-family: "Itim", serif;
 }
 
 h3 {
-    color:#E26D67;
+    color:#E26D67;                /* Accent coral */
     font-size: 40px;
     padding: 0%;
     font-family: "Itim", serif;
 }
 
+/* =========================================================
+   HERO HEADER / TOP BANNER
+   - Centered header section with soft shadow
+   ========================================================= */
 .hero-header {
-    background: #F3E2CD;
-    padding: 32px 0 16px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15);
+    background: #F3E2CD;                       /* Slightly different paper tone */
+    padding: 32px 0 16px;                      /* Top/bottom spacing */
+    text-align: center;                        /* Center heading text */
+    box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15); /* Soft drop shadow */
 }
 
+/* Main content wrapper sizing + spacing */
 #main-section {
-    padding: 24px 16px 48px;
-    max-width: 1200px;
-    margin: 0 auto;
-    margin-top: 1%;
+    padding: 24px 16px 48px;       /* Top, sides, bottom spacing */
+    max-width: 1200px;             /* Prevent content stretching too wide */
+    margin: 0 auto;                /* Center container */
+    margin-top: 1%;                /* Small spacing from top */
 }
 
 
-
+/* =========================================================
+   AUTH LAYOUT (LOGIN / REGISTER SPLIT CARD)
+   - .auth-panel centers the auth card
+   - .auth-card is the container (two panes)
+   - .auth-pane styles each side (login vs register)
+   ========================================================= */
 .auth-panel {
-    display: flex;
-    justify-content: center;
+    display: flex;                 /* Flex used to center child card */
+    justify-content: center;       /* Center horizontally */
     margin-top: 32px;
     margin-bottom: 48px;
-    padding: 0 16px;
+    padding: 0 16px;               /* Side padding on small screens */
 }
 
+/* Large split card for auth */
 .auth-card {
-    display: flex;
-    width: min(980px, 100%);
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 45px rgba(96, 51, 46, 0.15);
-    overflow: hidden;
-    border: 3px solid #F2DCC5;
-    position: relative;
+    display: flex;                                 /* Two columns (panes) */
+    width: min(980px, 100%);                       /* Responsive max width */
+    background: white;                             /* Card base */
+    border-radius: 20px;                           /* Rounded corners */
+    box-shadow: 0 20px 45px rgba(96, 51, 46, 0.15);/* Soft depth */
+    overflow: hidden;                              /* Keep children clipped */
+    border: 3px solid #F2DCC5;                     /* Warm border */
+    position: relative;                            /* Needed for divider (::after) */
 }
 
+/* Vertical divider line between the left/right panes */
 .auth-card::after {
     content: "";
     position: absolute;
-    top: 48px;
-    bottom: 48px;
-    left: 50%;
+    top: 48px;                     /* Leave margin from top edge */
+    bottom: 48px;                  /* Leave margin from bottom edge */
+    left: 50%;                     /* Center divider */
     width: 2px;
     background: #F2DCC5;
 }
 
+/* Modifier: "links-only" card hides the divider */
 .auth-card--links::after {
     display: none; /* Remove divider for the simple link-only card */
 }
 
+/* Pane styles (each half of the auth-card) */
 .auth-pane {
-    flex: 1;
-    padding: 56px 60px 64px;
+    flex: 1;                       /* Each pane takes equal width */
+    padding: 56px 60px 64px;       /* Inner spacing */
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    align-items: stretch;
+    gap: 32px;                     /* Space between sections (title/form/buttons) */
+    align-items: stretch;          /* Inputs fill width by default */
 }
 
+
+
+/* Modifier for links-only layout: center contents */
 .auth-card--links .auth-pane {
-    justify-content: center; /* Center content in the simplified link card */
-    align-items: center;
+    justify-content: center;       /* Center vertically */
+    align-items: center;           /* Center horizontally */
     text-align: center;
 }
 
+/* Pane headings */
 .auth-pane h2 {
     font-size: 48px;
     text-align: center;
@@ -99,32 +132,43 @@ h3 {
     text-decoration: underline;
 }
 
+/* Form layout inside auth panes */
 .auth-pane form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 18px;                     /* Space between fields */
 }
 
+/* Labels inside auth panes */
 .auth-pane label {
     font-size: 26px;
     margin: 0;
 }
 
+/* =========================================================
+   AUTH PANE THEMES (LOGIN vs REGISTER)
+   ========================================================= */
 .auth-pane--login {
-    background: #C46E63;
-    color: white;
+    background: #C46E63;           /* Solid colored pane */
+    color: white;                  /* Default text color for pane */
 }
 
+/* Login pane heading + labels must be white */
 .auth-pane--login h2,
 .auth-pane--login label {
     color: white;
 }
 
+/* Register pane heading + labels use brand color */
 .auth-pane--register h2,
 .auth-pane--register label {
     color: #C46E63;
 }
 
+/* =========================================================
+   AUTH INPUTS
+   - Base input style (.auth-input) then variations
+   ========================================================= */
 .auth-input {
     width: 100%;
     padding: 14px 18px;
@@ -135,6 +179,7 @@ h3 {
     margin: 0;
 }
 
+/* Login input variant */
 .login-input {
     background: white;
     color: #666;
@@ -146,10 +191,11 @@ h3 {
     font-style: normal;
 }
 
+/* Register input variant (tinted background) */
 .register-input {
     background: #C46E63;
     color: white;
-    opacity: 0.8;
+    opacity: 0.8;                  /* Slight transparency */
 }
 
 .register-input::placeholder {
@@ -158,10 +204,15 @@ h3 {
     font-style: normal;
 }
 
+/* =========================================================
+   AUTH BUTTONS
+   - Base (.auth-button) + light modifier
+   - Hover/active states for “pressable” feel
+   ========================================================= */
 .auth-button {
     margin-top: 12px;
-    width: fit-content;
-    align-self: center;
+    width: fit-content;            /* Button hugs its text */
+    align-self: center;            /* Center within column */
     padding: 8px 48px;
     border-radius: 30px;
     border: none;
@@ -174,32 +225,40 @@ h3 {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* Modifier: invert button colors */
 .auth-button--light {
     background: white;
     color: #C46E63;
 }
 
+/* Hover: lift */
 .auth-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
+/* Active: press */
 .auth-button:active {
     transform: scale(0.97);
     box-shadow: none;
 }
 
+/* =========================================================
+   DASHBOARD HEADER AREA
+   - Contains status widgets (e.g., user status, tasks remaining)
+   ========================================================= */
 .dashboard-header {
     display: flex;
     justify-content: center;
-    align-items: stretch;
+    align-items: stretch;          /* Make children equal height */
     gap: 32px;
     margin: 32px auto 16px;
-    flex-wrap: wrap;
+    flex-wrap: wrap;              /* Wrap widgets on smaller screens */
     max-width: 1220px;
     padding: 0 24px;
 }
 
+/* Status widget card sizing + internal layout */
 .status-card {
     width: 340px;
     min-height: 130px;
@@ -215,6 +274,7 @@ h3 {
     color: #E26D67;
 }
 
+/* Logout button sizing within status card */
 .logout-btn {
     width: 130px;
     height: 44px;
@@ -222,20 +282,23 @@ h3 {
     margin-left: 0;
 }
 
+/* =========================================================
+   TASKS REMAINING WIDGET
+   - Layout for label block + numeric counter
+   ========================================================= */
 .tasks-remaining {
     display: flex;
     align-items: center;
     gap: 28px;
-    /* padding-top: 24px; */
     padding-right: 36px;
-    /* padding-bottom: 24px; */
-    /* padding-left: 36px; */
 }
 
+/* Ensure tasks-remaining area meets minimum widget height */
 .widget-background .tasks-remaining{
     min-height: 130px;
 }
 
+/* The left label block inside tasks remaining widget */
 .tasks-remaining__label {
     background-color: #E26D67;
     padding: 10px 34px;
@@ -245,81 +308,56 @@ h3 {
     min-height: 130px;
 }
 
+/* Specific selector: article rounded-box label sizing reset */
 article.rounded-box.tasks-remaining__label {
     height: 130px;
     margin: 0;
 }
 
+/* The large numeric counter styling */
 .item-counter {
     color: #E26D67;
     font-size: 96px;
     margin: 0;
 }
 
-/* --- Cork + paper styling for standalone auth pages --- */
+/* =========================================================
+   STANDALONE AUTH PAGE STRUCTURE (BASE)
+   - IMPORTANT: cork textures + thumbtacks/tape go in stickies.css
+   ========================================================= */
 .cork-page {
-    min-height: 100vh;
-    background-color: #d9b9a1; /* Cork base */
-    background-image:
-        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.16) 0 20%, transparent 25%),
-        radial-gradient(circle at 90% 60%, rgba(255,255,255,0.16) 0 18%, transparent 24%),
-        radial-gradient(circle at 50% 50%, rgba(0,0,0,0.05) 0 12%, transparent 18%);
-    display: flex;
+    min-height: 80vh;             /* Full viewport height */
+    display: flex;                 /* Center the paper card */
     align-items: center;
     justify-content: center;
-    padding: 32px 12px;
+    padding: 32px 12px;            /* Breathing room on small screens */
     color: #6b4b3f;
 }
 
+
+
+/* Paper card base (no cork/tack effects here) */
 .paper {
-    position: relative;
+    position: relative;            /* Allows pseudo-elements from stickies.css */
     width: min(520px, 100%);
     background: #f4eee5;
     border: 1px solid #e1c7a5;
     border-radius: 14px;
-    box-shadow:
-        0 18px 38px rgba(73, 45, 36, 0.2),
-        inset 0 0 0 1px rgba(255,255,255,0.45);
+    box-shadow: 0 18px 38px rgba(73, 45, 36, 0.2);
     padding: 32px 30px 40px;
-    overflow: hidden;
+    overflow: hidden;             /* Needed for overlays that clip to shape */
 }
 
-.paper::before {
-    /* Thumbtack dot */
-    content: "";
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 18px;
-    height: 18px;
-    background: radial-gradient(circle at 30% 30%, #e87a72 0 35%, #c65a53 40% 60%, #8d3f3a 65% 100%);
-    border-radius: 50%;
-    box-shadow:
-        0 3px 4px rgba(0,0,0,0.22),
-        0 10px 26px rgba(0,0,0,0.1);
-}
-
-.paper::after {
-    /* Soft paper grain */
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-        radial-gradient(circle, rgba(0,0,0,0.04) 1px, transparent 0);
-    background-size: 9px 9px;
-    opacity: 0.45;
-    pointer-events: none;
-}
-
+/* Content wrapper sits above overlays */
 .paper-content {
     position: relative;
-    z-index: 1; /* Keep text above the grain overlay */
+    z-index: 1;                    /* Keep text above any ::after overlays */
     display: flex;
     flex-direction: column;
     gap: 22px;
 }
 
+/* Brand header area inside paper */
 .paper-brand {
     text-align: center;
 }
@@ -337,6 +375,7 @@ article.rounded-box.tasks-remaining__label {
     color: #7c594c;
 }
 
+/* Form panel inside paper card */
 .paper-form {
     background: rgba(255,255,255,0.7);
     border: 1px solid #d4b9a3;
@@ -348,6 +387,7 @@ article.rounded-box.tasks-remaining__label {
     gap: 14px;
 }
 
+/* Form field grouping inside paper form */
 .paper-field label {
     display: block;
     font-size: 18px;
@@ -355,6 +395,7 @@ article.rounded-box.tasks-remaining__label {
     margin-bottom: 6px;
 }
 
+/* Inputs inside paper form */
 .paper-field input {
     width: 100%;
     padding: 12px 14px;
@@ -365,13 +406,16 @@ article.rounded-box.tasks-remaining__label {
     color: #5b3a34;
     font-family: "Itim", serif;
     box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    box-sizing: border-box;
 }
 
+/* Focus ring for paper inputs */
 .paper-field input:focus {
     outline: 2px solid #e38884;
     box-shadow: 0 0 0 3px rgba(227,136,132,0.28);
 }
 
+/* Under-form actions row (checkbox + links) */
 .paper-actions {
     margin-top: 6px;
     display: flex;
@@ -382,11 +426,13 @@ article.rounded-box.tasks-remaining__label {
     color: #7c594c;
 }
 
+/* Links inside paper actions row */
 .paper-actions a {
     color: #c6534e;
     text-decoration: underline;
 }
 
+/* Main submit button in paper theme */
 .paper-button {
     display: block;
     width: 100%;
@@ -413,6 +459,7 @@ article.rounded-box.tasks-remaining__label {
     box-shadow: 0 6px 12px rgba(0,0,0,0.16);
 }
 
+/* Footer text under paper form */
 .paper-footer {
     text-align: center;
     color: #7c594c;
@@ -425,30 +472,51 @@ article.rounded-box.tasks-remaining__label {
     font-weight: bold;
 }
 
+/* Checkbox row helper in paper theme */
 .paper-aux {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
+/* Checkbox color in supported browsers */
 .paper-aux input[type="checkbox"] {
-    accent-color: #c6534e; /* Match palette while keeping native checkbox */
+    accent-color: #c6534e;
+    width: auto;
 }
 
+/* =========================================================
+   RESPONSIVE (AUTH CARD COLLAPSE)
+   - Turns split auth card into stacked layout on smaller screens
+   ========================================================= */
 @media (max-width: 900px) {
     .auth-card {
-        flex-direction: column;
+        flex-direction: column; /* Stack panes vertically */
     }
 
     .auth-card::after {
-        display: none;
+        display: none; /* Hide vertical divider */
     }
 
     .auth-pane {
-        padding: 40px 32px 48px;
+        width: 50%;
+        padding: 40px 32px 48px; /* Smaller padding on mobile */
     }
+
+    .auth-pane h2{
+        font-size: 36px;       /* Slightly smaller headings */
+    }
+
+    .auth-pane a{
+        font-size: 24px;       /* Slightly smaller buttons */
+    }
+
+ 
 }
 
+/* =========================================================
+   GENERIC WIDGET / BOX HELPERS
+   ========================================================= */
 .widget-background {
     background-color: white;
     border-radius: 10px;
@@ -462,6 +530,10 @@ article.rounded-box.tasks-remaining__label {
     overflow-y: auto; /* Enables vertical scrolling */
 }
 
+/* =========================================================
+   GLOBAL FORM ELEMENT STYLES (GENERAL PAGES)
+   NOTE: These affect ALL labels/inputs unless overridden
+   ========================================================= */
 label {
     color: #E26D67;
     font-size: 24px;
@@ -469,13 +541,13 @@ label {
     margin-left: 2%;
 }
 
+/* Global inputs */
 input {
     width: 500px;
     padding: 10px;
     font-size: 16px;
     background-color: #E38884;
     opacity: 50%;
-    /* border-radius: 10px; */
     margin-left: 2%;
 }
 
@@ -485,12 +557,15 @@ input::placeholder {
     font-weight: bold;
 }
 
-/* When input is focused */
+/* Focus style for global inputs */
 input:focus {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
     font-weight: bold;
 }
 
+/* =========================================================
+   BUTTON STYLES (GENERAL UI BUTTONS)
+   ========================================================= */
 #clearBtn {
     margin-left: 4%;
     width: 185px;
@@ -533,29 +608,25 @@ input:focus {
     font-family: "Itim", serif;
 }
 
-.edit-btn {
-    width: 70px;
-    height: 20px;
-    border-radius: 20px;
-    background-color: #E26D67;
-    color: white;
-    font-size: 16px;
-    font-family: "Itim", serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
+/* Hover/active for clear + submit buttons */
+#clearBtn:hover {
+    background-color: #f5b7a8;
 }
 
-.edit-btn:hover {
+#submitBtn:hover {
     background-color: #f07770;
 }
 
-.edit-btn:active {
+#clearBtn:active,
+#submitBtn:active {
     box-shadow: none;
     transform: scale(0.8);
 }
 
+/* =========================================================
+   TASK ITEM ACTION BUTTONS (EDIT / DELETE)
+   ========================================================= */
+.edit-btn,
 .delete-btn {
     width: 70px;
     height: 20px;
@@ -567,9 +638,20 @@ input:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    
 }
 
+.edit-btn:hover,
+.delete-btn:hover {
+    background-color: #f07770;
+}
+
+.edit-btn:active,
+.delete-btn:active {
+    box-shadow: none;
+    transform: scale(0.8);
+}
+
+/* Wrapper that holds edit/delete buttons together */
 .task-actions {
     display: flex;
     align-items: center;
@@ -578,34 +660,10 @@ input:focus {
     margin-bottom: 4px;
 }
 
-.delete-btn:hover {
-    background-color: #f07770;
-}
-
-.delete-btn:active {
-    box-shadow: none;
-    transform: scale(0.8);
-}
-
-#clearBtn:hover {
-    background-color: #f5b7a8;
-}
-
-#submitBtn:hover {
-    background-color: #f07770;
-}
-
-#clearBtn:active {
-    box-shadow: none;
-    transform: scale(0.8);
-}
-
-#submitBtn:active {
-    box-shadow: none;
-    transform: scale(0.8);
-}
-
-/* Circular buttons */
+/* =========================================================
+   CIRCULAR BUTTONS INSIDE .rounded-box
+   - Used for icon-like actions (e.g., plus/minus/close)
+   ========================================================= */
 .rounded-box button {
     margin-left: 15%;
     margin-bottom: 0%;
@@ -619,33 +677,31 @@ input:focus {
     cursor: pointer;
     text-align: center;
     font-weight: bold;
-    
 }
 
 .rounded-box button:hover {
     background: #f5d5d4;
 }
 
-/* Individual task item */
+/* =========================================================
+   TASK LIST STYLES
+   ========================================================= */
+
+/* Individual task item row */
 .task-item {
     font-size: 18px;
     color: #b56b66;
     padding: 5px 10px;
-    /* display: flex;
-    align-items: center; */
     border-bottom: 1px solid #e38884;
-    
 }
 
-/* Task list container */
+/* Task list container wrapper */
 .task-list {
     width: 100%;
     padding: 10px;
-    /* display: flex;
-    flex-direction: column; */
 }
 
-/* Strikethrough for completed tasks */
+/* Completed task state (strikethrough + faded) */
 .task-item.done {
     text-decoration: line-through;
     color: #b56b66;
