@@ -119,7 +119,17 @@ async function checkAuthStatus() {
         }
 
         if (authStatus) {
-            authStatus.textContent = `Logged in as: ${data.user.firstName} ${data.user.lastName}`;
+            //Choose randomly from a set of welcome back messages
+            const messages = [
+                "Ready when you are",
+                "Time to tackle your tasks",
+                "Ready to be productive",
+                "Your tasks await",
+                "Let's make today productive"
+            ];
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            const welcomeMessage = messages[randomIndex];
+            authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
 
         }
         authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
@@ -298,6 +308,11 @@ function updateTaskList(tasks) {
         const activeCount = tasks.filter(t => t.status === "active").length;
         counter.textContent = activeCount.toString();
 
+    }
+
+    // If no tasks, show a friendly message
+    if (tasks.length === 0) {
+        listOfTasks.innerHTML = "<p>No tasks found. Add a new task to get started!</p>";
     }
 }
 

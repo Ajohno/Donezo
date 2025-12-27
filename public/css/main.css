@@ -167,32 +167,52 @@ h3 {
     text-decoration: underline;
 }
 
-/* Main submit button in paper theme */
+/* Submit button inside paper form */
 .paper-button {
     display: block;
     width: 100%;
     margin-top: 10px;
     padding: 14px 0;
     border: none;
-    border-radius: 14px;
-    background: linear-gradient(180deg, #d86f67 0%, #c65551 100%);
+    border-radius: 18px 16px 20px 14px;
+    background:
+        linear-gradient(180deg, #d86f67 0%, #c65551 100%),
+        repeating-linear-gradient(
+            45deg,
+            rgba(255,255,255,0.05),
+            rgba(255,255,255,0.05) 2px,
+            transparent 2px,
+            transparent 4px
+        );
+    background-blend-mode: overlay;
     color: white;
     font-size: 20px;
     font-family: "Itim", serif;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
     box-shadow: 0 10px 20px rgba(0,0,0,0.18);
     cursor: pointer;
+    position: relative;
     transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
+.paper-button::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 2px solid rgba(0,0,0,0.25);
+    border-radius: 17px 14px 19px 13px;
+    pointer-events: none;
+}
+
 .paper-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.22);
+    transform: translateY(-1px) rotate(-0.3deg);
 }
 
 .paper-button:active {
-    transform: translateY(0);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.16);
+    transform: translateY(2px) rotate(0.4deg);
 }
+
 
 /* Footer text under paper form */
 .paper-footer {
@@ -297,6 +317,7 @@ input:focus {
   text-decoration: underline;
   width: auto;
   margin-top: 0%;
+  align-self: center;
 }
 
 #nav-links {
@@ -336,6 +357,14 @@ input:focus {
 #focus-mode-widget {
   height: 50%; 
   margin-bottom: 10%;
+  justify-items: center;
+}
+
+#focus-button{
+  width: 30%;
+  height: 30%;
+  margin: auto;
+  cursor: pointer;
 }
 
 /* Reflection Section */
@@ -349,8 +378,18 @@ input:focus {
   height: 50%
 }
 
+#daily-reflection .widget-title {
+  font-weight: 200;
+  
+}
+
 #weekly-reflection {
   height: 50%
+}
+
+#weekly-reflection .widget-title {
+  font-weight: 200;
+  
 }
 
 /* =========================================================
