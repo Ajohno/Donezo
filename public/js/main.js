@@ -12,11 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
         registerForm.addEventListener("submit", async (event) => {
             event.preventDefault();
 
-            // Pull values from the illustrated fields
-            const name = document.getElementById("registerName")?.value.trim();
+            const firstName = document.getElementById("registerFirstName")?.value.trim();
+            const lastName = document.getElementById("registerLastName")?.value.trim();
             const email = document.getElementById("registerEmail")?.value.trim();
             const password = document.getElementById("registerPassword").value;
             const confirmPassword = document.getElementById("registerConfirm").value;
+
+            if (!firstName || !lastName || !email) {
+            alert("Please fill in first name, last name, and email.");
+            return;
+            }
+
 
             // Simple client-side guard to match the confirm password box
             if (password !== confirmPassword) {
@@ -24,18 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Backend expects a username; keep it aligned to the email field
-            const usernameFallback = document.getElementById("registerUsername")?.value?.trim();
-            const username = email || usernameFallback || name;
-            if (!username) {
-                alert("Please enter an email.");
-                return;
-            }
+           
 
             const response = await fetch("/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ firstName, lastName, email, password })
             });
 
             const data = await response.json();
@@ -56,13 +56,14 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
         
-            const username = document.getElementById("loginUsername").value;
+            const email = document.getElementById("loginEmail").value.trim();
             const password = document.getElementById("loginPassword").value;
-        
+
+
             const response = await fetch("/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ email, password })
             });
         
             const data = await response.json();
@@ -88,9 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Task Submission Form
-    const submitBtn = document.getElementById("submitBtn");
-    if (submitBtn) {
-        submitBtn.onclick = submit;
+    // const submitBtn = document.getElementById("submitBtn");
+    // if (submitBtn) {
+    //     submitBtn.onclick = submit;
+    // }
+    const taskForm = document.getElementById("taskForm");
+    if (taskForm) {
+        taskForm.addEventListener("submit", submit);
     }
 
     checkAuthStatus(); // Check authentication status on page load
@@ -114,7 +119,8 @@ async function checkAuthStatus() {
         }
 
         if (authStatus) {
-            authStatus.textContent = `Logged in as: ${data.user.username}`;
+            authStatus.textContent = `Logged in as: ${data.user.firstName} ${data.user.lastName}`;
+
         }
         authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
         mainSection?.classList.remove("hidden"); // Show main task page
@@ -161,15 +167,23 @@ const submit = async function(event) {
 
     const taskInput = document.querySelector("#taskDescription");
     const dateInput = document.querySelector("#dueDate");
+    const effortInput = document.querySelector("#effortLevel");
 
     // Create JSON object with form data
     const json = {
-        taskDescription: taskInput.value,
-        taskDate: dateInput.value
+    description: taskInput.value.trim(),
+    dueDate: dateInput.value,     // "YYYY-MM-DD"
+    effortLevel: effortInput ? parseInt(effortInput.value, 10) : 3
     };
 
+    if (!json.description || !json.dueDate) {
+    alert("Please enter a task and a due date.");
+    return;
+    }
+
+
     // Send task data to the server
-    const response = await fetch("/submit", {
+    const response = await fetch("/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(json)
@@ -193,17 +207,31 @@ const submit = async function(event) {
 // Function to update the UI with fetched tasks
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
+    const taskTemplate = document.querySelector("#task-template");
+
     if (!listOfTasks) {
         return; // Avoid errors on pages without the dashboard
     }
-    listOfTasks.innerHTML = ""; // Clear existing task list
+    if (!taskTemplate) {
+        console.error("Task template not found in DOM");
+        return;
+    }
 
-    const taskTemplate = document.querySelector("#task-template");
+    listOfTasks.innerHTML = ""; // Clear existing task list
 
     tasks.forEach((task) => {
         const clone = taskTemplate.content.cloneNode(true);
         const taskItem = clone.querySelector(".task-item");
-        taskItem.innerHTML = task.taskDescription;
+        const taskText = clone.querySelector(".task-text");
+        const dueText = clone.querySelector(".task-due");
+
+        if (taskItem && taskText) {
+            taskText.textContent = task.description;
+        }
+        if (dueText && task.dueDate) {
+            const date = new Date(task.dueDate);
+            dueText.textContent = `Due: ${date.toLocaleDateString()}`;
+        }
 
         // Create an Edit button
         const editButton = document.createElement("button");
@@ -212,7 +240,7 @@ function updateTaskList(tasks) {
 
         // Add event listener for editing a task
         editButton.addEventListener("click", async () => {
-            const newDescription = prompt("Edit task description:", task.taskDescription);
+            const newDescription = prompt("Edit task description:", task.description);
             if (newDescription !== null && newDescription.trim() !== "") {
                 console.log("New Description:", newDescription);
         
@@ -220,7 +248,8 @@ function updateTaskList(tasks) {
                 const updateResponse = await fetch(`/tasks/${task._id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ taskDescription: newDescription })
+                    body: JSON.stringify({ description: newDescription })
+
                 });
         
                 if (updateResponse.ok) {
@@ -266,6 +295,27 @@ function updateTaskList(tasks) {
     // Update the task counter
     const counter = document.querySelector(".item-counter");
     if (counter) {
-        counter.innerHTML = tasks.length.toString();
+        const activeCount = tasks.filter(t => t.status === "active").length;
+        counter.textContent = activeCount.toString();
+
     }
+}
+
+// Only enable periodic refresh on pages that actually have the dashboard
+const hasDashboard = document.getElementById("main-section");
+
+if (hasDashboard) {
+  const REFRESH_MS = 30000;
+
+  function refreshDashboard() {
+    checkAuthStatus();
+  }
+
+  setInterval(refreshDashboard, REFRESH_MS);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refreshDashboard();
+    }
+  });
 }

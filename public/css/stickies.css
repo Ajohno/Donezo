@@ -50,6 +50,7 @@
    ============================================================ */
 .sticky-note {
   position: relative;
+  
 
   /* Color controlled via CSS variable for easy theming */
   background: var(--note-color, #fff3a4);
@@ -167,6 +168,19 @@
 
 .sticky-note:nth-child(3n + 2) {
   transform: rotate(0.5deg);
+}
+
+/* ============================================================
+   STACKING ORDER
+   Bring hovered/focused note above overlapping neighbors
+   ============================================================ */
+.sticky-note {
+  z-index: 1;
+}
+
+.sticky-note:hover,
+.sticky-note:focus-within {
+  z-index: 10;
 }
 
 

@@ -4,15 +4,17 @@ const User = require("./models/user"); // Import User model
 
 module.exports = function (passport) {
     passport.use(
-        new LocalStrategy(async (username, password, done) => {
+        new LocalStrategy({ usernameField: "email", passwordField: "password" }, 
+            async (email, password, done) => {
             try {
-                const user = await User.findOne({ username });
+                const normalizedEmail = (email || "").toLowerCase().trim();
+                const user = await User.findOne({ email: normalizedEmail });
 
                 if (!user) {
                     return done(null, false, { message: "User not found" });
                 }
 
-                const isMatch = await bcrypt.compare(password, user.password);
+                const isMatch = await bcrypt.compare(password, user.passwordHash);
 
                 if (!isMatch) {
                     return done(null, false, { message: "Incorrect password" });

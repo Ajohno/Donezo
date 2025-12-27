@@ -63,7 +63,7 @@
 
     <!-- Hidden until login -->
     <div class="hidden" id="main-section">
-      <nav id="main-menu" class="three-columns">
+      <nav id="main-menu">
         <!-- Logo/Site Name -->
         <div id="site-logo">
           <a href="/index.html">
@@ -94,12 +94,14 @@
         <div id="profile-section">
           <!-- Tasks Left -->
           <div id="task-counter">
-            <h3>Tasks Left:5</h3>
+            <h3>
+              Tasks Left: <span><h3 class="item-counter"></h3></span>
+            </h3>
           </div>
 
           <!-- Profile Button -->
           <div id="profile-button">
-            <h3>Hi, Firstname</h3>
+            <h3 id="authStatus"></h3>
           </div>
 
           <!-- Logout Button -->
@@ -109,196 +111,29 @@
 
       <div class="corkboard">
         <!-- Dashboard -->
-        <div class="three-columns">
+        <div class="board-grid">
           <!-- Left Column -->
           <div>
             <!-- Task List -->
             <div id="task-list-widget" class="sticky-note thumbtack task-note">
               <h2 class="widget-title highlight-on-parent-hover">Task List</h2>
 
-              <ul class="task-list scrollable">
-                <!-- tasks here -->
-
+              <ul class="task-list scrollable"></ul>
+              <template id="task-template">
                 <li class="task-item">
                   <label class="task-row">
                     <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
+                    <span class="task-text"></span>
                   </label>
-
                   <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
+                    <span class="task-due"></span>
+                    <span class="task-effort">
+                      <span class="dot"></span><span class="dot"></span>
+                      <span class="dot"></span><span class="dot"></span>
                     </span>
                   </div>
                 </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text">Write project outline</span>
-                  </label>
-
-                  <div class="task-meta">
-                    <span class="task-due">Due: Oct 12</span>
-
-                    <span class="task-effort" aria-label="Effort level 3 of 4">
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot on"></span>
-                      <span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-              </ul>
+              </template>
             </div>
           </div>
 
@@ -307,6 +142,35 @@
             <!-- Create New Task -->
             <div id="create-task-widget" class="sticky-note blue thumbtack">
               <h2 class="widget-title highlight-on-parent-hover">New Task</h2>
+              <form id="taskForm" class="paper-form">
+                <div class="paper-field">
+                  <label for="taskDescription">Task</label>
+                  <input
+                    id="taskDescription"
+                    type="text"
+                    name="description"
+                    placeholder="What do you need to do?"
+                    required
+                  />
+                </div>
+                <div class="paper-field">
+                  <label for="dueDate">Due Date</label>
+                  <input id="dueDate" type="date" name="dueDate" required />
+                </div>
+                <div class="paper-field">
+                  <label for="effortLevel">Effort (1-5)</label>
+                  <select id="effortLevel" name="effortLevel" required>
+                    <option value="1">1 - Light</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - Medium</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Heavy</option>
+                  </select>
+                </div>
+                <button id="submitBtn" class="paper-button" type="submit">
+                  Add Task
+                </button>
+              </form>
             </div>
 
             <!-- Big 3 Tasks -->
