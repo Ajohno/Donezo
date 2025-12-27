@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Donezo | Log In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/stickies.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  </head>
+  <body class="cork-page login-page">
+    <main style="width: 30%" class="sticky-note double-tape">
+      <div>
+        <div class="paper-header">
+          <h1>Donezo</h1>
+          <p
+            style="width: fit-content; justify-self: center; margin-bottom: 2%"
+            class="highlight-on-parent-hover"
+          >
+            Welcome back!
+          </p>
+        </div>
+
+        <!-- Login form -->
+        <form id="loginForm" class="paper-form">
+          <div class="paper-field">
+            <label for="loginEmail">Email</label>
+            <input
+              id="loginUsername"
+              type="email"
+              name="username"
+              placeholder="user@example.com"
+              required
+            />
+          </div>
+          <div class="paper-field">
+            <label for="loginPassword">Password</label>
+            <input
+              id="loginPassword"
+              type="password"
+              name="password"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div class="paper-actions">
+            <label class="paper-aux">
+              <input id="rememberMe" type="checkbox" />
+              Remember me
+            </label>
+            <a href="#">Forgot password?</a>
+          </div>
+
+          <button class="paper-button" type="submit">Log In</button>
+        </form>
+
+        <p class="paper-footer">
+          Don’t have an account?
+          <a href="/register.html">Sign Up</a>
+        </p>
+      </div>
+    </main>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>
