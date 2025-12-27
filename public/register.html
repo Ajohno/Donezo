@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/stickies.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,26 +16,40 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
   </head>
   <body class="cork-page register-page">
-    <main class="paper">
+    <main style="width: 30%" class="sticky-note double-tape">
       <div class="paper-content">
         <!-- Brand header -->
-        <div class="paper-brand">
-          <h1>Donezo</h1>
-          <p>Create Your Account</p>
+        <div class="paper-header">
+          <h1 style="justify-self: center">Donezo</h1>
+          <p
+            style="width: fit-content; justify-self: center"
+            class="highlight-on-parent-hover"
+          >
+            Create Your Account
+          </p>
         </div>
 
         <!-- Registration form -->
         <form id="registerForm" class="paper-form">
           <div class="paper-field">
-            <label for="registerName">Name</label>
+            <label for="registerFirstName">First Name</label>
             <input
-              id="registerName"
+              id="registerFirstName"
               type="text"
-              name="name"
-              placeholder="Your name"
+              name="firstName"
+              placeholder="First Name"
               required
             />
           </div>
+          <div class="paper-field">
+            <label for="registerLastName">Last Name</label>
+            <input
+              id="registerLastName"
+              type="text"
+              name="lastName"
+              placeholder="Last Name"
+              required
+            />
           <div class="paper-field">
             <label for="registerEmail">Email</label>
             <input

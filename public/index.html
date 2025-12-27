@@ -28,155 +28,322 @@
       <h1>Donezo</h1>
     </header>
 
-    <section id="auth-section" class="auth-panel">
-      <div class="cork-page auth-card auth-card--links">
+    <section id="auth-section">
+      <div class="paper-header">
+        <h2>Welcome to Donezo!</h2>
+        <p style="justify-self: center; width: 30%">
+          A gentle place to focus, one task at a time. No pressure. No guilt.
+          Just progress.
+        </p>
+      </div>
+      <div
+        style="display: flex; justify-content: center; gap: 10%; margin-top: 4%"
+      >
         <!-- Login auth section -->
-        <div class="auth-pane paper auth-pane--login">
-          <h2>Already have an account?</h2>
-          <a class="auth-button auth-button--light" href="/login.html"
-            >Log In</a
-          >
+        <div style="width: 20vw; height: 35vh" class="sticky-note thumbtack">
+          <div class="paper-header">
+            <h3 style="justify-self: center; width: 10vw">
+              Already have
+              <span style="text-decoration: underline">an account?</span>
+            </h3>
+            <p>Welcome back - your board is waiting.</p>
+            <a class="paper-button" href="/login.html">Log In</a>
+          </div>
         </div>
         <!-- Register auth section -->
-        <div class="auth-pane paper auth-pane--register">
-          <h2>New here?</h2>
-          <a class="auth-button" href="/register.html">Create Account</a>
+        <div style="width: 20vw; height: 35vh" class="sticky-note thumbtack">
+          <div class="paper-header">
+            <h3 style="text-decoration: underline">New here?</h3>
+            <p>Let's set up your board together.</p>
+            <a class="paper-button" href="/register.html">Create Account</a>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Hidden until login -->
-    <section id="main-section" class="hidden">
-      <div class="dashboard-header">
-        <section class="widget-background status-card">
-          <article>
-            <!-- Display user status -->
-            <h3 id="authStatus">Not logged in</h3>
-          </article>
+    <div class="hidden" id="main-section">
+      <nav id="main-menu" class="three-columns">
+        <!-- Logo/Site Name -->
+        <div id="site-logo">
+          <a href="/index.html">
+            <img
+              src="assets/image/donezo-logo.png"
+              alt="Donezo Logo"
+              style="height: 100%; width: auto"
+            />
+          </a>
+        </div>
+        <!-- Nav Links -->
+        <!-- Could be populated by a mongo db table with names and links -->
+        <div id="nav-links">
+          <div>
+            <a href=""> <h3>Calendar</h3></a>
+          </div>
+          <h3>|</h3>
+          <div>
+            <a href=""> <h3>Feedback</h3></a>
+          </div>
+          <h3>|</h3>
+          <div>
+            <a href=""> <h3>Settings</h3></a>
+          </div>
+        </div>
 
-          <article>
-            <!-- Logout Button -->
-            <button
-              id="logoutBtn"
-              class="defaultBtn logout-btn"
-              style="display: none"
-            >
-              Logout
-            </button>
-          </article>
-        </section>
+        <!-- Profile Section -->
+        <div id="profile-section">
+          <!-- Tasks Left -->
+          <div id="task-counter">
+            <h3>Tasks Left:5</h3>
+          </div>
 
-        <!-- Remaining Task Section -->
-        <section class="widget-background tasks-remaining">
-          <!-- Red area with the words -->
-          <article class="rounded-box tasks-remaining__label">
-            <h2>
-              Tasks <br />
-              Left:
-            </h2>
-          </article>
+          <!-- Profile Button -->
+          <div id="profile-button">
+            <h3>Hi, Firstname</h3>
+          </div>
 
-          <!-- Area with the number of tasks left -->
-          <article>
-            <h2 class="item-counter">
-              <!-- 9 -->
-            </h2>
-          </article>
-        </section>
-      </div>
+          <!-- Logout Button -->
+          <button id="logoutBtn" class="paper-button">Log Out</button>
+        </div>
+      </nav>
 
-      <!-- Area with the task list on the left and the new task form on the right -->
-      <div
-        style="display: flex; margin-top: 2%; justify-content: center; gap: 2%"
-      >
-        <!-- Task List -->
-        <section
-          class="widget-background scrollable"
-          style="
-            width: 592px;
-            height: 500px;
-            display: flex;
-            flex-direction: row;
-          "
-        >
-          <section style="display: flex; width: 100%">
-            <!-- Red section to check off items -->
-            <article
-              class="rounded-box"
-              style="
-                background-color: #e38884;
-                width: 10%;
-                min-height: 500px;
-                flex-grow: 1;
-                align-content: top;
-                display: flex;
-                flex-direction: column;
-                padding-top: 2%;
-              "
-            >
-              <!-- <button onclick="toggleTask(0)">✖</button>
-              <button></button>
-              <button></button> -->
-            </article>
+      <div class="corkboard">
+        <!-- Dashboard -->
+        <div class="three-columns">
+          <!-- Left Column -->
+          <div>
+            <!-- Task List -->
+            <div id="task-list-widget" class="sticky-note thumbtack task-note">
+              <h2 class="widget-title highlight-on-parent-hover">Task List</h2>
 
-            <!-- Task list -->
-            <div class="task-list">
-              <!-- <div class="task-item done">This is a done task</div>
-              <div class="task-item done">This is a done task</div>
-              <div class="task-item done">This is a done task</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div> -->
+              <ul class="task-list scrollable">
+                <!-- tasks here -->
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text">Write project outline</span>
+                  </label>
+
+                  <div class="task-meta">
+                    <span class="task-due">Due: Oct 12</span>
+
+                    <span class="task-effort" aria-label="Effort level 3 of 4">
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot on"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+              </ul>
             </div>
-            <!-- Template for the task list -->
-            <template id="task-template">
-              <!-- Buttons for update and delete -->
-              <!-- <button>x</button> -->
-              <div class="task-item">This task is not done</div>
-            </template>
-          </section>
-        </section>
+          </div>
 
-        <!-- New Task Form -->
-        <section class="widget-background" style="width: 592px">
-          <!-- New Form Header -->
-          <article
-            class="rounded-box"
-            style="background-color: #e38884; width: 100%"
-          >
-            <h2
-              style="justify-self: center; padding-top: 1%; padding-bottom: 1%"
-            >
-              Make a New Task
-            </h2>
-          </article>
+          <!-- Middle Column -->
+          <div>
+            <!-- Create New Task -->
+            <div id="create-task-widget" class="sticky-note blue thumbtack">
+              <h2 class="widget-title highlight-on-parent-hover">New Task</h2>
+            </div>
 
-          <!-- New Task Form -->
-          <form>
-            <!-- Task Description -->
-            <label for="taskDescription">Task Description:</label>
-            <input type="text" id="taskDescription" placeholder="Enter Task" />
+            <!-- Big 3 Tasks -->
+            <div id="big-3-tasks" class="sticky-note pink thumbtack">
+              <h2 class="widget-title highlight-on-parent-hover">
+                Big 3 Tasks
+              </h2>
+            </div>
+          </div>
 
-            <br />
-            <br />
-            <!-- Due Date -->
-            <label for="dueDate">Due Date:</label>
-            <input type="date" id="dueDate" />
+          <!-- Right Column -->
+          <div>
+            <!-- Focus Mode Widget -->
+            <div id="focus-mode-widget" class="sticky-note blue thumbtack">
+              <h2 class="widget-title highlight-on-parent-hover">Focus Mode</h2>
+            </div>
 
-            <br />
-
-            <!-- Form Buttons -->
-            <article style="display: flex; margin-top: 30%">
-              <button id="clearBtn">Clear</button>
-              <button id="submitBtn">Submit</button>
-            </article>
-          </form>
-        </section>
+            <!-- Reflection Notes -->
+            <div id="reflection-section">
+              <!-- Daily Reflection -->
+              <div id="daily-reflection" class="sticky-note blue tape">
+                <h3 class="widget-title highlight-on-parent-hover">
+                  Daily Relfection
+                </h3>
+              </div>
+              <!-- Weekly Reflection -->
+              <div id="weekly-reflection" class="sticky-note blue tape">
+                <h3 class="widget-title highlight-on-parent-hover">
+                  Weekly Reaction
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
+
     <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>

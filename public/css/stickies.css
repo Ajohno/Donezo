@@ -1,216 +1,309 @@
-/* =========================================================
-   stickies.css
-   - ONLY sticky note / tape / thumbtack / corkboard textures
-   - Load AFTER base.css so these styles win
-   ========================================================= */
 
-/* =========================================================
-   CORKBOARD TEXTURE (BACKGROUND)
-   - Applied to the auth page wrapper (.cork-page)
-   ========================================================= */
-.cork-page {
-    background-color: #d9b9a1; /* Cork base */
+/* ============================================================
+   CORKBOARD BACKGROUND
+   Creates a corkboard texture using layered gradients
+   ============================================================ */
+.corkboard {
+    height: 70vh;
+    width: 80vw;
+    justify-self: center;
+    padding: 2%;
+
+    /* Base cork color */
+    background-color: #cfa36a;
+
+    /* Cork texture layers */
     background-image:
-        /* large soft lighting blobs */
-        radial-gradient(1200px 900px at 25% 10%, rgba(255,255,255,.18), transparent 55%),
-        radial-gradient(900px 700px at 80% 70%, rgba(0,0,0,.10), transparent 60%),
-
-        /* repeating speckle (cork grain) */
-        radial-gradient(circle at 20% 30%, rgba(0,0,0,.06) 0 1px, transparent 2px) 0 0/18px 18px,
-        radial-gradient(circle at 70% 60%, rgba(255,255,255,.07) 0 1px, transparent 2px) 0 0/22px 22px,
-
-        /* base cork gradient */
-        linear-gradient(160deg, #d8b39a, #c89f86 55%, #b9876c);
-}
-
-/* =========================================================
-   PAPER DEPTH + CANVAS TEXTURE OVERLAY
-   - Adds subtle inner shadow (paper edge depth)
-   - Adds crosshatch + grain (canvas feel)
-   - Requires .paper { overflow:hidden; position:relative; } in base.css
-   ========================================================= */
-
-/* Inner shadow (paper edge depth) */
-.paper::before {
-    /* Thumbtack dot (decorative) */
-    content: "";
-    position: absolute;
-    top: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    width: 18px;
-    height: 18px;
-
-    /* tack head gradient */
-    background: radial-gradient(circle at 30% 30%, #e87a72 0 35%, #c65a53 40% 60%, #8d3f3a 65% 100%);
-    border-radius: 50%;
-
-    /* tack shadow */
-    box-shadow:
-        0 3px 4px rgba(0,0,0,0.22),
-        0 10px 26px rgba(0,0,0,0.1);
-}
-
-/* Canvas texture + paper grain overlay */
-.paper::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-
-    /* Overall strength of the overlay */
-    opacity: 0.22;
-
-    /* Blend so texture feels “printed into” the paper */
-    mix-blend-mode: multiply;
-
-    background:
-        /* crosshatch lines */
-        repeating-linear-gradient( 45deg, rgba(0,0,0,.08) 0 1px, transparent 1px 6px),
-        repeating-linear-gradient(-45deg, rgba(255,255,255,.10) 0 1px, transparent 1px 7px),
-
-        /* grain dots */
-        radial-gradient(circle, rgba(0,0,0,0.045) 1px, transparent 0);
-
-    /* dot grain size */
-    background-size: auto, auto, 9px 9px;
-}
-
-/* Optional: more organic noise layer for paper (toggle via data-noise attr) */
-.paper[data-noise="true"]::after{
-    opacity: .26;
-
-    /* SVG turbulence noise + crosshatch + dots */
-    background:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E"),
-        repeating-linear-gradient( 45deg, rgba(0,0,0,.07) 0 1px, transparent 1px 6px),
-        repeating-linear-gradient(-45deg, rgba(255,255,255,.10) 0 1px, transparent 1px 7px),
-        radial-gradient(circle, rgba(0,0,0,0.045) 1px, transparent 0);
-
-    /* noise tile size + grain size */
-    background-size: 220px 220px, auto, auto, 9px 9px;
-    background-repeat: repeat;
-}
-
-/* =========================================================
-   OPTIONAL STICKY NOTE COMPONENT
-   - Add: <aside class="sticky-note">...</aside> inside .paper
-   ========================================================= */
-.sticky-note{
-    position: absolute;
-    right: -24px;                 /* Slightly off the paper edge for “pinned” look */
-    bottom: -32px;
-    width: 190px;
-    padding: 14px 14px 18px;
-    border-radius: 12px;
-
-    /* note color + subtle shading */
-    background:
-        radial-gradient(circle at 25% 20%, rgba(255,255,255,.45), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,0)),
-        #f7eaaa;
-
-    border: 2px solid #e0cf7b;
-    box-shadow: 0 16px 28px rgba(0,0,0,.22);
-    transform: rotate(2.2deg);
-    z-index: 3;
-}
-
-/* Peeled corner for sticky note */
-.sticky-note::after{
-    content:"";
-    position:absolute;
-    right: -2px;
-    bottom: -2px;
-    width: 56px;
-    height: 56px;
-
-    background:
-        radial-gradient(circle at 0% 100%, rgba(0,0,0,.18), transparent 60%),
-        linear-gradient(135deg, rgba(255,255,255,.25), rgba(0,0,0,.08)),
-        #eadb90;
-
-    border-left: 2px solid rgba(130,110,60,.25);
-    border-top: 2px solid rgba(130,110,60,.25);
-    border-bottom-right-radius: 12px;
-
-    clip-path: polygon(0 100%, 100% 100%, 100% 0);
-    transform: rotate(-6deg);
-}
-
-/* =========================================================
-   OPTIONAL TAPE STRIPS
-   - Add: <span class="tape tape--tl"></span> inside .paper
-   - Add: <span class="tape tape--br"></span> inside .paper
-   ========================================================= */
-.tape{
-    position: absolute;
-    width: 210px;
-    height: 70px;
-
-    /* translucent tape gradient */
-    background:
-        linear-gradient(to bottom,
-        rgba(255,255,255,.28),
-        rgba(240,232,220,.65) 35%,
-        rgba(0,0,0,.06)
-        );
-
-    border: 1px solid rgba(120, 100, 90, .20);
-    border-radius: 10px;
-
-    /* slightly muted saturation to feel “plastic” */
-    filter: saturate(0.95);
-
-    /* tape shadow */
-    box-shadow: 0 10px 18px rgba(0,0,0,.22);
-    z-index: 4;
-}
-
-/* Tape “fibers” / streaks */
-.tape::before{
-    content:"";
-    position:absolute;
-    inset: 2px;
-    border-radius: 8px;
-    background:
+        radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%),
+        radial-gradient(circle at 75% 65%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 45%),
         repeating-linear-gradient(
-        90deg,
-        rgba(255,255,255,.35) 0 2px,
-        rgba(255,255,255,0) 2px 8px
+        45deg,
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.04) 2px,
+        rgba(0,0,0,0.04) 4px,
+        rgba(0,0,0,0.04) 6px
         );
-    opacity: .35;
+
+    background-size: cover;
+    background-blend-mode: multiply;
+
+    /* Frame */
+    border: 6px solid #000;
+    border-radius: 6px;
 }
 
-/* Tape position: top-left */
-.tape--tl{
-    top: -26px;
-    left: -30px;
-    transform: rotate(-11deg);
+
+.three-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 5%;
+  height: 80%;
+
 }
 
-/* Tape position: bottom-right */
-.tape--br{
-    bottom: -26px;
-    right: -28px;
-    transform: rotate(12deg);
+
+
+
+/* ============================================================
+   STICKY NOTE BASE
+   Core styling shared by all sticky notes
+   ============================================================ */
+.sticky-note {
+  position: relative;
+
+  /* Color controlled via CSS variable for easy theming */
+  background: var(--note-color, #fff3a4);
+
+  padding: 1rem;
+  width: 100%;
+
+  font-family: "Comic Sans MS", "Segoe UI", sans-serif;
+  color: #333;
+
+  /* Depth + paper feel */
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.25),
+    inset 0 -12px 16px rgba(0,0,0,0.08);
+
+  /* Slight imperfection */
+  transform: rotate(-1.5deg);
+  border-radius: 2px;
 }
 
-/* =========================================================
-   RESPONSIVE: keep stickies from going too far off-screen
-   ========================================================= */
-@media (max-width: 520px){
-    .sticky-note{
-        transform: rotate(1deg);
-        right: -12px;
-        bottom: -22px;
-        width: 170px;
-    }
+/* ============================================================
+   COLOR VARIANTS
+   Modifier classes that change note color
+   ============================================================ */
+.sticky-note.yellow {
+  --note-color: #fff3a4;
+}
 
-    .tape{
-        width: 170px;
-        height: 58px;
-    }
+.sticky-note.blue {
+  --note-color: #cce5ff;
+}
+
+.sticky-note.green {
+  --note-color: #d4f5c6;
+}
+
+.sticky-note.pink {
+  --note-color: #ffd1dc;
+}
+
+.sticky-note.orange {
+  --note-color: #ffd9b3;
+}
+
+.sticky-note.purple {
+  --note-color: #e3d7ff;
+}
+
+/* ============================================================
+   THUMBTACK MODIFIER
+   Adds a pushpin when .thumbtack is present
+   ============================================================ */
+
+/* Tack head */
+.sticky-note.thumbtack::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 14px;
+  height: 14px;
+
+  background: radial-gradient(circle at 30% 30%, #ff6b6b, #a40000);
+  border-radius: 50%;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Tack needle */
+.sticky-note.thumbtack::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 2px;
+  height: 12px;
+
+  background: #555;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+}
+
+/* Thumbtack comes off when note is hovered */
+.sticky-note.thumbtack:hover::before {
+  transform: translateX(-50%) translateY(-18px) rotate(-10deg);
+  opacity: 0;
+}
+
+.sticky-note.thumbtack:hover::after {
+  transform: translateX(-50%) translateY(-18px);
+  opacity: 0;
+}
+
+/* Smooth animation */
+.sticky-note.thumbtack::before,
+.sticky-note.thumbtack::after {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+
+/* ============================================================
+   RANDOM ROTATION
+   Prevents uniform alignment for organic feel
+   ============================================================ */
+.sticky-note:nth-child(3n) {
+  transform: rotate(1.5deg);
+}
+
+.sticky-note:nth-child(3n + 1) {
+  transform: rotate(-2deg);
+}
+
+.sticky-note:nth-child(3n + 2) {
+  transform: rotate(0.5deg);
+}
+
+
+/* ============================================================
+   HOVER INTERACTION
+   Raises note to feel touchable
+   ============================================================ */
+.sticky-note:hover {
+  transform: translateY(-4px) scale(1.02);
+
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.3),
+    inset 0 -12px 16px rgba(0,0,0,0.08);
+}
+
+
+
+
+
+/* ============================================================
+   SINGLE TAPE MODIFIER
+   Adds one centered tape strip at the top
+   ============================================================ */
+
+/* Tape base */
+.sticky-note.tape::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+
+  width: 64px;
+  height: 18px;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.15),
+      rgba(255,255,255,0.15) 2px,
+      rgba(0,0,0,0.05) 4px
+    ),
+    #e6d6a8;
+
+  border-radius: 3px;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+
+/* Tape highlight overlay */
+.sticky-note.tape::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+
+  width: 64px;
+  height: 18px;
+
+  background: rgba(255,255,255,0.25);
+  mix-blend-mode: overlay;
+
+  pointer-events: none;
+}
+
+/* Tape comes off when note is hovered */
+.sticky-note.tape:hover::before,
+.sticky-note.tape:hover::after {
+  transform: translateX(-50%) translateY(-18px) rotate(10deg);
+  opacity: 0;
+}
+
+/* Smooth animation */
+.sticky-note.tape::before,
+.sticky-note.tape::after {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+
+
+/* ============================================================
+   DOUBLE TAPE MODIFIER
+   Adds two tape strips (top-left and top-right)
+   ============================================================ */
+
+/* Shared tape styling */
+.sticky-note.double-tape::before,
+.sticky-note.double-tape::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+
+  width: 56px;
+  height: 18px;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.18) 2px,
+      rgba(0,0,0,0.06) 4px
+    ),
+    #e6d6a8;
+
+  border-radius: 3px;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+
+/* Left tape strip */
+.sticky-note.double-tape::before {
+  left: 10px;
+  transform: rotate(-4deg);
+}
+
+/* Right tape strip */
+.sticky-note.double-tape::after {
+  right: 10px;
+  transform: rotate(5deg);
+}
+
+/* Double tape comes off when note is hovered */
+.sticky-note.double-tape:hover::before {
+  transform: translateY(-18px) rotate(-15deg);
+  opacity: 0;
+}
+
+.sticky-note.double-tape:hover::after {
+  transform: translateY(-18px) rotate(15deg);
+  opacity: 0;
+}
+
+/* Smooth animation */
+.sticky-note.double-tape::before,
+.sticky-note.double-tape::after {
+  transition: transform 220ms ease, opacity 220ms ease;
 }
