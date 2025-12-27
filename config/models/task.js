@@ -1,15 +1,23 @@
 const mongoose = require("mongoose");
 
 // Define Task Schema
-const TaskSchema = new mongoose.Schema({
-    user: { 
-        type: mongoose.Schema.Types.ObjectId, // Link each task to a user
-        ref: "User", // Reference the "User" model
-        required: true // Make sure every task has an associated user
-    },
-    taskDescription: { type: String, required: true }, // The actual task
-    taskDate: { type: String, required: true } // The due date
-});
+const TaskSchema = new mongoose.Schema(
+  {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 
-// Export the model so it can be used elsewhere in the project
+    title: { type: String, trim: true, default: "" },
+    description: { type: String, required: true, trim: true },
+
+    dueDate: { type: Date, required: true },
+
+    effortLevel: { type: Number, min: 1, max: 5, default: 3 },
+
+    status: { type: String, enum: ["active", "completed"], default: "active" },
+    completedAt: { type: Date, default: null },
+
+    isBigThree: { type: Boolean, default: false },
+  },
+  { timestamps: true }
+);
+
 module.exports = mongoose.model("Task", TaskSchema);

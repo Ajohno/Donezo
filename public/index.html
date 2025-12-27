@@ -3,8 +3,15 @@
   <head>
     <title>Donezo</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="js/main.js"></script>
+    <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+
+    <!-- iOS home screen icon -->
+    <link rel="apple-touch-icon" href="donezo-logo.png" />
+
     <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/stickies.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -14,6 +21,10 @@
 
     <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
   </head>
   <body>
@@ -21,189 +32,200 @@
       <h1>Donezo</h1>
     </header>
 
-    <section id="auth-section" class="auth-panel">
-      <div class="auth-card">
-        <div class="auth-pane auth-pane--login">
-          <h2>Back to Work</h2>
-          <form id="loginForm">
-            <label for="loginUsername">Username:</label>
-            <input
-              type="text"
-              id="loginUsername"
-              class="auth-input login-input"
-              placeholder="Enter username"
-              required
-            />
-            <label for="loginPassword">Password:</label>
-            <input
-              type="password"
-              id="loginPassword"
-              class="auth-input login-input"
-              placeholder="Enter password"
-              required
-            />
-            <button class="auth-button auth-button--light" type="submit">
-              Sign In
-            </button>
-          </form>
+    <section id="auth-section">
+      <div class="paper-header">
+        <h2>Welcome to Donezo!</h2>
+        <p style="justify-self: center; width: 30%">
+          A gentle place to focus, one task at a time. No pressure. No guilt.
+          Just progress.
+        </p>
+      </div>
+      <div
+        style="display: flex; justify-content: center; gap: 10%; margin-top: 4%"
+      >
+        <!-- Login auth section -->
+        <div style="width: 20vw; height: 35vh" class="sticky-note thumbtack">
+          <div class="paper-header">
+            <h3 style="justify-self: center; width: 10vw">
+              Already have
+              <span style="text-decoration: underline">an account?</span>
+            </h3>
+            <p>Welcome back - your board is waiting.</p>
+            <a class="paper-button" href="/login.html">Log In</a>
+          </div>
         </div>
-        <div class="auth-pane auth-pane--register">
-          <h2>Register</h2>
-          <form id="registerForm">
-            <label for="registerUsername">Username:</label>
-            <input
-              type="text"
-              id="registerUsername"
-              class="auth-input register-input"
-              placeholder="Enter username"
-              required
-            />
-            <label for="registerPassword">Password:</label>
-            <input
-              type="password"
-              id="registerPassword"
-              class="auth-input register-input"
-              placeholder="Enter password"
-              required
-            />
-            <button class="auth-button" type="submit">Register</button>
-          </form>
+        <!-- Register auth section -->
+        <div style="width: 20vw; height: 35vh" class="sticky-note thumbtack">
+          <div class="paper-header">
+            <h3 style="text-decoration: underline">New here?</h3>
+            <p>Let's set up your board together.</p>
+            <a class="paper-button" href="/register.html">Create Account</a>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- Hidden until login -->
-    <section id="main-section" class="hidden">
-      <div class="dashboard-header">
-        <section class="widget-background status-card">
-          <article>
-            <!-- Display user status -->
-            <h3 id="authStatus">Not logged in</h3>
-          </article>
+    <div class="hidden" id="main-section">
+      <nav id="main-menu">
+        <!-- Logo/Site Name -->
+        <div id="site-logo">
+          <a href="/index.html">
+            <img
+              src="assets/image/donezo-logo.png"
+              alt="Donezo Logo"
+              style="height: 100%; width: auto"
+            />
+          </a>
+        </div>
+        <!-- Nav Links -->
+        <!-- Could be populated by a mongo db table with names and links -->
+        <div id="nav-links">
+          <div>
+            <a href=""> <h3>Calendar</h3></a>
+          </div>
+          <h3>|</h3>
+          <div>
+            <a href=""> <h3>Feedback</h3></a>
+          </div>
+          <h3>|</h3>
+          <div>
+            <a href=""> <h3>Settings</h3></a>
+          </div>
+        </div>
 
-          <article>
-            <!-- Logout Button -->
-            <button
-              id="logoutBtn"
-              class="defaultBtn logout-btn"
-              style="display: none"
-            >
-              Logout
-            </button>
-          </article>
-        </section>
+        <!-- Profile Section -->
+        <div id="profile-section">
+          <!-- Tasks Left -->
+          <div id="task-counter">
+            <h3>
+              Tasks Left: <span><h3 class="item-counter"></h3></span>
+            </h3>
+          </div>
 
-        <!-- Remaining Task Section -->
-        <section class="widget-background tasks-remaining">
-          <!-- Red area with the words -->
-          <article class="rounded-box tasks-remaining__label">
-            <h2>
-              Tasks <br />
-              Left:
-            </h2>
-          </article>
+          <!-- Profile Button -->
+          <div id="profile-button">
+            <h4 id="authStatus"></h4>
+          </div>
 
-          <!-- Area with the number of tasks left -->
-          <article>
-            <h2 class="item-counter">
-              <!-- 9 -->
-            </h2>
-          </article>
-        </section>
-      </div>
+          <!-- Logout Button -->
+          <button id="logoutBtn" class="paper-button">Log Out</button>
+        </div>
+      </nav>
 
-      <!-- Area with the task list on the left and the new task form on the right -->
-      <div
-        style="display: flex; margin-top: 2%; justify-content: center; gap: 2%"
-      >
-        <!-- Task List -->
-        <section
-          class="widget-background scrollable"
-          style="
-            width: 592px;
-            height: 500px;
-            display: flex;
-            flex-direction: row;
-          "
-        >
-          <section style="display: flex; width: 100%">
-            <!-- Red section to check off items -->
-            <article
-              class="rounded-box"
-              style="
-                background-color: #e38884;
-                width: 10%;
-                min-height: 500px;
-                flex-grow: 1;
-                align-content: top;
-                display: flex;
-                flex-direction: column;
-                padding-top: 2%;
-              "
-            >
-              <!-- <button onclick="toggleTask(0)">✖</button>
-              <button></button>
-              <button></button> -->
-            </article>
+      <div class="corkboard">
+        <!-- Dashboard -->
+        <div class="board-grid">
+          <!-- Left Column -->
+          <div>
+            <!-- Task List -->
+            <div id="task-list-widget" class="sticky-note thumbtack task-note">
+              <h2 class="widget-title highlight-on-parent-hover">Task List</h2>
 
-            <!-- Task list -->
-            <div class="task-list">
-              <!-- <div class="task-item done">This is a done task</div>
-              <div class="task-item done">This is a done task</div>
-              <div class="task-item done">This is a done task</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div>
-              <div class="task-item">This task is not done</div> -->
+              <ul class="task-list scrollable"></ul>
+              <template id="task-template">
+                <li class="task-item">
+                  <label class="task-row">
+                    <input type="checkbox" class="task-check" />
+                    <span class="task-text"></span>
+                  </label>
+                  <div class="task-meta">
+                    <span class="task-due"></span>
+                    <span class="task-effort">
+                      <span class="dot"></span><span class="dot"></span>
+                      <span class="dot"></span><span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+              </template>
             </div>
-            <!-- Template for the task list -->
-            <template id="task-template">
-              <!-- Buttons for update and delete -->
-              <!-- <button>x</button> -->
-              <div class="task-item">This task is not done</div>
-            </template>
-          </section>
-        </section>
+          </div>
 
-        <!-- New Task Form -->
-        <section class="widget-background" style="width: 592px">
-          <!-- New Form Header -->
-          <article
-            class="rounded-box"
-            style="background-color: #e38884; width: 100%"
-          >
-            <h2
-              style="justify-self: center; padding-top: 1%; padding-bottom: 1%"
-            >
-              Make a New Task
-            </h2>
-          </article>
+          <!-- Middle Column -->
+          <div>
+            <!-- Create New Task -->
+            <div id="create-task-widget" class="sticky-note blue thumbtack">
+              <h2 class="widget-title highlight-on-parent-hover">New Task</h2>
+              <form id="taskForm" class="paper-form">
+                <div class="paper-field">
+                  <label for="taskDescription">Task</label>
+                  <input
+                    id="taskDescription"
+                    type="text"
+                    name="description"
+                    placeholder="What do you need to do?"
+                    required
+                  />
+                </div>
+                <div class="paper-field">
+                  <label for="dueDate">Due Date</label>
+                  <input id="dueDate" type="date" name="dueDate" required />
+                </div>
+                <div class="paper-field">
+                  <label for="effortLevel">Effort (1-5)</label>
+                  <select id="effortLevel" name="effortLevel" required>
+                    <option value="1">1 - Light</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3 - Medium</option>
+                    <option value="4">4</option>
+                    <option value="5">5 - Heavy</option>
+                  </select>
+                </div>
+                <button id="submitBtn" class="paper-button" type="submit">
+                  Add Task
+                </button>
+              </form>
+            </div>
 
-          <!-- New Task Form -->
-          <form>
-            <!-- Task Description -->
-            <label for="taskDescription">Task Description:</label>
-            <input type="text" id="taskDescription" placeholder="Enter Task" />
+            <!-- Big 3 Tasks -->
+            <div id="big-3-tasks" class="sticky-note pink thumbtack">
+              <h2 class="widget-title highlight-on-parent-hover">
+                Big 3 Tasks
+              </h2>
+            </div>
+          </div>
 
-            <br />
-            <br />
-            <!-- Due Date -->
-            <label for="dueDate">Due Date:</label>
-            <input type="date" id="dueDate" />
+          <!-- Right Column -->
+          <div>
+            <!-- Focus Mode Widget -->
+            <div id="focus-mode-widget" class="sticky-note blue thumbtack">
+              <h3 class="widget-title highlight-on-parent-hover">Focus Mode</h3>
+              <p>
+                Focus on one task at a time!
+              </p>
+                <!-- Timer icon -->
+              </p>
 
-            <br />
+              <div id="focus-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                  <!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path
+                    d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"
+                  />
+                </svg>
+              </div>
+            </div>
 
-            <!-- Form Buttons -->
-            <article style="display: flex; margin-top: 30%">
-              <button id="clearBtn">Clear</button>
-              <button id="submitBtn">Submit</button>
-            </article>
-          </form>
-        </section>
+            <!-- Reflection Notes -->
+            <div id="reflection-section">
+              <!-- Daily Reflection -->
+              <div id="daily-reflection" class="sticky-note blue tape">
+                <h3 class="widget-title highlight-on-parent-hover">
+                  Daily Relfection
+                </h3>
+              </div>
+              <!-- Weekly Reflection -->
+              <div id="weekly-reflection" class="sticky-note blue tape">
+                <h3 class="widget-title highlight-on-parent-hover">
+                  Weekly Reflection
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
+
     <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>

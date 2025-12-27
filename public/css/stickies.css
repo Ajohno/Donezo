@@ -1,0 +1,323 @@
+
+/* ============================================================
+   CORKBOARD BACKGROUND
+   Creates a corkboard texture using layered gradients
+   ============================================================ */
+.corkboard {
+    height: 70vh;
+    width: 80vw;
+    justify-self: center;
+    padding: 2%;
+
+    /* Base cork color */
+    background-color: #cfa36a;
+
+    /* Cork texture layers */
+    background-image:
+        radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%),
+        radial-gradient(circle at 75% 65%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 45%),
+        repeating-linear-gradient(
+        45deg,
+        rgba(255,255,255,0.04),
+        rgba(255,255,255,0.04) 2px,
+        rgba(0,0,0,0.04) 4px,
+        rgba(0,0,0,0.04) 6px
+        );
+
+    background-size: cover;
+    background-blend-mode: multiply;
+
+    /* Frame */
+    border: 6px solid #000;
+    border-radius: 6px;
+}
+
+
+.three-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 5%;
+  height: 80%;
+
+}
+
+
+
+
+/* ============================================================
+   STICKY NOTE BASE
+   Core styling shared by all sticky notes
+   ============================================================ */
+.sticky-note {
+  position: relative;
+  
+
+  /* Color controlled via CSS variable for easy theming */
+  background: var(--note-color, #fff3a4);
+
+  padding: 1rem;
+  width: 100%;
+
+  font-family: "Comic Sans MS", "Segoe UI", sans-serif;
+  color: #333;
+
+  /* Depth + paper feel */
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.25),
+    inset 0 -12px 16px rgba(0,0,0,0.08);
+
+  /* Slight imperfection */
+  transform: rotate(-1.5deg);
+  border-radius: 2px;
+}
+
+/* ============================================================
+   COLOR VARIANTS
+   Modifier classes that change note color
+   ============================================================ */
+.sticky-note.yellow {
+  --note-color: #fff3a4;
+}
+
+.sticky-note.blue {
+  --note-color: #cce5ff;
+}
+
+.sticky-note.green {
+  --note-color: #d4f5c6;
+}
+
+.sticky-note.pink {
+  --note-color: #ffd1dc;
+}
+
+.sticky-note.orange {
+  --note-color: #ffd9b3;
+}
+
+.sticky-note.purple {
+  --note-color: #e3d7ff;
+}
+
+/* ============================================================
+   THUMBTACK MODIFIER
+   Adds a pushpin when .thumbtack is present
+   ============================================================ */
+
+/* Tack head */
+.sticky-note.thumbtack::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 14px;
+  height: 14px;
+
+  background: radial-gradient(circle at 30% 30%, #ff6b6b, #a40000);
+  border-radius: 50%;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* Tack needle */
+.sticky-note.thumbtack::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 2px;
+  height: 12px;
+
+  background: #555;
+  box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+}
+
+/* Thumbtack comes off when note is hovered */
+.sticky-note.thumbtack:hover::before {
+  transform: translateX(-50%) translateY(-18px) rotate(-10deg);
+  opacity: 0;
+}
+
+.sticky-note.thumbtack:hover::after {
+  transform: translateX(-50%) translateY(-18px);
+  opacity: 0;
+}
+
+/* Smooth animation */
+.sticky-note.thumbtack::before,
+.sticky-note.thumbtack::after {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+
+/* ============================================================
+   RANDOM ROTATION
+   Prevents uniform alignment for organic feel
+   ============================================================ */
+.sticky-note:nth-child(3n) {
+  transform: rotate(1.5deg);
+}
+
+.sticky-note:nth-child(3n + 1) {
+  transform: rotate(-2deg);
+}
+
+.sticky-note:nth-child(3n + 2) {
+  transform: rotate(0.5deg);
+}
+
+/* ============================================================
+   STACKING ORDER
+   Bring hovered/focused note above overlapping neighbors
+   ============================================================ */
+.sticky-note {
+  z-index: 1;
+}
+
+.sticky-note:hover,
+.sticky-note:focus-within {
+  z-index: 10;
+}
+
+
+/* ============================================================
+   HOVER INTERACTION
+   Raises note to feel touchable
+   ============================================================ */
+.sticky-note:hover {
+  transform: translateY(-4px) scale(1.02);
+
+  box-shadow:
+    0 10px 20px rgba(0,0,0,0.3),
+    inset 0 -12px 16px rgba(0,0,0,0.08);
+}
+
+
+
+
+
+/* ============================================================
+   SINGLE TAPE MODIFIER
+   Adds one centered tape strip at the top
+   ============================================================ */
+
+/* Tape base */
+.sticky-note.tape::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+
+  width: 64px;
+  height: 18px;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.15),
+      rgba(255,255,255,0.15) 2px,
+      rgba(0,0,0,0.05) 4px
+    ),
+    #e6d6a8;
+
+  border-radius: 3px;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+
+/* Tape highlight overlay */
+.sticky-note.tape::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+
+  width: 64px;
+  height: 18px;
+
+  background: rgba(255,255,255,0.25);
+  mix-blend-mode: overlay;
+
+  pointer-events: none;
+}
+
+/* Tape comes off when note is hovered */
+.sticky-note.tape:hover::before,
+.sticky-note.tape:hover::after {
+  transform: translateX(-50%) translateY(-18px) rotate(10deg);
+  opacity: 0;
+}
+
+/* Smooth animation */
+.sticky-note.tape::before,
+.sticky-note.tape::after {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+
+
+/* ============================================================
+   DOUBLE TAPE MODIFIER
+   Adds two tape strips (top-left and top-right)
+   ============================================================ */
+
+/* Shared tape styling */
+.sticky-note.double-tape::before,
+.sticky-note.double-tape::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+
+  width: 56px;
+  height: 18px;
+
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.18),
+      rgba(255,255,255,0.18) 2px,
+      rgba(0,0,0,0.06) 4px
+    ),
+    #e6d6a8;
+
+  border-radius: 3px;
+
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+
+/* Left tape strip */
+.sticky-note.double-tape::before {
+  left: 10px;
+  transform: rotate(-4deg);
+}
+
+/* Right tape strip */
+.sticky-note.double-tape::after {
+  right: 10px;
+  transform: rotate(5deg);
+}
+
+/* Double tape comes off when note is hovered */
+.sticky-note.double-tape:hover::before {
+  transform: translateY(-18px) rotate(-15deg);
+  opacity: 0;
+}
+
+.sticky-note.double-tape:hover::after {
+  transform: translateY(-18px) rotate(15deg);
+  opacity: 0;
+}
+
+/* Smooth animation */
+.sticky-note.double-tape::before,
+.sticky-note.double-tape::after {
+  transition: transform 220ms ease, opacity 220ms ease;
+}

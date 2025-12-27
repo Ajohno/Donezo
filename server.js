@@ -50,27 +50,40 @@ app.use(express.static("public"));
 
 // Register Route
 app.post("/register", async (req, res) => {
-    const { username, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
-    try {
-        const existingUser = await User.findOne({ username });
-        if (existingUser) {
-            return res.status(400).json({ error: "Username already exists" });
-        }
+  if (!firstName || !lastName || !email || !password) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
 
-        const hashedPassword = await bcrypt.hash(password, 10); // Fixes password hashing
+  const normalizedEmail = email.toLowerCase().trim();
+  const existingUser = await User.findOne({ email: normalizedEmail });
+  if (existingUser) return res.status(400).json({ error: "Email already exists" });
 
-        const newUser = await User.create({ username, password: hashedPassword });
-        res.status(201).json({ message: "User registered successfully" });
-    } catch (err) {
-        res.status(500).json({ error: "Server error during registration" });
-    }
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  await User.create({ firstName: firstName.trim(), lastName: lastName.trim(), email: normalizedEmail, passwordHash });
+
+  return res.status(201).json({ message: "User registered successfully" });
 });
+
 
 // Login Route
-app.post("/login", passport.authenticate("local"), (req, res) => {
-    res.json({ message: "Logged in successfully", user: req.user });
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (!user) return res.status(401).json({ error: info?.message || "Login failed" });
+
+    req.logIn(user, (loginErr) => {
+      if (loginErr) return next(loginErr);
+
+      return res.json({
+        message: "Logged in successfully",
+        user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+      });
+    });
+  })(req, res, next);
 });
+
 
 // Logout Route
 app.get("/logout", (req, res) => {
@@ -90,28 +103,27 @@ app.get("/", (req, res) => {
 
 
 // Handles the submit button
-app.post("/submit", ensureAuthenticated, async (req, res) => {
-    try {
-        const newTask = new Task({
-            user: req.user.id,
-            taskDescription: req.body.taskDescription,
-            taskDate: req.body.taskDate
-        });
+app.post("/tasks", ensureAuthenticated, async (req, res) => {
+  const { description, dueDate, effortLevel } = req.body;
+  const parsedDueDate = new Date(dueDate);
 
-        await newTask.save();
+  await Task.create({
+    userId: req.user.id,
+    description: description.trim(),
+    dueDate: parsedDueDate,
+    effortLevel: parseInt(effortLevel, 10) || 3,
+    status: "active",
+  });
 
-        const userTasks = await Task.find({ user: req.user.id });
-        res.status(200).json(userTasks);
-    } catch (err) {
-        console.error("Error Saving Task:", err);
-        res.status(500).json({ error: "Server error while saving task" });
-    }
+  const userTasks = await Task.find({ userId: req.user.id });
+  return res.json(userTasks);
 });
+
 
 // Gets tasks for the logged-in user
 app.get("/tasks", ensureAuthenticated, async (req, res) => {
     try {
-        const userTasks = await Task.find({ user: req.user.id });
+        const userTasks = await Task.find({ userId: req.user.id });
         res.status(200).json(userTasks);
     } catch (err) {
         console.error("Error Fetching Tasks:", err);
@@ -121,59 +133,36 @@ app.get("/tasks", ensureAuthenticated, async (req, res) => {
 
 // Route to update tasks in the MongoDB database
 app.put("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
-    const { taskId } = req.params;
-    const { taskDescription } = req.body;
+  const task = await Task.findOne({ _id: req.params.taskId, userId: req.user.id });
+  if (!task) return res.status(404).json({ error: "Task not found" });
 
-    try {
-        const task = await Task.findOne({ _id: taskId, user: req.user.id });
+  // allow updates
+  if (req.body.description) task.description = req.body.description.trim();
+  if (req.body.status) task.status = req.body.status;
 
-        if (!task) {
-            return res.status(404).json({ error: "Task not found" });
-        }
-
-        task.taskDescription = taskDescription;
-        await task.save();
-
-        res.status(200).json(task);
-    } catch (err) {
-        console.error("Error Updating Task:", err);
-        res.status(500).json({ error: "Server error while updating task" });
-    }
+  await task.save();
+  return res.json(task);
 });
 
-//Route for deleting tasks
-app.delete("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
-    const { taskId } = req.params;
 
-    try {
-        const task = await Task.findOneAndDelete({ _id: taskId, user: req.user.id });
 
-        if (!task) {
-            return res.status(404).json({ error: "Task not found" });
-        }
-
-        res.status(200).json({ message: "Task deleted successfully" });
-    } catch (err) {
-        console.error("Error Deleting Task:", err);
-        res.status(500).json({ error: "Server error while deleting task" });
-    }
-});
 
 
 // Route to check user authentication status
 app.get("/auth-status", (req, res) => {
-    console.log("Checking authentication status...");
-    console.log("Session data:", req.session);
-    console.log("User data:", req.user);
+  if (!req.isAuthenticated()) return res.json({ loggedIn: false });
 
-    if (req.isAuthenticated()) {
-        console.log("User is authenticated:", req.user);
-        res.json({ loggedIn: true, user: { username: req.user.username } });
-    } else {
-        console.log("User is NOT authenticated");
-        res.json({ loggedIn: false });
-    }
+  return res.json({
+    loggedIn: true,
+    user: {
+      id: req.user._id,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      email: req.user.email,
+    },
+  });
 });
+
 
 // Serve other static files dynamically
 app.get("/:file", (req, res) => {

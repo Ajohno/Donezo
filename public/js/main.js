@@ -1,62 +1,84 @@
-// Ensure JavaScript runs only after the DOM is fully loaded
+// Auth and tasks behavior for Donezo
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Fully Loaded - JavaScript Running");
 
-    // Function for registering a new user
+    // Page flags let us adjust behavior for standalone login/register views
+    const isLoginPage = document.body.classList.contains("login-page");
+    const isRegisterPage = document.body.classList.contains("register-page");
+
+    // Registration handler (used on register.html)
     const registerForm = document.getElementById("registerForm");
     if (registerForm) {
         registerForm.addEventListener("submit", async (event) => {
             event.preventDefault();
-    
-            // Get username and password 
-            const username = document.getElementById("registerUsername").value;
+
+            const firstName = document.getElementById("registerFirstName")?.value.trim();
+            const lastName = document.getElementById("registerLastName")?.value.trim();
+            const email = document.getElementById("registerEmail")?.value.trim();
             const password = document.getElementById("registerPassword").value;
-    
+            const confirmPassword = document.getElementById("registerConfirm").value;
+
+            if (!firstName || !lastName || !email) {
+            alert("Please fill in first name, last name, and email.");
+            return;
+            }
+
+
+            // Simple client-side guard to match the confirm password box
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+           
+
             const response = await fetch("/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ firstName, lastName, email, password })
             });
-    
+
             const data = await response.json();
-    
+
             // Check if registration went alright
             if (response.ok) {
                 alert("Registration successful! Please log in.");
+                window.location.href = "/login.html";
             } else {
                 alert("Registration failed: " + data.error);
             }
         });
     }
 
-    // Function to log in a user
+    // Login handler (used on login.html)
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
-        document.getElementById("loginForm").addEventListener("submit", async (event) => {
+        loginForm.addEventListener("submit", async (event) => {
             event.preventDefault();
         
-            const username = document.getElementById("loginUsername").value;
+            const email = document.getElementById("loginEmail").value.trim();
             const password = document.getElementById("loginPassword").value;
-        
+
+
             const response = await fetch("/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ email, password })
             });
         
             const data = await response.json();
         
             if (response.ok) {
-                alert("✅ Login successful!");
-                checkAuthStatus(); // Refresh UI
-                fetchTasks(); //Show tasks immediately after login
+                alert("Login successful!");
+                // Auth pages should move you to the dashboard once logged in
+                window.location.href = "/";
             } else {
-                alert("❌ Login failed: " + data.error);
+                alert("Login failed: " + data.error);
             }
         });
     }
 
-    // Function to log out a user
+    // Function to log out a user (dashboard only)
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
@@ -67,9 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Task Submission Form
-    const submitBtn = document.getElementById("submitBtn");
-    if (submitBtn) {
-        submitBtn.onclick = submit;
+    // const submitBtn = document.getElementById("submitBtn");
+    // if (submitBtn) {
+    //     submitBtn.onclick = submit;
+    // }
+    const taskForm = document.getElementById("taskForm");
+    if (taskForm) {
+        taskForm.addEventListener("submit", submit);
     }
 
     checkAuthStatus(); // Check authentication status on page load
@@ -86,17 +112,48 @@ async function checkAuthStatus() {
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (data.loggedIn) {
-        authStatus.textContent = `Logged in as: ${data.user.username}`;
-        authSection?.classList.add("hidden"); // Hide login/register section
+        // Keep login/register pages from showing when already authenticated
+        if (document.body.classList.contains("login-page") || document.body.classList.contains("register-page")) {
+            window.location.href = "/";
+            return;
+        }
+
+        if (authStatus) {
+            //Choose randomly from a set of welcome back messages
+            const messages = [
+                "Ready when you are",
+                "Time to tackle your tasks",
+                "Ready to be productive",
+                "Your tasks await",
+                "Let's make today productive"
+            ];
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            const welcomeMessage = messages[randomIndex];
+            authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
+
+        }
+        authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
         mainSection?.classList.remove("hidden"); // Show main task page
-        logoutBtn.style.display = "block";
-        fetchTasks(); // Automatically load tasks if user is logged in
+        if (logoutBtn) {
+            logoutBtn.style.display = "block";
+        }
+        if (mainSection) {
+            fetchTasks(); // Automatically load tasks if user is logged in
+        }
     } else {
-        authStatus.textContent = "Not logged in";
-        authSection?.classList.remove("hidden"); // Show login/register section
+        // Only toggle dashboard sections if they are present on the page
+        if (authStatus) {
+            authStatus.textContent = "Not logged in";
+        }
+        authSection?.classList.remove("hidden"); // Show login/register CTA
         mainSection?.classList.add("hidden"); // Hide main task page
-        logoutBtn.style.display = "none";
-        document.querySelector(".task-list").innerHTML = ""; // Clear tasks when logged out
+        if (logoutBtn) {
+            logoutBtn.style.display = "none";
+        }
+        const taskList = document.querySelector(".task-list");
+        if (taskList) {
+            taskList.innerHTML = ""; // Clear tasks when logged out
+        }
     }
 }
 
@@ -120,15 +177,23 @@ const submit = async function(event) {
 
     const taskInput = document.querySelector("#taskDescription");
     const dateInput = document.querySelector("#dueDate");
+    const effortInput = document.querySelector("#effortLevel");
 
     // Create JSON object with form data
     const json = {
-        taskDescription: taskInput.value,
-        taskDate: dateInput.value
+    description: taskInput.value.trim(),
+    dueDate: dateInput.value,     // "YYYY-MM-DD"
+    effortLevel: effortInput ? parseInt(effortInput.value, 10) : 3
     };
 
+    if (!json.description || !json.dueDate) {
+    alert("Please enter a task and a due date.");
+    return;
+    }
+
+
     // Send task data to the server
-    const response = await fetch("/submit", {
+    const response = await fetch("/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(json)
@@ -152,14 +217,31 @@ const submit = async function(event) {
 // Function to update the UI with fetched tasks
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
-    listOfTasks.innerHTML = ""; // Clear existing task list
-
     const taskTemplate = document.querySelector("#task-template");
+
+    if (!listOfTasks) {
+        return; // Avoid errors on pages without the dashboard
+    }
+    if (!taskTemplate) {
+        console.error("Task template not found in DOM");
+        return;
+    }
+
+    listOfTasks.innerHTML = ""; // Clear existing task list
 
     tasks.forEach((task) => {
         const clone = taskTemplate.content.cloneNode(true);
         const taskItem = clone.querySelector(".task-item");
-        taskItem.innerHTML = task.taskDescription;
+        const taskText = clone.querySelector(".task-text");
+        const dueText = clone.querySelector(".task-due");
+
+        if (taskItem && taskText) {
+            taskText.textContent = task.description;
+        }
+        if (dueText && task.dueDate) {
+            const date = new Date(task.dueDate);
+            dueText.textContent = `Due: ${date.toLocaleDateString()}`;
+        }
 
         // Create an Edit button
         const editButton = document.createElement("button");
@@ -168,7 +250,7 @@ function updateTaskList(tasks) {
 
         // Add event listener for editing a task
         editButton.addEventListener("click", async () => {
-            const newDescription = prompt("Edit task description:", task.taskDescription);
+            const newDescription = prompt("Edit task description:", task.description);
             if (newDescription !== null && newDescription.trim() !== "") {
                 console.log("New Description:", newDescription);
         
@@ -176,14 +258,15 @@ function updateTaskList(tasks) {
                 const updateResponse = await fetch(`/tasks/${task._id}`, {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ taskDescription: newDescription })
+                    body: JSON.stringify({ description: newDescription })
+
                 });
         
                 if (updateResponse.ok) {
-                    console.log("✅ Task updated successfully");
+                    console.log("Task updated successfully");
                     fetchTasks(); // Automatically reload the task list after editing
                 } else {
-                    console.error("❌ Error updating task");
+                    console.error("Error updating task");
                 }
             }
         });
@@ -202,10 +285,10 @@ function updateTaskList(tasks) {
                 });
 
                 if (deleteResponse.ok) {
-                    console.log("🗑️ Task deleted successfully");
+                    console.log("Task deleted successfully");
                     fetchTasks(); // Refresh task list after deletion
                 } else {
-                    console.error("❌ Error deleting task");
+                    console.error("Error deleting task");
                 }
             }
         });
@@ -220,6 +303,34 @@ function updateTaskList(tasks) {
     });
 
     // Update the task counter
-    document.querySelector(".item-counter").innerHTML = tasks.length.toString();
+    const counter = document.querySelector(".item-counter");
+    if (counter) {
+        const activeCount = tasks.filter(t => t.status === "active").length;
+        counter.textContent = activeCount.toString();
+
+    }
+
+    // If no tasks, show a friendly message
+    if (tasks.length === 0) {
+        listOfTasks.innerHTML = "<p>No tasks found. Add a new task to get started!</p>";
+    }
 }
 
+// Only enable periodic refresh on pages that actually have the dashboard
+const hasDashboard = document.getElementById("main-section");
+
+if (hasDashboard) {
+  const REFRESH_MS = 30000;
+
+  function refreshDashboard() {
+    checkAuthStatus();
+  }
+
+  setInterval(refreshDashboard, REFRESH_MS);
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      refreshDashboard();
+    }
+  });
+}
