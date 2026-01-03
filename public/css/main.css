@@ -803,3 +803,137 @@ input:focus {
   width: 100%;
   margin: 0;
 }
+
+
+
+
+/* ----------------------------
+   Responsive Navbar Additions
+----------------------------- */
+
+/* New hooks (keep your existing #main-menu rules) */
+.nav__toggle {
+  display: none;
+  border: 0;
+  background: transparent;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.nav__views { display: flex; gap: 5px; align-items: center; }
+.nav__utils { display: flex; gap: 18px; align-items: center; justify-content: flex-end; }
+
+.nav__viewSelect { display: none; }
+
+/* Drawer */
+.nav__drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: min(320px, 85vw);
+  background: white;
+  padding: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  z-index: 9999;
+}
+
+.nav__drawerItem {
+  display: block;
+  padding: 14px 10px;
+  text-decoration: none;
+  color: black;
+}
+
+.nav__drawerDivider {
+  height: 1px;
+  background: rgba(0,0,0,0.15);
+  margin: 10px 0;
+}
+
+/* Tablet: hide greeting, push Feedback into less prominence */
+@media (max-width: 1023px) {
+  .nav__greeting,
+  .nav__greetingDivider {
+    display: none;
+  }
+}
+
+/* Phone: collapse nav into hamburger + logo + view selector */
+@media (max-width: 767px) {
+  #main-menu {
+    grid-template-columns: auto 1fr auto; /* toggle | spacer | viewSelect */
+    gap: 12px;
+    min-height: 64px;
+  }
+
+  #nav-links {
+    display: none;
+  }
+
+  .nav__toggle { display: inline-flex; align-items: center; justify-content: center; }
+
+  /* Hide desktop clusters */
+  .nav__views { display: none; }
+  .nav__utils { display: none; }
+
+  /* Show view selector */
+  .nav__viewSelect {
+    display: inline-block;
+    width: auto;
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+}
+
+/* Backdrop behind drawer */
+.nav__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 9998;
+}
+
+/* Drawer panel */
+.nav__drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  width: min(320px, 85vw);
+
+  /* Match your app vibe (paper) */
+  background: #c8b099;
+  border-right: 2px solid rgba(0,0,0,0.08);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+
+  padding: 18px 14px;
+  z-index: 9999;
+
+  /* Animation */
+  transform: translateX(-110%);
+  transition: transform 220ms ease;
+}
+
+/* When drawer is open, slide in */
+.nav__drawer.is-open {
+  transform: translateX(0);
+}
+
+.nav__drawerItem {
+  display: block;
+  padding: 14px 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #222;
+}
+
+.nav__drawerItem:active {
+  transform: scale(0.99);
+}
+
+.nav__drawerDivider {
+  height: 1px;
+  background: rgba(0,0,0,0.15);
+  margin: 12px 0;
+}
