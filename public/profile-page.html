@@ -1,0 +1,49 @@
+<nav id="main-menu">
+  <!-- Logo/Site Name -->
+  <div id="site-logo">
+    <a href="/index.html">
+      <h2>Dashboard</h2>
+    </a>
+  </div>
+  <!-- Nav Links -->
+  <!-- Could be populated by a mongo db table with names and links -->
+  <div id="nav-links">
+    <div>
+      <a href="calendar-page.html"> <h3>Calendar</h3></a>
+    </div>
+    <h3>|</h3>
+    <div>
+      <a href="feedback-page.html"> <h3>Feedback</h3></a>
+    </div>
+    <h3>|</h3>
+    <div>
+      <a href="settings-page.html"> <h3>Settings</h3></a>
+    </div>
+  </div>
+
+  <!-- Profile Section -->
+  <div id="profile-section">
+    <!-- Tasks Left -->
+    <div id="task-counter">
+      <h3 style="font-weight: 100">
+        Tasks Left: <span class="item-counter sticky-note thumbtack"></span>
+      </h3>
+    </div>
+
+    <!-- Profile Button -->
+    <div id="profile-button" class="profile-dropdown">
+      <button
+        class="profile-trigger sticky-note double-tape"
+        aria-haspopup="true"
+      >
+        <span id="authStatus"></span>
+        <span class="chevron">▾</span>
+      </button>
+      <div class="profile-menu">
+        <button id="logoutBtn">Log Out</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<button id="logoutBtn">Log Out</button>

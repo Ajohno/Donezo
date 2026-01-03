@@ -321,3 +321,73 @@
 .sticky-note.double-tape::after {
   transition: transform 220ms ease, opacity 220ms ease;
 }
+
+
+/* Hand Drawn Styling */
+
+.account-dropdown {
+    position: relative;
+    font-family: "Itim", serif;
+}
+
+.account-trigger {
+    background: #f7f3b2;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 16px 14px 18px 13px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+}
+
+/* menu */
+.account-menu {
+    position: absolute;
+    top: 120%;
+    right: 0;
+    min-width: 180px;
+    background: #f7f3b2;
+    border-radius: 18px 14px 20px 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    list-style: none;
+    padding: 6px;
+    margin: 0;
+    display: none;
+    z-index: 100;
+}
+
+/* open state */
+.account-dropdown.open .account-menu {
+    display: block;
+}
+
+/* items */
+.account-menu li {
+    padding: 10px;
+    border-radius: 12px 10px 14px 11px;
+    cursor: pointer;
+}
+
+/* hover */
+.account-menu li:hover {
+    background: #d86f67;
+    color: white;
+}
+
+/* divider */
+.account-menu .divider {
+    height: 1px;
+    background: rgba(0,0,0,0.15);
+    margin: 6px 0;
+    pointer-events: none;
+}
+
+/* logout styling */
+.account-menu .logout {
+    color: #b33a35;
+}
+
+.account-menu .logout:hover {
+    background: #b33a35;
+    color: white;
+}
+

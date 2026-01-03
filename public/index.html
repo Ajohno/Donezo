@@ -68,48 +68,50 @@
     <!-- Hidden until login -->
     <div class="hidden" id="main-section">
       <nav id="main-menu">
-        <!-- Logo/Site Name -->
-        <div id="site-logo">
-          <a href="/index.html">
-            <img
-              src="assets/image/donezo-logo.png"
-              alt="Donezo Logo"
-              style="height: 100%; width: auto"
-            />
+        <!-- Dashboard Link -->
+        <div style="display: flex; gap: 5px;">
+          <a href="/index.html" >
+            <h3 >Board</h3>
           </a>
-        </div>
-        <!-- Nav Links -->
-        <!-- Could be populated by a mongo db table with names and links -->
-        <div id="nav-links">
-          <div>
-            <a href=""> <h3>Calendar</h3></a>
-          </div>
           <h3>|</h3>
-          <div>
-            <a href=""> <h3>Feedback</h3></a>
-          </div>
-          <h3>|</h3>
-          <div>
-            <a href=""> <h3>Settings</h3></a>
-          </div>
+          <a href="calendar-page.html"> <h3>Calendar</h3></a>
         </div>
+        
+        
+        
 
-        <!-- Profile Section -->
-        <div id="profile-section">
+        <!-- Secondary Nav Links -->
+        <div id="secondary-links">
+
+          <!-- Feeback and Settings -->
+          <div id="nav-links">
+            <div>
+              <a href="feedback-page.html"> <h4>Feedback</h4></a>
+            </div>
+            <h4>|</h4>
+            <div>
+              <a href="settings-page.html"> <h4>Settings</h4></a>
+            </div>
+          </div>
+          <h4>|</h4>
           <!-- Tasks Left -->
-          <div id="task-counter">
-            <h3>
-              Tasks Left: <span><h3 class="item-counter"></h3></span>
-            </h3>
+          <div id="task-counter" >
+            <h4 >
+              Tasks Left: <span style="font-weight: 100;" class="item-counter sticky-note thumbtack"></span>
+            </h4>
+            
           </div>
 
-          <!-- Profile Button -->
-          <div id="profile-button">
+          <h4>|</h4>
+
+          <!-- Profile Link -->
+          
+          <a href="profile-page.html" >
             <h4 id="authStatus"></h4>
-          </div>
-
-          <!-- Logout Button -->
-          <button id="logoutBtn" class="paper-button">Log Out</button>
+          </a>
+            
+          
+          <!-- <button id="logoutBtn" >Log Out</button> -->
         </div>
       </nav>
 
@@ -161,16 +163,38 @@
                   <label for="dueDate">Due Date</label>
                   <input id="dueDate" type="date" name="dueDate" required />
                 </div>
+                
                 <div class="paper-field">
-                  <label for="effortLevel">Effort (1-5)</label>
-                  <select id="effortLevel" name="effortLevel" required>
-                    <option value="1">1 - Light</option>
-                    <option value="2">2</option>
-                    <option value="3" selected>3 - Medium</option>
-                    <option value="4">4</option>
-                    <option value="5">5 - Heavy</option>
-                  </select>
+                  <label>Effort Level (1 being easy and 5 being heavy)</label>
+
+                  <div class="effort-options" role="radiogroup" aria-label="Effort level">
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="1" required>
+                      1
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="2">
+                      2
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="3" checked>
+                      3
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="4">
+                      4
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="5">
+                      5
+                    </label>
+                  </div>
                 </div>
+
                 <button id="submitBtn" class="paper-button" type="submit">
                   Add Task
                 </button>

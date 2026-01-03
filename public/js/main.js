@@ -120,15 +120,19 @@ async function checkAuthStatus() {
 
         if (authStatus) {
             //Choose randomly from a set of welcome back messages
-            const messages = [
-                "Ready when you are",
-                "Time to tackle your tasks",
-                "Ready to be productive",
-                "Your tasks await",
-                "Let's make today productive"
-            ];
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            const welcomeMessage = messages[randomIndex];
+
+            // const messages = [
+            //     "Ready when you are",
+            //     "Time to tackle your tasks",
+            //     "Ready to be productive",
+            //     "Your tasks await",
+            //     "Let's make today productive"
+            // ];
+            // const randomIndex = Math.floor(Math.random() * messages.length);
+            // const welcomeMessage = messages[randomIndex];
+            // authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
+
+            const welcomeMessage = "Welcome back,";
             authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
 
         }
@@ -334,3 +338,36 @@ if (hasDashboard) {
     }
   });
 }
+
+
+
+
+// /* Account dropdown behavior */
+
+
+const dropdown = document.querySelector('.account-dropdown');
+const trigger = dropdown.querySelector('.account-trigger');
+const logout = dropdown.querySelector('.logout');
+
+trigger.addEventListener('click', () => {
+  dropdown.classList.toggle('open');
+  trigger.setAttribute(
+    'aria-expanded',
+    dropdown.classList.contains('open')
+  );
+});
+
+/* click outside closes */
+document.addEventListener('click', (e) => {
+  if (!dropdown.contains(e.target)) {
+    dropdown.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+});
+
+/* logout action */
+logout.addEventListener('click', () => {
+  // replace with real logout logic
+  console.log('Logging out...');
+  window.location.href = '/logout';
+});
