@@ -8,6 +8,8 @@ const passport = require("passport"); // Middleware for authentication
 const bcrypt = require("bcryptjs"); // Used to hash passwords
 const User = require("./config/models/user"); // User model for the database
 const Task = require("./config/models/task"); // Task model for the database
+const MongoStore = require("connect-mongo").default; // Store sessions in MongoDB
+
 
 require("dotenv").config(); // Loads environment variables
 require("./config/passport-config")(passport); // Configures Passport authentication
@@ -31,11 +33,25 @@ function ensureAuthenticated(req, res, next) {
 }
 
 // Session Handling
+app.set("trust proxy", 1); // important on Vercel / proxies
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || "fallback_secret", // Encryption key
-    resave: false, // Don't save session if nothing has changed
-    saveUninitialized: false // Don't create session until something is stored
+  secret: process.env.SESSION_SECRET || "fallback_secret",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: "sessions",
+    ttl: 14 * 24 * 60 * 60 // 14 days
+  }),
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // https only in prod
+    sameSite: "lax",
+    maxAge: 14 * 24 * 60 * 60 * 1000
+  }
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session()); // Enables persistent login sessions
