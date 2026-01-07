@@ -133,7 +133,7 @@ async function checkAuthStatus() {
             // authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
 
             const welcomeMessage = "Welcome back,";
-            authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
+            authStatus.textContent = `${welcomeMessage} ${data.user.firstName}`;
 
         }
         authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
@@ -222,6 +222,7 @@ const submit = async function(event) {
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
     const taskTemplate = document.querySelector("#task-template");
+    tasks = Array.isArray(tasks) ? tasks : [];
 
     if (!listOfTasks) {
         return; // Avoid errors on pages without the dashboard
@@ -307,16 +308,13 @@ function updateTaskList(tasks) {
     });
 
     // Update the task counter
-    // const counter = document.querySelector(".item-counter");
-    document.querySelectorAll(".item-counter").forEach((counter) => {
-    const activeCount = tasks.filter(t => t.status === "active").length;
-    counter.textContent = activeCount.toString();
-    });
-    if (counter) {
-        const activeCount = tasks.filter(t => t.status === "active").length;
-        counter.textContent = activeCount.toString();
+    document.querySelectorAll(".item-counter").forEach((el) => {
+    const activeCount = Array.isArray(tasks)
+        ? tasks.filter(t => t.status === "active").length
+        : 0;
 
-    }
+    el.textContent = String(activeCount);
+    });
 
     // If no tasks, show a friendly message
     if (tasks.length === 0) {

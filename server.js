@@ -144,6 +144,27 @@ app.put("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
   return res.json(task);
 });
 
+// Route to delete a task
+app.delete("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
+  try {
+    const deleted = await Task.findOneAndDelete({
+      _id: req.params.taskId,
+      userId: req.user.id, // important: only delete your own tasks
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    return res.json({ message: "Task deleted successfully" });
+    fetchTasks(); // Refresh the task list on the client side
+  } catch (err) {
+    console.error("Error deleting task:", err);
+    return res.status(500).json({ error: "Server error while deleting task" });
+  }
+});
+
+
 
 
 
