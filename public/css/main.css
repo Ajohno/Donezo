@@ -4,329 +4,321 @@
    - Core typography, layout, auth UI, dashboard widgets, tasks
    ========================================================= */
 
+
 /* =========================================================
    GLOBAL BASE STYLES
-   - Sets default page background, text color, and font
+   - Page defaults, variables, and safe layout rules
    ========================================================= */
-body {
-    margin: 0;                    /* Remove default browser body margin */
-    background: #F4E6D3;          /* Warm paper-like background color */
-    color: #5B3A34;               /* Default text color (brown) */
-    font-family: "Itim", serif;   /* Playful handwritten font for the app */
+:root{
+  /* Dashboard spacing (used by corkboard + grid) */
+  --board-pad: clamp(12px, 2vw, 22px);
+  --board-gap: clamp(12px, 2vw, 20px);
 }
 
-/* Utility class: force-hide any element (overrides other display rules) */
-.hidden {
-    display: none !important;
+/* Make width math sane across the app */
+*, *::before, *::after{
+  box-sizing: border-box;
 }
+
+/* Global safety net: prevent horizontal scroll */
+html, body{
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body{
+  margin: 0;
+  background: #F4E6D3;
+  color: #5B3A34;
+  font-family: "Itim", serif;
+}
+
+/* Media never exceeds the viewport */
+img, svg, canvas, video{
+  max-width: 100%;
+  height: auto;
+}
+
+/* Utility: force-hide any element (overrides other display rules) */
+.hidden{
+  display: none !important;
+}
+
 
 /* =========================================================
    HEADING STYLES
    - Default heading typography + colors
    ========================================================= */
-h1 {
-    color: #C45D58;               /* Brand red/pink */
-    text-decoration: underline;   /* Underlined title style */
-    font-size: 72px;              /* Large hero heading */
-    margin: 0;                    /* Remove default spacing */
+h1{
+  color: #C45D58;
+  text-decoration: underline;
+  font-size: 72px;
+  margin: 0;
 }
 
-h2 {
-    color:#E26D67;                /* Accent coral */
-    font-size: 40px;
-    padding: 0%;
-    font-family: "Itim", serif;
+h2{
+  color:#E26D67;
+  font-size: 40px;
+  padding: 0;
+  font-family: "Itim", serif;
 }
 
-h3 {
-    color:#E26D67;                /* Accent coral */
-    font-size: 28px;
-    padding: 0%;
-    font-family: "Itim", serif;
+h3{
+  color:#E26D67;
+  font-size: 28px;
+  padding: 0;
+  font-family: "Itim", serif;
 }
+
 
 /* =========================================================
-   HERO HEADER / TOP BANNER
-   - Centered header section with soft shadow
+   HERO HEADER / TOP BANNER (index.html)
    ========================================================= */
-.hero-header {
-    background: #F3E2CD;                       /* Slightly different paper tone */
-    padding: 1% 0%;                             /* Top/bottom spacing */
-    text-align: center;                        /* Center heading text */
-    box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15); /* Soft drop shadow */
+.hero-header{
+  background: #F3E2CD;
+  padding: 1% 0;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15);
 }
-
-
-/* Scroll Bar Styling */
-
-/* width */
-::-webkit-scrollbar {
-    width: 14px;
-}
-
-/* track */
-::-webkit-scrollbar-track {
-    background: #e6d8b8;
-    border-radius: 12px;
-}
-
-/* thumb (the draggable part) */
-::-webkit-scrollbar-thumb {
-    background: #c76a63;
-    border-radius: 16px 12px 18px 14px;
-    border: 3px solid #e6d8b8;
-    box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
-}
-
-/* hover */
-::-webkit-scrollbar-thumb:hover {
-    background: #b85a54;
-}
-
-::-webkit-scrollbar-thumb {
-    background-image:
-        repeating-linear-gradient(
-            45deg,
-            rgba(255,255,255,0.08),
-            rgba(255,255,255,0.08) 2px,
-            transparent 2px,
-            transparent 4px
-        );
-}
-
-::-webkit-scrollbar-thumb {
-    transform: rotate(-0.3deg);
-}
-
-
-
-
-
 
 
 /* =========================================================
-   STANDALONE AUTH PAGE STRUCTURE (BASE)
+   GLOBAL SCROLLBAR (Webkit)
+   ========================================================= */
+::-webkit-scrollbar{
+  width: 14px;
+}
+
+::-webkit-scrollbar-track{
+  background: #e6d8b8;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #c76a63;
+  border-radius: 16px 12px 18px 14px;
+  border: 3px solid #e6d8b8;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.08) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: #b85a54;
+}
+
+
+/* =========================================================
+   STANDALONE AUTH PAGE STRUCTURE (login/register)
    - IMPORTANT: cork textures + thumbtacks/tape go in stickies.css
    ========================================================= */
-.cork-page {
-    min-height: 80vh;             /* Full viewport height */
-    display: flex;                 /* Center the paper card */
-    align-items: center;
-    justify-content: center;
-    padding: 32px 12px;            /* Breathing room on small screens */
-    color: #6b4b3f;
+.cork-page{
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 12px;
+  color: #6b4b3f;
 }
 
-
-
-
-
 /* Content wrapper sits above overlays */
-.paper-content {
-    position: relative;
-    z-index: 1;                    /* Keep text above any ::after overlays */
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
+.paper-content{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 /* Brand header area inside paper */
-.paper-header {
-    text-align: center;
+.paper-header{
+  text-align: center;
 }
 
-.paper-header h1 {
-    font-size: 52px;
-    color: #c6534e;
-    text-decoration: underline;
-    margin: 10px 0 0;
+.paper-header h1{
+  font-size: 52px;
+  color: #c6534e;
+  text-decoration: underline;
+  margin: 10px 0 0;
 }
 
-.paper-header p {
-    margin: 4px 0 0;
-    font-size: 24px;
-    color: #7c594c;
+.paper-header p{
+  margin: 4px 0 0;
+  font-size: 24px;
+  color: #7c594c;
 }
 
 /* Form panel inside paper card */
-.paper-form {
-    background: transparent;
-    border: 1px solid #d4b9a3;
-    border-radius: 12px;
-    padding: 18px 18px 22px;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+.paper-form{
+  background: transparent;
+  border: 1px solid #d4b9a3;
+  border-radius: 12px;
+  padding: 18px 18px 22px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 /* Form field grouping inside paper form */
-.paper-field label {
-    display: block;
-    font-size: 18px;
-    color: #7c594c;
-    margin-bottom: 6px;
+.paper-field label{
+  display: block;
+  font-size: 18px;
+  color: #7c594c;
+  margin-bottom: 6px;
 }
 
 /* Inputs inside paper form */
-.paper-field input {
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 17px;
-    border-radius: 8px;
-    border: 1px solid #c8b099;
-    /* background: linear-gradient(180deg, #f7f0df 0%, #f0e5cf 100%); */
-    background: transparent;
-    color: #5b3a34;
-    font-family: "Itim", serif;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    box-sizing: border-box;
-}
-
-.paper-field input:active{
+.paper-field input{
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 17px;
+  border-radius: 8px;
+  border: 1px solid #c8b099;
   background: transparent;
+  color: #5b3a34;
+  font-family: "Itim", serif;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
 .paper-field input:focus{
-  background: transparent;
-}
-
-.paper-field input:autofill{
-  background: transparent;
-}
-
-/* Focus ring for paper inputs */
-.paper-field input:focus {
-    outline: 2px solid #e38884;
-    box-shadow: 0 0 0 3px rgba(227,136,132,0.28);
+  outline: 2px solid #e38884;
+  box-shadow: 0 0 0 3px rgba(227,136,132,0.28);
 }
 
 /* Under-form actions row (checkbox + links) */
-.paper-actions {
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 16px;
-    color: #7c594c;
+.paper-actions{
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 16px;
+  color: #7c594c;
 }
 
-/* Links inside paper actions row */
-.paper-actions a {
-    color: #c6534e;
-    text-decoration: underline;
+.paper-actions a{
+  color: #c6534e;
+  text-decoration: underline;
 }
 
 /* Submit button inside paper form */
-.paper-button {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    padding: 14px 0;
-    border: none;
-    border-radius: 18px 16px 20px 14px;
-    background:
-        linear-gradient(180deg, #d86f67 0%, #c65551 100%),
-        repeating-linear-gradient(
-            45deg,
-            rgba(255,255,255,0.05),
-            rgba(255,255,255,0.05) 2px,
-            transparent 2px,
-            transparent 4px
-        );
-    background-blend-mode: overlay;
-    color: white;
-    font-size: 20px;
-    font-family: "Itim", serif;
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
+.paper-button{
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 0;
+  border: none;
+  border-radius: 18px 16px 20px 14px;
+  background:
+    linear-gradient(180deg, #d86f67 0%, #c65551 100%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.05) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  background-blend-mode: overlay;
+  color: white;
+  font-size: 20px;
+  font-family: "Itim", serif;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.paper-button::before {
-    content: "";
-    position: absolute;
-    inset: 3px;
-    border: 2px solid rgba(0,0,0,0.25);
-    border-radius: 17px 14px 19px 13px;
-    pointer-events: none;
+.paper-button::before{
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 2px solid rgba(0,0,0,0.25);
+  border-radius: 17px 14px 19px 13px;
+  pointer-events: none;
 }
 
-.paper-button:hover {
-    transform: translateY(-1px) rotate(-0.3deg);
+.paper-button:hover{
+  transform: translateY(-1px) rotate(-0.3deg);
 }
 
-.paper-button:active {
-    transform: translateY(2px) rotate(0.4deg);
+.paper-button:active{
+  transform: translateY(2px) rotate(0.4deg);
 }
-
 
 /* Footer text under paper form */
-.paper-footer {
-    text-align: center;
-    color: #7c594c;
-    font-size: 17px;
+.paper-footer{
+  text-align: center;
+  color: #7c594c;
+  font-size: 17px;
 }
 
-.paper-footer a {
-    color: #c6534e;
-    text-decoration: underline;
-    font-weight: bold;
+.paper-footer a{
+  color: #c6534e;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 /* Checkbox row helper in paper theme */
-.paper-aux {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.paper-aux{
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Checkbox color in supported browsers */
-.paper-aux input[type="checkbox"] {
-    accent-color: #c6534e;
-    width: auto;
+.paper-aux input[type="checkbox"]{
+  accent-color: #c6534e;
+  width: auto;
 }
-
 
 
 /* =========================================================
    GLOBAL FORM ELEMENT STYLES (GENERAL PAGES)
-   NOTE: These affect ALL labels/inputs unless overridden
+   NOTE:
+   - These affect ALL labels/inputs unless overridden.
+   - Keep them lighter so they don't fight .paper-* inputs.
    ========================================================= */
-label {
-    color: #E26D67;
-    font-size: 24px;
-    font-family: "Itim", serif;
-    margin-left: 2%;
+label{
+  color: #E26D67;
+  font-size: 24px;
+  font-family: "Itim", serif;
+  margin-left: 2%;
 }
 
-/* Global inputs */
-input {
-    width: 500px;
-    padding: 10px;
-    font-size: 16px;
-    background-color: #E38884;
-    opacity: 50%;
-    margin-left: 2%;
+/* General inputs (NOT the auth paper inputs) */
+input{
+  width: 500px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #E38884;
+  opacity: 0.5;
+  margin-left: 2%;
 }
 
-input::placeholder {
-    color: black;
-    font-style: italic;
-    font-weight: bold;
+input::placeholder{
+  color: black;
+  font-style: italic;
+  font-weight: bold;
 }
 
-/* Focus style for global inputs */
-input:focus {
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    font-weight: bold;
+input:focus{
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  font-weight: bold;
 }
 
-/* Navbar */
+
+/* =========================================================
+   NAVBAR (DESKTOP BASE)
+   ========================================================= */
 #main-menu{
   display: grid;
   grid-template-columns: auto 1fr auto;
@@ -336,483 +328,48 @@ input:focus {
   width: 100%;
   min-height: 10vh;
   padding: 0 3%;
-  box-sizing: border-box;
 }
 
-/* Links in the main menu */
-#main-menu a {
+#main-menu a{
   color: black;
   text-decoration: none;
-  margin-top: 0%;
-  margin-bottom: 0%;
-  
+  margin: 0;
 }
 
-
-
-/* Links in the main menu */
-#main-menu h2,h3,h4 {
-
-  margin-top: 0%;
-  margin-bottom: 0%;
-  
+#main-menu h2,
+#main-menu h3,
+#main-menu h4{
+  margin: 0;
 }
 
-#main-menu h3:hover,h4:hover {
-   background: linear-gradient(
+#main-menu h3:hover,
+#main-menu h4:hover{
+  background: linear-gradient(
     transparent 50%,
     rgba(255, 145, 130, 0.65) 55%,
     rgba(255, 145, 130, 0.55) 65%
   );
 }
 
+#nav-links{
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+}
 
-#secondary-links {
+#secondary-links{
   display: flex;
   gap: 18px;
   align-items: center;
   justify-content: flex-end;
 }
 
-.widget-title{
-  text-decoration: underline;
-  width: auto;
-  margin-top: 0%;
-  align-self: center;
-}
-
-#nav-links {
-  display: flex; 
-  gap: 20px; 
-  justify-content: center;
-  align-items: center;
-}
-
-/* Create new task section */
-#create-task-widget {
-  height: 50%; 
-  margin-bottom: 10%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Keep the form usable inside the sticky note */
-#create-task-widget .paper-form {
-  flex: 1;
-  max-height: calc(100% - 40px); /* leave room for title */
-  overflow-y: auto;
-}
-
-#create-task-widget .paper-form input,
-#create-task-widget .paper-form select {
-  width: 100%;
-  background: transparent;
-}
-
-.effort-options {
-    display: flex;
-    gap: 10px;
-    margin-top: 8px;
-    flex-wrap: wrap;
-}
-
-.effort-option {
-    position: relative;
-    padding: 10px 14px;
-    font-family: "Itim", serif;
-    font-size: 16px;
-    background: #f7f3b2;
-    border-radius: 16px 14px 18px 13px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-}
-
-/* hide native radio */
-.effort-option input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-}
-
-.effort-option{
-  background-color: transparent;
-}
-
-/* selected */
-.effort-option:has(input:checked) {
-    background: #d86f67;
-    color: white;
-    transform: rotate(-0.5deg);
-}
-
-/* hover */
-.effort-option:hover {
-    transform: translateY(-1px) rotate(-0.3deg);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.18);
-}
-
-/* pressed */
-.effort-option:active {
-    transform: translateY(1px) rotate(0.4deg);
-}
-
-
-/* Big 3 Tasks Sections */
-#big-3-tasks {
-  height: 50%
-}
-
-/* Focus Mode Widget */
-#focus-mode-widget {
-  height: 50%; 
-  margin-bottom: 10%;
-  justify-items: center;
-}
-
-#focus-button{
-  width: 30%;
-  height: 30%;
-  margin: auto;
-  cursor: pointer;
-}
-
-/* Reflection Section */
-#reflection-section {
-  display: flex; 
-  height: 80%
-}
-
-/* Weekly Reflection sticky note */
-#daily-reflection {
-  height: 50%
-}
-
-#daily-reflection .widget-title {
-  font-weight: 200;
-  
-}
-
-#weekly-reflection {
-  height: 50%
-}
-
-#weekly-reflection .widget-title {
-  font-weight: 200;
-  
-}
 
 /* =========================================================
-   DASHBOARD LAYOUT: keep sticky notes inside corkboard only
+   NAVBAR (RESPONSIVE HOOKS + DRAWER)
    ========================================================= */
-.corkboard {
-  overflow: hidden;
-}
-
-.board-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 5%;
-  height: 100%;
-  min-height: 0;
-}
-
-.board-grid > div {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 0;
-}
-
-.board-grid #task-list-widget,
-.board-grid #focus-mode-widget,
-.board-grid #big-3-tasks,
-.board-grid #create-task-widget,
-.board-grid #reflection-section {
-  flex: 1;
-  /* min-height: 0; */
-  margin-bottom: 0;
-}
-
-.board-grid #focus-mode-widget {
-  height: auto;
-  flex: 0 0 35%;
-  margin-bottom: 8px;
-}
-
-.board-grid #reflection-section {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  flex: 1;
-  min-height: 0;
-}
-
-.board-grid #daily-reflection,
-.board-grid #weekly-reflection {
-  flex: 1;
-  min-height: 0;
-  height: auto;
-}
-
-/* ============================================================
-   CORKBOARD BACKGROUND
-   Creates a corkboard texture using layered gradients
-   ============================================================ */
-.corkboard {
-    height: 70vh;
-    width: 80vw;
-    justify-self: center;
-    padding: 2%;
-
-    /* Base cork color */
-    background-color: #cfa36a;
-
-    /* Cork texture layers */
-    background-image:
-        radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%),
-        radial-gradient(circle at 75% 65%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 45%),
-        repeating-linear-gradient(
-        45deg,
-        rgba(255,255,255,0.04),
-        rgba(255,255,255,0.04) 2px,
-        rgba(0,0,0,0.04) 4px,
-        rgba(0,0,0,0.04) 6px
-        );
-
-    background-size: cover;
-    background-blend-mode: multiply;
-
-    /* Frame */
-    border: 6px solid #000;
-    border-radius: 6px;
-}
-
-
-.three-columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 5%;
-  height: 80%;
-
-}
-
-/* Highlighter Effect */
-
-.highlight {
-  background: linear-gradient(
-    transparent 50%,
-    rgba(255, 145, 130, 0.65) 55%,
-    rgba(255, 145, 130, 0.55) 65%
-  );
-}
-
-/* Highlight when the parent of the element with this class is hovered over */
-/* Highlight base (no ink initially) */
-.highlight-on-parent-hover {
-  --hl: rgba(255, 145, 130, 0.65);
-
-  background-image: linear-gradient(
-    transparent 60%,
-    var(--hl) 60%
-  );
-
-  background-repeat: no-repeat;
-  background-size: 0% 100%;
-  background-position: 0 0;
-
-  padding: 0 0.12em;
-  transition: background-size 300ms ease;
-}
-
-/* Parent hover triggers the highlight */
-.sticky-note:hover .highlight-on-parent-hover {
-  background-size: 100% 100%;
-}
-
-
-.task-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  height: fit-content;
-
-}
-
-
-.task-item {
-  margin-top: 0.6rem;
-  padding-bottom: 0.5rem;
-  position: relative;
-}
-
-.task-item::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  height: 1px;
-  background: linear-gradient(
-    to right,
-    rgba(0,0,0,0.4),
-    rgba(0,0,0,0.2),
-    rgba(0,0,0,0.4)
-  );
-}
-
-
-.task-row {
-  display: grid;
-  grid-template-columns: 1.2rem 1fr;
-  gap: 0.55rem;
-  align-items: start;
-  cursor: pointer;
-}
-
-.task-check {
-  margin-top: 0.15rem;
-  transform: scale(1.05);
-  cursor: pointer;
-}
-
-.task-text {
-  line-height: 1.25;
-  word-break: break-word;
-}
-
-/* Meta row: due date + effort */
-.task-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-left: 1.75rem; /* aligns under text (past checkbox) */
-  margin-top: 0.2rem;
-  font-size: 0.85em;
-  opacity: 0.9;
-}
-
-.task-due {
-  padding: 0.08rem 0.4rem;
-  border-radius: 999px;
-  background: rgba(255, 145, 130, 0.25); /* soft salmon highlight */
-}
-
-/* Effort dots */
-.task-effort {
-  display: inline-flex;
-  gap: 0.18rem;
-}
-
-.task-effort .dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 999px;
-  border: 2px solid rgba(0,0,0,0.5);
-  opacity: 0.45;
-}
-
-.task-effort .dot.on {
-  opacity: 1;
-}
-
-.task-check:checked + .task-text {
-  text-decoration: line-through;
-  opacity: 0.6;
-}
-
-.task-list.scrollable {
-  flex: 1;
-  min-height: 0;        /* critical for scrolling */
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-right: 0.25rem;
-}
-
-
-
-.task-list.scrollable::-webkit-scrollbar {
-  width: 6px;
-}
-
-.task-list.scrollable::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,0.3);
-  border-radius: 999px;
-}
-
-.task-list.scrollable::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.sticky-note.task-note {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-
-/* Profile dropdown */
-.profile-dropdown {
-  position: relative;
-}
-
-.profile-trigger {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #f7f0df;
-  border: 1px solid #d4b9a3;
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-family: "Itim", serif;
-  font-size: 18px;
-  color: #5b3a34;
-  cursor: pointer;
-}
-
-.profile-trigger .chevron {
-  font-size: 14px;
-}
-
-.profile-menu {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: #fffaf0;
-  border: 1px solid #d4b9a3;
-  border-radius: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-  padding: 8px;
-  display: none;
-  min-width: 160px;
-  z-index: 5;
-}
-
-.profile-dropdown:hover .profile-menu,
-.profile-dropdown:focus-within .profile-menu {
-  display: block;
-}
-
-.profile-dropdown.open .profile-menu {
-  display: block;
-}
-
-.profile-menu .paper-button {
-  width: 100%;
-  margin: 0;
-}
-
-
-
-
-/* ----------------------------
-   Responsive Navbar Additions
------------------------------ */
-
-/* New hooks (keep your existing #main-menu rules) */
-.nav__toggle {
+.nav__toggle{
   display: none;
   border: 0;
   background: transparent;
@@ -820,74 +377,12 @@ input:focus {
   cursor: pointer;
 }
 
-.nav__views { display: flex; gap: 5px; align-items: center; }
-.nav__utils { display: flex; gap: 18px; align-items: center; justify-content: flex-end; }
-
-.nav__viewSelect { display: none; }
-
-/* Drawer */
-.nav__drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: min(320px, 85vw);
-  background: white;
-  padding: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-  z-index: 9999;
-}
-
-.nav__drawerItem {
-  display: block;
-  padding: 14px 10px;
-  text-decoration: none;
-  color: black;
-}
-
-.nav__drawerDivider {
-  height: 1px;
-  background: rgba(0,0,0,0.15);
-  margin: 10px 0;
-}
-
-/* Tablet: hide greeting, push Feedback into less prominence */
-@media (max-width: 1023px) {
-  .nav__greeting,
-  .nav__greetingDivider {
-    display: none;
-  }
-}
-
-/* Phone: collapse nav into hamburger + logo + view selector */
-@media (max-width: 767px) {
-  #main-menu {
-    grid-template-columns: auto 1fr auto; /* toggle | spacer | viewSelect */
-    gap: 12px;
-    min-height: 64px;
-  }
-
-  #nav-links {
-    display: none;
-  }
-
-  .nav__toggle { display: inline-flex; align-items: center; justify-content: center; }
-
-  /* Hide desktop clusters */
-  .nav__views { display: none; }
-  .nav__utils { display: none; }
-
-  /* Show view selector */
-  .nav__viewSelect {
-    display: inline-block;
-    width: auto;
-    padding: 8px 10px;
-    border-radius: 8px;
-  }
-}
+.nav__views{ display: flex; gap: 5px; align-items: center; }
+.nav__utils{ display: flex; gap: 18px; align-items: center; justify-content: flex-end; }
+.nav__viewSelect{ display: none; }
 
 /* Backdrop behind drawer */
-.nav__backdrop {
+.nav__backdrop{
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
@@ -895,7 +390,7 @@ input:focus {
 }
 
 /* Drawer panel */
-.nav__drawer {
+.nav__drawer{
   position: fixed;
   top: 0;
   left: 0;
@@ -915,12 +410,11 @@ input:focus {
   transition: transform 220ms ease;
 }
 
-/* When drawer is open, slide in */
-.nav__drawer.is-open {
+.nav__drawer.is-open{
   transform: translateX(0);
 }
 
-.nav__drawerItem {
+.nav__drawerItem{
   display: block;
   padding: 14px 10px;
   border-radius: 10px;
@@ -928,12 +422,624 @@ input:focus {
   color: #222;
 }
 
-.nav__drawerItem:active {
+.nav__drawerItem:active{
   transform: scale(0.99);
 }
 
-.nav__drawerDivider {
+.nav__drawerDivider{
   height: 1px;
   background: rgba(0,0,0,0.15);
   margin: 12px 0;
+}
+
+/* Tablet: hide greeting, push Feedback into less prominence */
+@media (max-width: 1023px){
+  .nav__greeting,
+  .nav__greetingDivider{
+    display: none;
+  }
+}
+
+/* Phone: collapse nav into hamburger + logo + view selector */
+@media (max-width: 767px){
+  #main-menu{
+    grid-template-columns: auto 1fr auto; /* toggle | spacer | viewSelect */
+    gap: 12px;
+    min-height: 64px;
+    padding: 0 10px;
+  }
+
+  #nav-links{
+    display: none;
+  }
+
+  .nav__toggle{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Hide desktop clusters */
+  .nav__views{ display: none; }
+  .nav__utils{ display: none; }
+
+  /* Show view selector */
+  .nav__viewSelect{
+    display: inline-block;
+    width: auto;
+    padding: 8px 10px;
+    border-radius: 8px;
+    max-width: 170px;
+  }
+}
+
+
+/* =========================================================
+   DASHBOARD: WIDGET TITLES + HIGHLIGHT EFFECT
+   ========================================================= */
+.widget-title{
+  text-decoration: underline;
+  width: auto;
+  margin-top: 0;
+  align-self: center;
+}
+
+.highlight{
+  background: linear-gradient(
+    transparent 50%,
+    rgba(255, 145, 130, 0.65) 55%,
+    rgba(255, 145, 130, 0.55) 65%
+  );
+}
+
+/* Highlight base (no ink initially) */
+.highlight-on-parent-hover{
+  --hl: rgba(255, 145, 130, 0.65);
+
+  background-image: linear-gradient(
+    transparent 60%,
+    var(--hl) 60%
+  );
+
+  background-repeat: no-repeat;
+  background-size: 0% 100%;
+  background-position: 0 0;
+
+  padding: 0 0.12em;
+  transition: background-size 300ms ease;
+}
+
+/* Parent hover triggers the highlight */
+.sticky-note:hover .highlight-on-parent-hover{
+  background-size: 100% 100%;
+}
+
+
+/* =========================================================
+   DASHBOARD LAYOUT
+   - corkboard = board container
+   - board-grid = 3 columns desktop, collapses on smaller screens
+   ========================================================= */
+
+/* Corkboard container (Desktop default: NOT scrollable) */
+.corkboard{
+  height: 70vh;
+  width: 80vw;
+  justify-self: center;
+  padding: 2%;
+  overflow: hidden;
+
+  /* Base cork color */
+  background-color: #cfa36a;
+
+  /* Cork texture layers */
+  background-image:
+    radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%),
+    radial-gradient(circle at 75% 65%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 45%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.04) 2px,
+      rgba(0,0,0,0.04) 4px,
+      rgba(0,0,0,0.04) 6px
+    );
+
+  background-size: cover;
+  background-blend-mode: multiply;
+
+  /* Frame */
+  border: 6px solid #000;
+  border-radius: 6px;
+}
+
+/* Main grid */
+.board-grid{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 5%;
+  row-gap: var(--board-gap);
+  height: 100%;
+  min-height: 0;
+}
+
+.board-grid > div{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+/* Widget containers inside columns */
+.board-grid #task-list-widget,
+.board-grid #focus-mode-widget,
+.board-grid #big-3-tasks,
+.board-grid #create-task-widget,
+.board-grid #reflection-section{
+  flex: 1;
+  margin-bottom: 0;
+  min-height: 0;
+}
+
+/* Right column: Focus mode sits above reflections */
+.board-grid #focus-mode-widget{
+  height: auto;
+  flex: 0 0 35%;
+  margin-bottom: 8px;
+}
+
+/* Reflection section is a 2-column grid on desktop */
+.board-grid #reflection-section{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.board-grid #daily-reflection,
+.board-grid #weekly-reflection{
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+
+/* =========================================================
+   DASHBOARD WIDGETS
+   ========================================================= */
+
+/* Create Task widget (base behavior) */
+#create-task-widget{
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keep the form usable inside the sticky note */
+#create-task-widget .paper-form{
+  flex: 1;
+  max-height: calc(100% - 40px);
+  overflow-y: auto;
+}
+
+/* Ensure inputs/selects fill the widget */
+#create-task-widget .paper-form input,
+#create-task-widget .paper-form select{
+  width: 100%;
+  background: transparent;
+}
+
+/* Effort selector (radio chips) */
+.effort-options{
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.effort-option{
+  position: relative;
+  padding: 10px 14px;
+  font-family: "Itim", serif;
+  font-size: 16px;
+  background-color: transparent;
+  border-radius: 16px 14px 18px 13px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+/* hide native radio */
+.effort-option input{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* selected */
+.effort-option:has(input:checked){
+  background: #d86f67;
+  color: white;
+  transform: rotate(-0.5deg);
+}
+
+/* hover */
+.effort-option:hover{
+  transform: translateY(-1px) rotate(-0.3deg);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+}
+
+/* pressed */
+.effort-option:active{
+  transform: translateY(1px) rotate(0.4deg);
+}
+
+/* Focus button */
+#focus-button{
+  width: min(220px, 80%);
+  height: auto;
+  aspect-ratio: 3 / 1;
+  margin: 12px auto 0;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   TASK LIST STYLES
+   ========================================================= */
+.task-list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: fit-content;
+}
+
+.task-item{
+  margin-top: 0.6rem;
+  padding-bottom: 0.5rem;
+  position: relative;
+}
+
+.task-item::after{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(0,0,0,0.4),
+    rgba(0,0,0,0.2),
+    rgba(0,0,0,0.4)
+  );
+}
+
+.task-row{
+  display: grid;
+  grid-template-columns: 1.2rem 1fr;
+  gap: 0.55rem;
+  align-items: start;
+  cursor: pointer;
+}
+
+.task-check{
+  margin-top: 0.15rem;
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.task-text{
+  line-height: 1.25;
+  word-break: break-word;
+  overflow-wrap: anywhere; /* keeps long words from pushing width */
+}
+
+/* Meta row: due date + effort */
+.task-meta{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 1.75rem;
+  margin-top: 0.2rem;
+  font-size: 0.85em;
+  opacity: 0.9;
+  min-width: 0; /* allow shrink */
+}
+
+.task-due{
+  padding: 0.08rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(255, 145, 130, 0.25);
+}
+
+/* Effort dots */
+.task-effort{
+  display: inline-flex;
+  gap: 0.18rem;
+}
+
+.task-effort .dot{
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.5);
+  opacity: 0.45;
+}
+
+.task-effort .dot.on{
+  opacity: 1;
+}
+
+.task-check:checked + .task-text{
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Scrolling list area (inside a widget) */
+.task-list.scrollable{
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.25rem;
+}
+
+/* Smaller scrollbar for task list area */
+.task-list.scrollable::-webkit-scrollbar{
+  width: 6px;
+}
+
+.task-list.scrollable::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,0.3);
+  border-radius: 999px;
+}
+
+.task-list.scrollable::-webkit-scrollbar-track{
+  background: transparent;
+}
+
+/* Task sticky note wrapper */
+.sticky-note.task-note{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+
+/* =========================================================
+   PROFILE DROPDOWN
+   ========================================================= */
+.profile-dropdown{
+  position: relative;
+}
+
+.profile-trigger{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f7f0df;
+  border: 1px solid #d4b9a3;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: "Itim", serif;
+  font-size: 18px;
+  color: #5b3a34;
+  cursor: pointer;
+}
+
+.profile-trigger .chevron{
+  font-size: 14px;
+}
+
+.profile-menu{
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fffaf0;
+  border: 1px solid #d4b9a3;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  padding: 8px;
+  display: none;
+  min-width: 160px;
+  z-index: 5;
+}
+
+.profile-dropdown:hover .profile-menu,
+.profile-dropdown:focus-within .profile-menu{
+  display: block;
+}
+
+.profile-dropdown.open .profile-menu{
+  display: block;
+}
+
+.profile-menu .paper-button{
+  width: 100%;
+  margin: 0;
+}
+
+
+/* =========================================================
+   DESKTOP HEIGHTS (ONLY DESKTOP)
+   - keep your “board proportions” without breaking mobile
+   ========================================================= */
+@media (min-width: 1024px){
+  #big-3-tasks{ height: 50% !important; }
+  #focus-mode-widget{ height: 50% !important; }
+  #reflection-section{ height: 80% !important; }
+  #daily-reflection{ height: 50% !important; }
+  #weekly-reflection{ height: 50% !important; }
+  #create-task-widget{ height: 50% !important; }
+}
+
+
+/* =========================================================
+   RESPONSIVE (TABLET + PHONE)
+   - Desktop: corkboard NOT scrollable
+   - <=1023px: corkboard becomes scroll container
+   - No horizontal scroll on small screens
+   ========================================================= */
+
+/* Tablet (2 columns) */
+@media (max-width: 1023px){
+
+  /* Corkboard becomes a responsive container */
+  .corkboard{
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: calc(100dvh - 200px);
+    padding: var(--board-pad);
+    border-width: 4px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .board-grid{
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--board-gap);
+    row-gap: var(--board-gap);
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Prevent children from forcing overflow */
+  .board-grid > div,
+  .sticky-note,
+  #task-list-widget,
+  #create-task-widget,
+  #big-3-tasks,
+  #focus-mode-widget,
+  #reflection-section,
+  #daily-reflection,
+  #weekly-reflection{
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Inputs should be fluid on tablet too */
+  input,
+  select,
+  textarea{
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  label{
+    margin-left: 0 !important;
+  }
+
+  /* Widgets stop relying on % heights */
+  #task-list-widget,
+  #create-task-widget,
+  #big-3-tasks,
+  #focus-mode-widget,
+  #reflection-section{
+    height: auto;
+    min-height: 220px;
+  }
+
+  #task-list-widget{ min-height: 380px; }
+  #create-task-widget{ min-height: 320px; }
+
+  /* Keep focus mode content inside note */
+  #focus-mode-widget{
+    overflow: hidden;
+  }
+
+  #focus-mode-widget *{
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Phone (1 column) */
+@media (max-width: 767px){
+
+  /* Typography scale down (Index + Auth) */
+  h1{ font-size: clamp(34px, 9vw, 52px); }
+  h2{ font-size: clamp(24px, 6.5vw, 34px); }
+  h3{ font-size: clamp(20px, 5.4vw, 28px); }
+
+  .hero-header{
+    padding: 14px 10px;
+  }
+
+  /* Auth pages fit */
+  .cork-page{
+    min-height: 100dvh;
+    padding: 18px 10px;
+    align-items: flex-start;
+  }
+
+  .paper-content{
+    width: 100%;
+    max-width: 96vw;
+    gap: 14px;
+  }
+
+  .paper-form{
+    width: 100%;
+    padding: 14px 12px 16px;
+    gap: 12px;
+  }
+
+  /* Stack action row to avoid squeeze */
+  .paper-actions{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .paper-button{
+    font-size: 18px;
+    padding: 12px 0;
+  }
+
+  /* Navbar tighten */
+  #main-menu{
+    min-height: 60px;
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  /* Dashboard becomes 1 column */
+  .board-grid{
+    grid-template-columns: 1fr;
+  }
+
+  /* Stack reflections instead of squishing */
+  .board-grid #reflection-section{
+    grid-template-columns: 1fr;
+  }
+
+  /* Keep the task list usable */
+  .task-list.scrollable{
+    max-height: 45vh;
+  }
+
+  /* Force all form controls to be fluid */
+  input,
+  select,
+  textarea{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  label{
+    margin-left: 0 !important;
+  }
+
+  /* Ensure Focus button fits */
+  #focus-button{
+    width: min(220px, 80%);
+  }
 }
