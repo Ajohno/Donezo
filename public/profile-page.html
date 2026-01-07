@@ -1,8 +1,38 @@
+<head>
+  <title>Donezo</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="js/main.js" defer></script>
+  <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+
+  <!-- iOS home screen icon -->
+  <link rel="apple-touch-icon" href="donezo-logo.png" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/stickies.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- get rid of favicon error -->
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <script
+    src="https://kit.fontawesome.com/a076d05399.js"
+    crossorigin="anonymous"
+  ></script>
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+</head>
+<header class="hero-header">
+  <h1>Donezo</h1>
+</header>
 <nav id="main-menu">
   <!-- Logo/Site Name -->
   <div id="site-logo">
-    <a href="/index.html">
-      <h2>Dashboard</h2>
+    <a href="/dashboard.html">
+      <h2>Board</h2>
     </a>
   </div>
   <!-- Nav Links -->
@@ -31,19 +61,8 @@
     </div>
 
     <!-- Profile Button -->
-    <div id="profile-button" class="profile-dropdown">
-      <button
-        class="profile-trigger sticky-note double-tape"
-        aria-haspopup="true"
-      >
-        <span id="authStatus"></span>
-        <span class="chevron">▾</span>
-      </button>
-      <div class="profile-menu">
-        <button id="logoutBtn">Log Out</button>
-      </div>
+    <div id="profile-button">
+      <button id="logoutBtn">Log Out</button>
     </div>
   </div>
 </nav>
-
-<button id="logoutBtn">Log Out</button>

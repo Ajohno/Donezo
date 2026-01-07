@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (response.ok) {
                 alert("Login successful!");
                 // Auth pages should move you to the dashboard once logged in
-                window.location.href = "/";
+                window.location.href = "/dashboard.html";
             } else {
                 alert("Login failed: " + data.error);
             }
@@ -82,9 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
-            await fetch("/logout");
+            await fetch("/logout", { credentials: "same-origin" });
             alert("Logged out successfully!");
-            checkAuthStatus(); // Refresh UI
+            // Send the user back to login after logout
+            window.location.href = "/login.html";
         });
     }
 
@@ -344,32 +345,6 @@ if (hasDashboard) {
 
 
 
-// /* Account dropdown behavior */
-
-
-// Account dropdown behavior (guarded)
-const dropdown = document.querySelector(".account-dropdown");
-if (dropdown) {
-  const trigger = dropdown.querySelector(".account-trigger");
-  const logout = dropdown.querySelector(".logout");
-
-  trigger?.addEventListener("click", () => {
-    dropdown.classList.toggle("open");
-    trigger.setAttribute("aria-expanded", dropdown.classList.contains("open"));
-  });
-
-  document.addEventListener("click", (e) => {
-    if (!dropdown.contains(e.target)) {
-      dropdown.classList.remove("open");
-      trigger?.setAttribute("aria-expanded", "false");
-    }
-  });
-
-  logout?.addEventListener("click", () => {
-    console.log("Logging out...");
-    window.location.href = "/logout";
-  });
-}
 
 
 
