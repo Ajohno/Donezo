@@ -24,7 +24,7 @@
 html, body{
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 body{
@@ -45,30 +45,82 @@ img, svg, canvas, video{
   display: none !important;
 }
 
+/* =========================================================
+   Auth Section
+   ========================================================= */
+
+#auth-section{
+  width: 100%;
+  height: auto;
+  display: grid;
+  justify-content: center;
+}
+
+#auth-note{
+  /* width: clamp(25vw, 35vw, 40vw) ; */
+  height: auto;
+
+  
+}
 
 /* =========================================================
-   HEADING STYLES
-   - Default heading typography + colors
+   Login Page
+   ========================================================= */
+#login-page{
+  text-align: center;
+  max-width: fit-content;
+  width: clamp(300px, 40vw, 400px);
+  justify-self: center;
+}
+
+
+/* =========================================================
+   Register Page
+   ========================================================= */
+
+#register-page{
+  text-align: center;
+  max-width: fit-content;
+  width: clamp(300px, 40vw, 400px);
+  justify-self: center;
+}
+
+
+
+/* =========================================================
+   TEXT STYLES
+   - Default typography + colors
    ========================================================= */
 h1{
   color: #C45D58;
   text-decoration: underline;
-  font-size: 72px;
+  /* font-size: 72px; */
+  font-size: clamp(34px, 9vw, 72px);
   margin: 0;
 }
 
 h2{
   color:#E26D67;
-  font-size: 40px;
+  /* font-size: 40px; */
+  font-size: clamp(24px, 6.5vw, 40px);
   padding: 0;
   font-family: "Itim", serif;
 }
 
 h3{
   color:#E26D67;
-  font-size: 28px;
+  /* font-size: 28px; */
+  font-size: clamp(10px, 5.4vw, 28px);
   padding: 0;
   font-family: "Itim", serif;
+}
+
+p{
+  margin: 4px 0 0;
+  font-size: clamp(14px, 4.5vw, 20px);
+  color: #7c594c;
+  width: fit-content;
+  justify-self: center;
 }
 
 
@@ -135,23 +187,35 @@ h3{
   display: flex;
   flex-direction: column;
   gap: 22px;
+  max-width: fit-content;
 }
 
 /* Brand header area inside paper */
 .paper-header{
   text-align: center;
+  /* max-width: fit-content; */
+  /* width: clamp(300px, 40vw, 400px); */
+  justify-self: center;
+
 }
 
 .paper-header h1{
-  font-size: 52px;
+  /* font-size: 52px; */
   color: #c6534e;
   text-decoration: underline;
   margin: 10px 0 0;
 }
 
+.paper-header h3{
+  color:#E26D67;
+  /* font-size: 28px; */
+  padding: 0;
+  font-family: "Itim", serif;
+}
+
 .paper-header p{
   margin: 4px 0 0;
-  font-size: 24px;
+  /* font-size: 24px; */
   color: #7c594c;
 }
 
@@ -170,6 +234,7 @@ h3{
 /* Form field grouping inside paper form */
 .paper-field label{
   display: block;
+  justify-self: baseline;
   font-size: 18px;
   color: #7c594c;
   margin-bottom: 6px;
@@ -200,7 +265,7 @@ h3{
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  font-size: 16px;
+  /* font-size: 16px; */
   color: #7c594c;
 }
 
@@ -212,7 +277,8 @@ h3{
 /* Submit button inside paper form */
 .paper-button{
   display: block;
-  width: 100%;
+  width: clamp(10vw, 20vw, 50vw) !important;
+  justify-self: center;
   margin-top: 10px;
   padding: 14px 0;
   border: none;
@@ -227,8 +293,7 @@ h3{
       transparent 4px
     );
   background-blend-mode: overlay;
-  color: white;
-  font-size: 20px;
+  color: white !important;
   font-family: "Itim", serif;
   letter-spacing: 0.5px;
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
@@ -237,6 +302,8 @@ h3{
   position: relative;
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
+
+
 
 .paper-button::before{
   content: "";
@@ -448,6 +515,10 @@ input:focus{
     min-height: 64px;
     padding: 0 10px;
   }
+
+  /* Auth Section */
+  
+
 
   #nav-links{
     display: none;
@@ -964,9 +1035,6 @@ input:focus{
 @media (max-width: 767px){
 
   /* Typography scale down (Index + Auth) */
-  h1{ font-size: clamp(34px, 9vw, 52px); }
-  h2{ font-size: clamp(24px, 6.5vw, 34px); }
-  h3{ font-size: clamp(20px, 5.4vw, 28px); }
 
   .hero-header{
     padding: 14px 10px;
@@ -979,29 +1047,30 @@ input:focus{
     align-items: flex-start;
   }
 
-  .paper-content{
+  /* .paper-content{
     width: 100%;
     max-width: 96vw;
     gap: 14px;
-  }
+  } */
 
-  .paper-form{
+  /* .paper-form{
     width: 100%;
     padding: 14px 12px 16px;
     gap: 12px;
-  }
+  } */
 
   /* Stack action row to avoid squeeze */
-  .paper-actions{
+  /* .paper-actions{
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-  }
+  } */
 
-  .paper-button{
-    font-size: 18px;
-    padding: 12px 0;
-  }
+  
+
+  /* .paper-button::before{
+    border-radius: 17px 14px 19px 13px;
+  } */
 
   /* Navbar tighten */
   #main-menu{
