@@ -234,7 +234,8 @@ p{
 /* Form field grouping inside paper form */
 .paper-field label{
   display: block;
-  justify-self: baseline;
+  /* justify-self: baseline; */
+  text-align: left;
   font-size: 18px;
   color: #7c594c;
   margin-bottom: 6px;
@@ -358,7 +359,8 @@ label{
   color: #E26D67;
   font-size: 24px;
   font-family: "Itim", serif;
-  margin-left: 2%;
+  /* margin-left: 2%; */
+  text-align: left;
 }
 
 /* General inputs (NOT the auth paper inputs) */
@@ -1005,6 +1007,7 @@ input:focus{
 
   label{
     margin-left: 0 !important;
+    text-align: left;
   }
 
   /* Widgets stop relying on % heights */
@@ -1105,6 +1108,7 @@ input:focus{
 
   label{
     margin-left: 0 !important;
+    text-align: left;
   }
 
   /* Ensure Focus button fits */
