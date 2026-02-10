@@ -58,13 +58,13 @@ document.addEventListener("DOMContentLoaded", () => {
         
             const email = document.getElementById("loginEmail").value.trim();
             const password = document.getElementById("loginPassword").value;
-
+            const rememberMe = document.getElementById("rememberMe")?.checked || false;
 
             const response = await fetch("/login", {
                 credentials: "same-origin",
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password, rememberMe })
             });
         
             const data = await response.json();
@@ -116,7 +116,7 @@ async function checkAuthStatus() {
     if (data.loggedIn) {
         // Keep login/register pages from showing when already authenticated
         if (document.body.classList.contains("login-page") || document.body.classList.contains("register-page")) {
-            window.location.href = "/";
+            window.location.href = "/dashboard.html";
             return;
         }
 
