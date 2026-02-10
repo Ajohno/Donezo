@@ -91,6 +91,7 @@ app.post("/login", (req, res, next) => {
   const { rememberMe } = req.body;
 
   passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
     if (!user) return res.status(401).json({ error: info?.message || "Login failed" });
 
     req.logIn(user, (loginErr) => {
@@ -118,7 +119,10 @@ app.get("/logout", (req, res) => {
         if (err) {
             return res.status(500).json({ error: "Error logging out" });
         }
-        res.json({ message: "Logged out successfully" });
+        req.session.destroy(() => {
+          res.clearCookie("connect.sid");
+          res.json({ message: "Logged out successfully" });
+        });
     });
 });
 
