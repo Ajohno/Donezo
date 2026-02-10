@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
            
 
             const response = await fetch("/register", {
+                credentials: "include",
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ firstName, lastName, email, password })
@@ -61,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const rememberMe = document.getElementById("rememberMe")?.checked || false;
 
             const response = await fetch("/login", {
-                credentials: "same-origin",
+                credentials: "include",
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password, rememberMe })
@@ -83,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
-            await fetch("/logout", { credentials: "same-origin" });
+            await fetch("/logout", { credentials: "include" });
             alert("Logged out successfully!");
             // Send the user back to login after logout
             window.location.href = "/login.html";
@@ -105,7 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Function to check if a user is currently logged in
 async function checkAuthStatus() {
-    const response = await fetch("/auth-status");
+    const response = await fetch("/auth-status", {
+        credentials: "include",
+        cache: "no-store"
+    });
     const data = await response.json();
 
     const authSection = document.getElementById("auth-section");
@@ -166,7 +170,7 @@ async function checkAuthStatus() {
 
 // Function to get the tasks for the logged in user
 async function fetchTasks() {
-    const response = await fetch("/tasks");
+    const response = await fetch("/tasks", { credentials: "include" });
     const tasks = await response.json();
 
     if (response.ok) {
@@ -200,6 +204,7 @@ const submit = async function(event) {
 
     // Send task data to the server
     const response = await fetch("/tasks", {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(json)
