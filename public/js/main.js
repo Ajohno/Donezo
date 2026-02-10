@@ -5,6 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Page flags let us adjust behavior for standalone login/register views
     const isLoginPage = document.body.classList.contains("login-page");
     const isRegisterPage = document.body.classList.contains("register-page");
+    const currentPath = window.location.pathname;
+    const protectedPaths = new Set([
+        "/dashboard.html",
+        "/calendar-page.html",
+        "/profile-page.html",
+        "/settings-page.html",
+        "/feedback-page.html"
+    ]);
+    const isProtectedPage = protectedPaths.has(currentPath);
 
     // Registration handler (used on register.html)
     const registerForm = document.getElementById("registerForm");
@@ -33,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
            
 
             const response = await fetch("/register", {
+                credentials: "include",
                 method: "POST",
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify({ firstName, lastName, email, password })
@@ -61,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const rememberMe = document.getElementById("rememberMe")?.checked || false;
 
             const response = await fetch("/login", {
-                credentials: "same-origin",
+                credentials: "include",
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password, rememberMe })
@@ -83,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
-            await fetch("/logout", { credentials: "same-origin" });
+            await fetch("/logout", { credentials: "include" });
             alert("Logged out successfully!");
             // Send the user back to login after logout
             window.location.href = "/login.html";
@@ -100,22 +110,35 @@ document.addEventListener("DOMContentLoaded", () => {
         taskForm.addEventListener("submit", submit);
     }
 
-    checkAuthStatus(); // Check authentication status on page load
+    checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }); // Check authentication status on page load
 });
 
 // Function to check if a user is currently logged in
-async function checkAuthStatus() {
-    const response = await fetch("/auth-status");
-    const data = await response.json();
-
+async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }) {
     const authSection = document.getElementById("auth-section");
     const mainSection = document.getElementById("main-section");
     const authStatus = document.getElementById("authStatus");
     const logoutBtn = document.getElementById("logoutBtn");
 
+    let data = { loggedIn: false };
+
+    try {
+        const response = await fetch("/auth-status", {
+            credentials: "include",
+            cache: "no-store"
+        });
+
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+            data = await response.json();
+        }
+    } catch (error) {
+        console.error("Auth status check failed:", error);
+    }
+
     if (data.loggedIn) {
         // Keep login/register pages from showing when already authenticated
-        if (document.body.classList.contains("login-page") || document.body.classList.contains("register-page")) {
+        if (isLoginPage || isRegisterPage) {
             window.location.href = "/dashboard.html";
             return;
         }
@@ -147,6 +170,12 @@ async function checkAuthStatus() {
             fetchTasks(); // Automatically load tasks if user is logged in
         }
     } else {
+        // Protected pages should send logged-out users to login instead of showing a blank shell.
+        if (isProtectedPage) {
+            window.location.href = "/login.html";
+            return;
+        }
+
         // Only toggle dashboard sections if they are present on the page
         if (authStatus) {
             authStatus.textContent = "Not logged in";
@@ -166,7 +195,7 @@ async function checkAuthStatus() {
 
 // Function to get the tasks for the logged in user
 async function fetchTasks() {
-    const response = await fetch("/tasks");
+    const response = await fetch("/tasks", { credentials: "include" });
     const tasks = await response.json();
 
     if (response.ok) {
@@ -200,6 +229,7 @@ const submit = async function(event) {
 
     // Send task data to the server
     const response = await fetch("/tasks", {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(json)
