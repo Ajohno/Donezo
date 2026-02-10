@@ -5,6 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // Page flags let us adjust behavior for standalone login/register views
     const isLoginPage = document.body.classList.contains("login-page");
     const isRegisterPage = document.body.classList.contains("register-page");
+    const currentPath = window.location.pathname;
+    const protectedPaths = new Set([
+        "/dashboard.html",
+        "/calendar-page.html",
+        "/profile-page.html",
+        "/settings-page.html",
+        "/feedback-page.html"
+    ]);
+    const isProtectedPage = protectedPaths.has(currentPath);
 
     // Registration handler (used on register.html)
     const registerForm = document.getElementById("registerForm");
@@ -101,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
         taskForm.addEventListener("submit", submit);
     }
 
-    checkAuthStatus(); // Check authentication status on page load
+    checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }); // Check authentication status on page load
 });
 
 // Function to check if a user is currently logged in
@@ -117,9 +126,25 @@ async function checkAuthStatus() {
     const authStatus = document.getElementById("authStatus");
     const logoutBtn = document.getElementById("logoutBtn");
 
+    let data = { loggedIn: false };
+
+    try {
+        const response = await fetch("/auth-status", {
+            credentials: "include",
+            cache: "no-store"
+        });
+
+        const contentType = response.headers.get("content-type") || "";
+        if (contentType.includes("application/json")) {
+            data = await response.json();
+        }
+    } catch (error) {
+        console.error("Auth status check failed:", error);
+    }
+
     if (data.loggedIn) {
         // Keep login/register pages from showing when already authenticated
-        if (document.body.classList.contains("login-page") || document.body.classList.contains("register-page")) {
+        if (isLoginPage || isRegisterPage) {
             window.location.href = "/dashboard.html";
             return;
         }
@@ -151,6 +176,12 @@ async function checkAuthStatus() {
             fetchTasks(); // Automatically load tasks if user is logged in
         }
     } else {
+        // Protected pages should send logged-out users to login instead of showing a blank shell.
+        if (isProtectedPage) {
+            window.location.href = "/login.html";
+            return;
+        }
+
         // Only toggle dashboard sections if they are present on the page
         if (authStatus) {
             authStatus.textContent = "Not logged in";
