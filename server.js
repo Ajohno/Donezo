@@ -40,6 +40,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || "fallback_secret",
   resave: false,
   saveUninitialized: false,
+  rolling: true,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_URI,
     collectionName: "sessions",
@@ -48,7 +49,8 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // https only in prod
-    sameSite: "lax"
+    sameSite: "lax",
+    maxAge: REMEMBER_ME_MS
   }
 }));
 
@@ -89,6 +91,7 @@ app.post("/login", (req, res, next) => {
   const { rememberMe } = req.body;
 
   passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
     if (!user) return res.status(401).json({ error: info?.message || "Login failed" });
 
     req.logIn(user, (loginErr) => {
@@ -97,7 +100,8 @@ app.post("/login", (req, res, next) => {
       if (rememberMe) {
         req.session.cookie.maxAge = REMEMBER_ME_MS;
       } else {
-        req.session.cookie.expires = false;
+        // Keep a bounded persistent cookie to improve Safari/PWA reliability.
+        req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
       }
 
       return res.json({
@@ -115,7 +119,10 @@ app.get("/logout", (req, res) => {
         if (err) {
             return res.status(500).json({ error: "Error logging out" });
         }
-        res.json({ message: "Logged out successfully" });
+        req.session.destroy(() => {
+          res.clearCookie("connect.sid");
+          res.json({ message: "Logged out successfully" });
+        });
     });
 });
 
