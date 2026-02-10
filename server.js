@@ -16,6 +16,7 @@ require("./config/passport-config")(passport); // Configures Passport authentica
 
 const app = express();
 const port = process.env.PORT || 3000;
+const REMEMBER_ME_MS = 14 * 24 * 60 * 60 * 1000;
 
 let appdata = [];
 
@@ -47,8 +48,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // https only in prod
-    sameSite: "lax",
-    maxAge: 14 * 24 * 60 * 60 * 1000
+    sameSite: "lax"
   }
 }));
 
@@ -86,11 +86,19 @@ app.post("/register", async (req, res) => {
 
 // Login Route
 app.post("/login", (req, res, next) => {
+  const { rememberMe } = req.body;
+
   passport.authenticate("local", (err, user, info) => {
     if (!user) return res.status(401).json({ error: info?.message || "Login failed" });
 
     req.logIn(user, (loginErr) => {
       if (loginErr) return next(loginErr);
+
+      if (rememberMe) {
+        req.session.cookie.maxAge = REMEMBER_ME_MS;
+      } else {
+        req.session.cookie.expires = false;
+      }
 
       return res.json({
         message: "Logged in successfully",
