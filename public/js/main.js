@@ -114,7 +114,13 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to check if a user is currently logged in
-async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }) {
+async function checkAuthStatus() {
+    const response = await fetch("/auth-status", {
+        credentials: "include",
+        cache: "no-store"
+    });
+    const data = await response.json();
+
     const authSection = document.getElementById("auth-section");
     const mainSection = document.getElementById("main-section");
     const authStatus = document.getElementById("authStatus");
