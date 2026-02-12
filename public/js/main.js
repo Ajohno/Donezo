@@ -10,8 +10,41 @@ async function parseApiResponse(response) {
     return { error: text || "Unexpected server response" };
 }
 
+const PENDING_TOAST_KEY = "donezo:pending-toast";
+
+function showToast({ message = "", type = "default", title = "", duration = 3000 } = {}) {
+    if (typeof Toast !== "undefined" && Toast && typeof Toast.show === "function") {
+        Toast.show({ message, type, title, duration });
+        return;
+    }
+
+    console.warn("Toast unavailable:", message);
+}
+
+function queueToastForNextPage(opts) {
+    try {
+        sessionStorage.setItem(PENDING_TOAST_KEY, JSON.stringify(opts));
+    } catch (error) {
+        console.error("Failed to queue toast:", error);
+    }
+}
+
+function flushQueuedToast() {
+    try {
+        const raw = sessionStorage.getItem(PENDING_TOAST_KEY);
+        if (!raw) return;
+
+        sessionStorage.removeItem(PENDING_TOAST_KEY);
+        showToast(JSON.parse(raw));
+    } catch (error) {
+        console.error("Failed to read queued toast:", error);
+        sessionStorage.removeItem(PENDING_TOAST_KEY);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Fully Loaded - JavaScript Running");
+    flushQueuedToast();
 
     // Page flags let us adjust behavior for standalone login/register views
     const isLoginPage = document.body.classList.contains("login-page");
@@ -39,14 +72,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const confirmPassword = document.getElementById("registerConfirm").value;
 
             if (!firstName || !lastName || !email) {
-            alert("Please fill in first name, last name, and email.");
-            return;
+                showToast({ message: "Please fill in first name, last name, and email.", type: "warning", duration: 2500 });
+                return;
             }
 
 
             // Simple client-side guard to match the confirm password box
             if (password !== confirmPassword) {
-                alert("Passwords do not match.");
+                showToast({ message: "Passwords do not match.", type: "warning", duration: 2500 });
                 return;
             }
 
@@ -64,14 +97,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Check if registration went alright
                 if (response.ok) {
-                    alert("Registration successful! Please log in.");
+                    queueToastForNextPage({ message: "Registration successful! Please log in.", type: "success", duration: 2500 });
                     window.location.href = "/login.html";
                 } else {
-                    alert("Registration failed: " + (data.error || "Unknown error"));
+                    showToast({ message: "Registration failed: " + (data.error || "Unknown error"), type: "error", duration: 4000 });
                 }
             } catch (error) {
                 console.error("Registration request failed:", error);
-                alert("Registration failed due to a network/server issue.");
+                showToast({ message: "Registration failed due to a network/server issue.", type: "error", duration: 4000 });
             }
         });
     }
@@ -94,18 +127,20 @@ document.addEventListener("DOMContentLoaded", () => {
                     body: JSON.stringify({ email, password, rememberMe })
                 });
             
+                
                 const data = await parseApiResponse(response);
             
                 if (response.ok) {
-                    alert("Login successful!");
+                    queueToastForNextPage({ message: "Login successful!", type: "success", duration: 2000 });
                     // Auth pages should move you to the dashboard once logged in
                     window.location.href = "/dashboard.html";
+                    
                 } else {
-                    alert("Login failed: " + (data.error || "Unknown error"));
+                    showToast({ message: "Login failed: " + (data.error || "Unknown error"), type: "error", duration: 4000 });
                 }
             } catch (error) {
                 console.error("Login request failed:", error);
-                alert("Login failed due to a network/server issue.");
+                showToast({ message: "Login failed due to a network/server issue.", type: "error", duration: 3000 });
             }
         });
     }
@@ -115,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
             await fetch("/logout", { credentials: "include" });
-            alert("Logged out successfully!");
+            queueToastForNextPage({ message: "Logged out successfully!", type: "success", duration: 2000 });
             // Send the user back to login after logout
             window.location.href = "/login.html";
         });
@@ -135,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to check if a user is currently logged in
-async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }) {
+async function checkAuthStatus({ isLoginPage = false, isRegisterPage = false, isProtectedPage = false } = {}) {
     const authSection = document.getElementById("auth-section");
     const mainSection = document.getElementById("main-section");
     const authStatus = document.getElementById("authStatus");
@@ -220,7 +255,7 @@ async function fetchTasks() {
         updateTaskList(tasks);
     } else {
         console.error("Error fetching tasks:", tasks.error);
-        alert("Please log in to see your tasks.");
+        showToast({ message: "Please log in to see your tasks.", type: "warning", duration: 2500 });
     }
 }
 
@@ -230,7 +265,7 @@ const submit = async function(event) {
 
     const taskInput = document.querySelector("#taskDescription");
     const dateInput = document.querySelector("#dueDate");
-    const effortInput = document.querySelector("#effortLevel");
+    const effortInput = document.querySelector('input[name="effortLevel"]:checked');
 
     // Create JSON object with form data
     const json = {
@@ -240,32 +275,37 @@ const submit = async function(event) {
     };
 
     if (!json.description || !json.dueDate) {
-    alert("Please enter a task and a due date.");
-    return;
+        showToast({ message: "Please enter a task and a due date.", type: "warning", duration: 2500 });
+        return;
     }
 
 
-    // Send task data to the server
-    const response = await fetch("/tasks", {
-        credentials: "include",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(json)
-    });
+    try {
+        // Send task data to the server
+        const response = await fetch("/tasks", {
+            credentials: "include",
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(json)
+        });
 
-    const data = await response.json();
+        const data = await parseApiResponse(response);
 
-    if (response.ok) {
-        console.log("Task added successfully:", data);
-        updateTaskList(data); // Refresh task list
-    } else {
-        console.error("Task Submission Error:", data.error);
-        alert("You must be logged in to submit tasks.");
+        if (response.ok) {
+            console.log("Task added successfully:", data);
+            showToast({ message: "Task submitted", type: "success", duration: 2000 });
+            updateTaskList(data); // Refresh task list
+            // Clear input fields after submission
+            taskInput.value = "";
+            dateInput.value = "";
+        } else {
+            console.error("Task Submission Error:", data.error);
+            showToast({ message: data.error || "You must be logged in to submit tasks.", type: "error", duration: 3000 });
+        }
+    } catch (error) {
+        console.error("Task submission request failed:", error);
+        showToast({ message: "Task submission failed due to a network/server issue.", type: "error", duration: 3000 });
     }
-
-    // Clear input fields after submission
-    taskInput.value = "";
-    dateInput.value = "";
 };
 
 // Function to update the UI with fetched tasks
@@ -320,8 +360,10 @@ function updateTaskList(tasks) {
                 if (updateResponse.ok) {
                     console.log("Task updated successfully");
                     fetchTasks(); // Automatically reload the task list after editing
+                    showToast({ message: "Task updated", type: "success", duration: 2000 });
                 } else {
                     console.error("Error updating task");
+                    showToast({ message: "Error updating task", type: "error", duration: 2500 });
                 }
             }
         });
@@ -341,9 +383,11 @@ function updateTaskList(tasks) {
 
                 if (deleteResponse.ok) {
                     console.log("Task deleted successfully");
+                    showToast({ message: "Task deleted", type: "success", duration: 2000 });
                     fetchTasks(); // Refresh task list after deletion
                 } else {
                     console.error("Error deleting task");
+                    showToast({ message: "Error deleting task", type: "error", duration: 2500 });
                 }
             }
         });

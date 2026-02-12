@@ -9,6 +9,7 @@
     <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/stickies.css" />
+    <link rel="stylesheet" href="css/notification.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -96,6 +97,32 @@
       </div>
     </main>
 
-    <script src="js/main.js"></script>
+    <script src="js/notification.js" defer></script>
+    <script src="js/main.js" defer></script>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast"
+      class="toast toast--default"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      hidden
+    >
+      <div class="toast__icon" aria-hidden="true">i</div>
+      <div class="toast__content">
+        <div id="toastTitle" class="toast__title" hidden></div>
+        <div id="toastMessage" class="toast__message"></div>
+      </div>
+      <button
+        id="toastClose"
+        class="toast__close"
+        type="button"
+        aria-label="Close notification"
+      >
+        ×
+      </button>
+      <div class="toast__progress"></div>
+    </div>
   </body>
 </html>
