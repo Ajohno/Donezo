@@ -12,7 +12,6 @@ async function parseApiResponse(response) {
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Fully Loaded - JavaScript Running");
-    flushQueuedToast();
 
     // Page flags let us adjust behavior for standalone login/register views
     const isLoginPage = document.body.classList.contains("login-page");
@@ -40,14 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const confirmPassword = document.getElementById("registerConfirm").value;
 
             if (!firstName || !lastName || !email) {
-                showToast({ message: "Please fill in first name, last name, and email.", type: "warning", duration: 2500 });
+                
+                alert("Please fill in first name, last name, and email.");
                 return;
             }
 
 
             // Simple client-side guard to match the confirm password box
             if (password !== confirmPassword) {
-                showToast({ message: "Passwords do not match.", type: "warning", duration: 2500 });
+                alert("Passwords do not match.");
                 return;
             }
 
@@ -65,14 +65,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Check if registration went alright
                 if (response.ok) {
-                    queueToastForNextPage({ message: "Registration successful! Please log in.", type: "success", duration: 2500 });
+                    alert("Registration successful! Please log in.");
+                    Toast.show({ message: "Registration Sucessful", type: "success", duration: 2000 });
                     window.location.href = "/login.html";
                 } else {
-                    showToast({ message: "Registration failed: " + (data.error || "Unknown error"), type: "error", duration: 4000 });
+                    alert("Registration failed: " + (data.error || "Unknown error"));
                 }
             } catch (error) {
                 console.error("Registration request failed:", error);
-                showToast({ message: "Registration failed due to a network/server issue.", type: "error", duration: 4000 });
+                alert("Registration failed due to a network/server issue.");
             }
         });
     }
@@ -99,16 +100,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await parseApiResponse(response);
             
                 if (response.ok) {
-                    queueToastForNextPage({ message: "Login successful!", type: "success", duration: 2000 });
+                    // alert("Login successful!");
+                    Toast.show({ message: "Login Sucessful", type: "success", duration: 2000 });
                     // Auth pages should move you to the dashboard once logged in
                     window.location.href = "/dashboard.html";
                     
                 } else {
-                    showToast({ message: "Login failed: " + (data.error || "Unknown error"), type: "error", duration: 4000 });
+                    alert("Login failed: " + (data.error || "Unknown error"));
+                    Toast.show({ message: "Login failed: " + (data.error || "Unknown error"), type: "error", duration: 4000 });
                 }
             } catch (error) {
                 console.error("Login request failed:", error);
-                showToast({ message: "Login failed due to a network/server issue.", type: "error", duration: 3000 });
+                alert("Login failed due to a network/server issue.");
+                Toast.show({ message: "Login failed due to a network/server issue.", type: "error", duration: 2000 });
             }
         });
     }
@@ -118,7 +122,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
             await fetch("/logout", { credentials: "include" });
-            queueToastForNextPage({ message: "Logged out successfully!", type: "success", duration: 2000 });
+            alert("Logged out successfully!");
+            // Toast.show({ message: "Logged out sucessfully!", type: "success", duration: 2000 });
             // Send the user back to login after logout
             window.location.href = "/login.html";
         });
@@ -138,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Function to check if a user is currently logged in
-async function checkAuthStatus({ isLoginPage = false, isRegisterPage = false, isProtectedPage = false } = {}) {
+async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }) {
     const authSection = document.getElementById("auth-section");
     const mainSection = document.getElementById("main-section");
     const authStatus = document.getElementById("authStatus");
@@ -223,17 +228,18 @@ async function fetchTasks() {
         updateTaskList(tasks);
     } else {
         console.error("Error fetching tasks:", tasks.error);
-        showToast({ message: "Please log in to see your tasks.", type: "warning", duration: 2500 });
+        alert("Please log in to see your tasks.");
     }
 }
 
 // Function to submit a task (User must be logged in)
 const submit = async function(event) {
+    Toast.show({ message: "Task Submitted", type: "success", duration: 2000 });
     event.preventDefault(); // Stop default form submission behavior
 
     const taskInput = document.querySelector("#taskDescription");
     const dateInput = document.querySelector("#dueDate");
-    const effortInput = document.querySelector('input[name="effortLevel"]:checked');
+    const effortInput = document.querySelector("#effortLevel");
 
     // Create JSON object with form data
     const json = {
@@ -243,37 +249,32 @@ const submit = async function(event) {
     };
 
     if (!json.description || !json.dueDate) {
-        showToast({ message: "Please enter a task and a due date.", type: "warning", duration: 2500 });
-        return;
+    alert("Please enter a task and a due date.");
+    return;
     }
 
 
-    try {
-        // Send task data to the server
-        const response = await fetch("/tasks", {
-            credentials: "include",
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(json)
-        });
+    // Send task data to the server
+    const response = await fetch("/tasks", {
+        credentials: "include",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(json)
+    });
 
-        const data = await parseApiResponse(response);
+    const data = await response.json();
 
-        if (response.ok) {
-            console.log("Task added successfully:", data);
-            showToast({ message: "Task submitted", type: "success", duration: 2000 });
-            updateTaskList(data); // Refresh task list
-            // Clear input fields after submission
-            taskInput.value = "";
-            dateInput.value = "";
-        } else {
-            console.error("Task Submission Error:", data.error);
-            showToast({ message: data.error || "You must be logged in to submit tasks.", type: "error", duration: 3000 });
-        }
-    } catch (error) {
-        console.error("Task submission request failed:", error);
-        showToast({ message: "Task submission failed due to a network/server issue.", type: "error", duration: 3000 });
+    if (response.ok) {
+        console.log("Task added successfully:", data);
+        updateTaskList(data); // Refresh task list
+    } else {
+        console.error("Task Submission Error:", data.error);
+        alert("You must be logged in to submit tasks.");
     }
+
+    // Clear input fields after submission
+    taskInput.value = "";
+    dateInput.value = "";
 };
 
 // Function to update the UI with fetched tasks
@@ -328,10 +329,9 @@ function updateTaskList(tasks) {
                 if (updateResponse.ok) {
                     console.log("Task updated successfully");
                     fetchTasks(); // Automatically reload the task list after editing
-                    showToast({ message: "Task updated", type: "success", duration: 2000 });
+                    Toast.show({ message: "Task Updated", type: "success", duration: 2000 });
                 } else {
                     console.error("Error updating task");
-                    showToast({ message: "Error updating task", type: "error", duration: 2500 });
                 }
             }
         });
@@ -351,11 +351,10 @@ function updateTaskList(tasks) {
 
                 if (deleteResponse.ok) {
                     console.log("Task deleted successfully");
-                    showToast({ message: "Task deleted", type: "success", duration: 2000 });
+                    Toast.show({ message: "Task deleted", type: "success", duration: 2000 });
                     fetchTasks(); // Refresh task list after deletion
                 } else {
                     console.error("Error deleting task");
-                    showToast({ message: "Error deleting task", type: "error", duration: 2500 });
                 }
             }
         });
@@ -391,7 +390,7 @@ if (hasDashboard) {
   const REFRESH_MS = 30000;
 
   function refreshDashboard() {
-    checkAuthStatus();
+    checkAuthStatus( );
   }
 
   setInterval(refreshDashboard, REFRESH_MS);
