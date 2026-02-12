@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "/feedback-page.html"
     ]);
     const isProtectedPage = protectedPaths.has(currentPath);
+    const isHomePage = currentPath === "/" || currentPath === "/index.html";
 
     // Registration handler (used on register.html)
     const registerForm = document.getElementById("registerForm");
@@ -147,11 +148,11 @@ document.addEventListener("DOMContentLoaded", () => {
         taskForm.addEventListener("submit", submit);
     }
 
-    checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }); // Check authentication status on page load
+    checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, isHomePage }); // Check authentication status on page load
 });
 
 // Function to check if a user is currently logged in
-async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage }) {
+async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, isHomePage }) {
     const authSection = document.getElementById("auth-section");
     const mainSection = document.getElementById("main-section");
     const authStatus = document.getElementById("authStatus");
@@ -171,6 +172,11 @@ async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage })
     }
 
     if (data.loggedIn) {
+        if (isHomePage) {
+            window.location.href = "/dashboard.html";
+            return;
+        }
+
         // Keep login/register pages from showing when already authenticated
         if (isLoginPage || isRegisterPage) {
             window.location.href = "/dashboard.html";
