@@ -10,38 +10,6 @@ async function parseApiResponse(response) {
     return { error: text || "Unexpected server response" };
 }
 
-const PENDING_TOAST_KEY = "donezo:pending-toast";
-
-function showToast({ message = "", type = "default", title = "", duration = 3000 } = {}) {
-    if (typeof Toast !== "undefined" && Toast && typeof Toast.show === "function") {
-        Toast.show({ message, type, title, duration });
-        return;
-    }
-
-    console.warn("Toast unavailable:", message);
-}
-
-function queueToastForNextPage(opts) {
-    try {
-        sessionStorage.setItem(PENDING_TOAST_KEY, JSON.stringify(opts));
-    } catch (error) {
-        console.error("Failed to queue toast:", error);
-    }
-}
-
-function flushQueuedToast() {
-    try {
-        const raw = sessionStorage.getItem(PENDING_TOAST_KEY);
-        if (!raw) return;
-
-        sessionStorage.removeItem(PENDING_TOAST_KEY);
-        showToast(JSON.parse(raw));
-    } catch (error) {
-        console.error("Failed to read queued toast:", error);
-        sessionStorage.removeItem(PENDING_TOAST_KEY);
-    }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOM Fully Loaded - JavaScript Running");
     flushQueuedToast();
