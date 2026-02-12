@@ -20,6 +20,10 @@ const REMEMBER_ME_MS = 14 * 24 * 60 * 60 * 1000;
 
 let appdata = [];
 
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET environment variable is required");
+}
+
 // Connect to MongoDB
 connectDB();
 
@@ -37,7 +41,7 @@ function ensureAuthenticated(req, res, next) {
 app.set("trust proxy", 1); // important on Vercel / proxies
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || "fallback_secret",
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   rolling: true,
@@ -68,21 +72,26 @@ app.use(express.static("public"));
 
 // Register Route
 app.post("/register", async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  try {
+    const { firstName, lastName, email, password } = req.body;
 
-  if (!firstName || !lastName || !email || !password) {
-    return res.status(400).json({ error: "Missing required fields" });
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) return res.status(400).json({ error: "Email already exists" });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await User.create({ firstName: firstName.trim(), lastName: lastName.trim(), email: normalizedEmail, passwordHash });
+
+    return res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    return res.status(500).json({ error: "Server error while registering user" });
   }
-
-  const normalizedEmail = email.toLowerCase().trim();
-  const existingUser = await User.findOne({ email: normalizedEmail });
-  if (existingUser) return res.status(400).json({ error: "Email already exists" });
-
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  await User.create({ firstName: firstName.trim(), lastName: lastName.trim(), email: normalizedEmail, passwordHash });
-
-  return res.status(201).json({ message: "User registered successfully" });
 });
 
 
@@ -94,19 +103,23 @@ app.post("/login", (req, res, next) => {
     if (err) return next(err);
     if (!user) return res.status(401).json({ error: info?.message || "Login failed" });
 
-    req.logIn(user, (loginErr) => {
-      if (loginErr) return next(loginErr);
+    req.session.regenerate((regenerateErr) => {
+      if (regenerateErr) return next(regenerateErr);
 
-      if (rememberMe) {
-        req.session.cookie.maxAge = REMEMBER_ME_MS;
-      } else {
-        // Keep a bounded persistent cookie to improve Safari/PWA reliability.
-        req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
-      }
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
 
-      return res.json({
-        message: "Logged in successfully",
-        user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+        if (rememberMe) {
+          req.session.cookie.maxAge = REMEMBER_ME_MS;
+        } else {
+          // Keep a bounded persistent cookie to improve Safari/PWA reliability.
+          req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+        }
+
+        return res.json({
+          message: "Logged in successfully",
+          user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+        });
       });
     });
   })(req, res, next);
@@ -114,7 +127,7 @@ app.post("/login", (req, res, next) => {
 
 
 // Logout Route
-app.get("/logout", (req, res) => {
+app.post("/logout", (req, res) => {
     req.logout((err) => {
         if (err) {
             return res.status(500).json({ error: "Error logging out" });
