@@ -547,12 +547,11 @@ input:focus{
   flex-direction: column;
 }
 
-/* Keep the form usable inside the sticky note */
+/* Keep the form usable inside the sticky note (no scrolling) */
 #create-task-widget .paper-form{
   flex: 1;
-  max-height: calc(100% - 40px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-height: none;
+  overflow: hidden;
 }
 
 /* Ensure inputs/selects fill the widget */
@@ -562,14 +561,25 @@ input:focus{
   background: transparent;
 }
 
-#create-task-widget .task-meta-row{
+/* Create Task layout: task top-left, due below-left, effort top-right, submit bottom-right */
+#create-task-widget .create-task-form-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  align-items: start;
+  grid-template-areas:
+    "task effort"
+    "due effort"
+    ". submit";
+  gap: 8px 10px;
+  align-content: stretch;
 }
 
-#create-task-widget .task-meta-row .paper-field{
+#create-task-widget .task-field{ grid-area: task; }
+#create-task-widget .due-field{ grid-area: due; }
+#create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; width: 140px; }
+
+#create-task-widget .task-field,
+#create-task-widget .due-field{
   margin-bottom: 0;
 }
 
@@ -922,13 +932,16 @@ input:focus{
     line-height: 1.2;
   }
 
-  #create-task-widget,
   #big-3-tasks,
   #focus-mode-widget,
   #daily-reflection,
   #weekly-reflection{
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  #create-task-widget{
+    overflow: hidden;
   }
 
   #create-task-widget .paper-form{
@@ -946,11 +959,7 @@ input:focus{
     font-size: 0.95rem;
   }
 
-  #create-task-widget .task-meta-row{
-    gap: 8px;
-  }
-
-  #create-task-widget .effort-options{
+    #create-task-widget .effort-options{
     gap: 6px;
   }
 
@@ -1054,8 +1063,18 @@ input:focus{
   #task-list-widget{ min-height: 380px; }
   #create-task-widget{ min-height: 320px; }
 
-  #create-task-widget .task-meta-row{
+  #create-task-widget .create-task-form-grid{
     grid-template-columns: 1fr;
+    grid-template-areas:
+      "task"
+      "due"
+      "effort"
+      "submit";
+  }
+
+  #create-task-widget #submitBtn{
+    justify-self: stretch;
+    width: 100%;
   }
 
   /* Keep focus mode content inside note */

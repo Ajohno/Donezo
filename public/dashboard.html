@@ -116,8 +116,8 @@
                 <i class="fa-solid fa-pen" style="color: #c6534e"></i>
                 New Task
               </h2>
-              <form id="taskForm" class="paper-form">
-                <div class="paper-field">
+              <form id="taskForm" class="paper-form create-task-form-grid">
+                <div class="paper-field task-field">
                   <label for="taskDescription">Task</label>
                   <input
                     id="taskDescription"
@@ -127,46 +127,45 @@
                     required
                   />
                 </div>
-                <div class="task-meta-row">
-                  <div class="paper-field">
-                    <label for="dueDate">Due Date</label>
-                    <input id="dueDate" type="date" name="dueDate" />
-                  </div>
 
-                  <div class="paper-field effort-field">
-                    <label>Effort Level (1–5)</label>
+                <div class="paper-field due-field">
+                  <label for="dueDate">Due Date</label>
+                  <input id="dueDate" type="date" name="dueDate" />
+                </div>
 
-                    <div class="effort-options" role="radiogroup" aria-label="Effort level">
-                      <label class="effort-option">
-                        <input type="radio" name="effortLevel" value="1" required>
-                        1
-                      </label>
+                <div class="paper-field effort-field">
+                  <label>Effort Level (1–5)</label>
 
-                      <label class="effort-option">
-                        <input type="radio" name="effortLevel" value="2">
-                        2
-                      </label>
+                  <div class="effort-options" role="radiogroup" aria-label="Effort level">
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="1" required>
+                      1
+                    </label>
 
-                      <label class="effort-option">
-                        <input type="radio" name="effortLevel" value="3" checked>
-                        3
-                      </label>
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="2">
+                      2
+                    </label>
 
-                      <label class="effort-option">
-                        <input type="radio" name="effortLevel" value="4">
-                        4
-                      </label>
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="3" checked>
+                      3
+                    </label>
 
-                      <label class="effort-option">
-                        <input type="radio" name="effortLevel" value="5">
-                        5
-                      </label>
-                    </div>
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="4">
+                      4
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="5">
+                      5
+                    </label>
                   </div>
                 </div>
 
                 <button id="submitBtn" class="paper-button" type="submit" >
-                  Pin it! 
+                  Pin it!
                 </button>
               </form>
             </div>
