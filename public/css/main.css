@@ -531,19 +531,9 @@ input:focus{
   height: auto;
 }
 
-/* Left column keeps task list full-height; right column stacks notes naturally */
+/* Left column keeps task list full-height */
 .board-grid > div:first-child #task-list-widget{
   flex: 1;
-}
-
-.board-grid > div:nth-child(2) #create-task-widget,
-.board-grid > div:nth-child(2) #big-3-tasks,
-.board-grid > div:nth-child(2) #focus-mode-widget{
-  flex: 0 0 auto;
-}
-
-.board-grid > div:nth-child(2) #reflection-section{
-  margin-top: auto;
 }
 
 
@@ -901,12 +891,29 @@ input:focus{
    ========================================================= */
 @media (min-width: 1024px){
   #task-list-widget{ height: 100% !important; }
-  #create-task-widget,
-  #big-3-tasks,
-  #focus-mode-widget{ height: auto !important; }
-  #reflection-section{ height: auto !important; }
+
+  /* Force right column widgets to fit entirely within corkboard height */
+  .board-grid > div:nth-child(2){
+    display: grid;
+    grid-template-rows: minmax(0, 1.35fr) minmax(0, 0.85fr) minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: 12px;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .board-grid > div:nth-child(2) #create-task-widget,
+  .board-grid > div:nth-child(2) #big-3-tasks,
+  .board-grid > div:nth-child(2) #focus-mode-widget,
+  .board-grid > div:nth-child(2) #reflection-section{
+    height: 100% !important;
+    min-height: 0;
+    margin: 0;
+  }
+
+  #reflection-section{ height: 100% !important; }
   #daily-reflection,
-  #weekly-reflection{ height: auto !important; }
+  #weekly-reflection{ height: 100% !important; }
 }
 
 
