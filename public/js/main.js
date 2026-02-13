@@ -2,8 +2,14 @@
 
 async function parseApiResponse(response) {
     const contentType = response.headers.get("content-type") || "";
+
     if (contentType.includes("application/json")) {
-        return response.json();
+        try {
+            return await response.json();
+        } catch (error) {
+            const fallbackText = await response.text().catch(() => "");
+            return { error: fallbackText || "Unexpected server response" };
+        }
     }
 
     const text = await response.text();
