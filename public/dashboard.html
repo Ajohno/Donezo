@@ -10,10 +10,10 @@
 
     <!-- iOS home screen icon -->
     <link rel="apple-touch-icon" href="donezo-logo.png" />
-
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/stickies.css" />
     <link rel="stylesheet" href="css/notification.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,80 +23,51 @@
 
     <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-    <script
-      src="https://kit.fontawesome.com/a076d05399.js"
-      crossorigin="anonymous"
-    ></script>
-    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
+    />
   </head>
   <body>
-    <header class="hero-header">
-      <h1>Donezo</h1>
-    </header>
+    
 
     <!-- Hidden until login -->
     <div id="main-section">
-      <nav id="main-menu" class="nav">
-  <!-- MOBILE: hamburger -->
-  <button class="nav__toggle" aria-label="Open menu" aria-controls="nav-drawer" aria-expanded="false">
-    ☰
-  </button>
+      
 
-  <!-- LEFT: Views (Desktop/Tablet) -->
-  <div class="nav__views">
-    <a href="/dashboard.html"><h3>Board</h3></a>
-    <h3>|</h3>
-    <a href="calendar-page.html"><h3>Calendar</h3></a>
+<!-- NEW NAV BAR -->
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo-container">
+      
+      <div class="logo-sticky">
+        
+        <div class="thumbtack">
+          <i class="fa-solid fa-thumbtack" style="color: rgba(237, 28, 28, 1.00);"></i>
+        </div>
+      </div>
+      <span class="brand-name">Stick A Pin</span>
+    </div>
     
+    <ul class="nav-links">
+      <li><a href="dashboard.html" class="nav-item active">Board</a></li>
+      <li><a href="calendar-page.html" class="nav-item">Calendar</a></li>
+      <li><a href="feedback-page.html" class="nav-item">Feedback</a></li>
+      <li><a href="settings-page.html" class="nav-item">Setting</a></li>
+      <li><a href="profile-page.html" class="nav-item">Profile</a></li>
+    </ul>
   </div>
 
-  <!-- MOBILE: view selector (shows only on phones)
-  <select class="nav__viewSelect" aria-label="Select view">
-    <option ><a href="index.html">Board</a></option>
-    <option ><a href="calendar-page.html">Calendar</a></option>
-  </select> -->
-
-  <!-- RIGHT: Utilities (Desktop/Tablet) -->
-  <div id="secondary-links" class="nav__utils">
-    <div id="nav-links" class="nav__utilsLinks">
-      <a href="feedback-page.html"><h4>Feedback</h4></a>
-      <h4>|</h4>
-      <a href="settings-page.html"><h4>Settings</h4></a>
-    </div>
-
-    <!-- <h4>|</h4> -->
-
-    <div id="task-counter">
-      <h4>
-        Tasks Left:
-        <span class="item-counter sticky-note thumbtack"></span>
-      </h4>
-    </div>
-
-    <h4 class="nav__greetingDivider">|</h4>
-
-    <a href="profile-page.html" class="nav__greeting">
-      <h4 id="authStatus"></h4>
+  <div class="nav-right">
+    <!-- The "Tasks Left" sticky note -->
+    <div class="">
+      <span class="tasks-count item-counter sticky-note "></span>
+      <span >Tasks Left | <span id="authStatus"></span></span>
+      
     </a>
-  </div>
-
-  <!-- MOBILE DRAWER -->
-  <div id="nav-drawer" class="nav__drawer" hidden>
-    <a href="/index.html" class="nav__drawerItem">Board</a>
-    <a href="calendar-page.html" class="nav__drawerItem">Calendar</a>
-
-    <div class="nav__drawerDivider"></div>
-
-    <div class="nav__drawerItem nav__drawerMeta">
-      Tasks Left: <span class="item-counter"></span>
     </div>
-
-    <a href="settings-page.html" class="nav__drawerItem">Settings</a>
-    <a href="feedback-page.html" class="nav__drawerItem">Feedback</a>
-    <button id="logoutBtn">Log Out</button>
   </div>
-  
-  <div id="nav-backdrop" class="nav__backdrop" hidden></div>
 </nav>
 
 
@@ -181,7 +152,7 @@
                 </div>
 
                 <button id="submitBtn" class="paper-button" type="submit" >
-                  Add Task
+                  Pin it!
                 </button>
               </form>
             </div>
@@ -218,13 +189,13 @@
             <!-- Reflection Notes -->
             <div id="reflection-section">
               <!-- Daily Reflection -->
-              <div id="daily-reflection" class="sticky-note blue tape">
+              <div id="daily-reflection" class="sticky-note white tape">
                 <h3 class="widget-title highlight-on-parent-hover">
                   Daily Relfection
                 </h3>
               </div>
               <!-- Weekly Reflection -->
-              <div id="weekly-reflection" class="sticky-note blue tape">
+              <div id="weekly-reflection" class="sticky-note white tape">
                 <h3 class="widget-title highlight-on-parent-hover">
                   Weekly Reflection
                 </h3>

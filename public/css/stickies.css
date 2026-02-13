@@ -76,11 +76,11 @@
    Modifier classes that change note color
    ============================================================ */
 .sticky-note.yellow {
-  --note-color: #fff3a4;
+  --note-color: #FFF9E1;
 }
 
 .sticky-note.blue {
-  --note-color: #cce5ff;
+  --note-color: #E3F2FD;
 }
 
 .sticky-note.green {
@@ -88,7 +88,7 @@
 }
 
 .sticky-note.pink {
-  --note-color: #ffd1dc;
+  --note-color: #FCE4EC;
 }
 
 .sticky-note.orange {
@@ -97,6 +97,10 @@
 
 .sticky-note.purple {
   --note-color: #e3d7ff;
+}
+
+.sticky-note.white {
+  --note-color: white;
 }
 
 /* ============================================================

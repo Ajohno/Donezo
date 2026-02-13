@@ -13,6 +13,11 @@
   /* Dashboard spacing (used by corkboard + grid) */
   --board-pad: clamp(12px, 2vw, 22px);
   --board-gap: clamp(12px, 2vw, 20px);
+  --nav-bg: #f9e4bb;
+  --text-black: #1A1A1A;
+  --accent-red: #D32F2F; /* The signature red */
+  --font-main: 'Inter', sans-serif; /* Modern font */
+  --font-handdrawn: 'Gochi Hand', cursive; /* Optional hand-drawn font for the logo/note */
 }
 
 /* Make width math sane across the app */
@@ -395,166 +400,6 @@ input:focus{
 }
 
 
-/* =========================================================
-   NAVBAR (DESKTOP BASE)
-   ========================================================= */
-#main-menu{
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 32px;
-  background-color: white;
-  width: 100%;
-  min-height: 10vh;
-  padding: 0 3%;
-}
-
-#main-menu a{
-  color: black;
-  text-decoration: none;
-  margin: 0;
-}
-
-#main-menu h2,
-#main-menu h3,
-#main-menu h4{
-  margin: 0;
-}
-
-#main-menu h3:hover,
-#main-menu h4:hover{
-  background: linear-gradient(
-    transparent 50%,
-    rgba(255, 145, 130, 0.65) 55%,
-    rgba(255, 145, 130, 0.55) 65%
-  );
-}
-
-#nav-links{
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
-}
-
-#secondary-links{
-  display: flex;
-  gap: 18px;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-
-/* =========================================================
-   NAVBAR (RESPONSIVE HOOKS + DRAWER)
-   ========================================================= */
-.nav__toggle{
-  display: none;
-  border: 0;
-  background: transparent;
-  font-size: 28px;
-  cursor: pointer;
-}
-
-.nav__views{ display: flex; gap: 5px; align-items: center; }
-.nav__utils{ display: flex; gap: 18px; align-items: center; justify-content: flex-end; }
-.nav__viewSelect{ display: none; }
-
-/* Backdrop behind drawer */
-.nav__backdrop{
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 9998;
-}
-
-/* Drawer panel */
-.nav__drawer{
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100dvh;
-  width: min(320px, 85vw);
-
-  /* Match your app vibe (paper) */
-  background: #c8b099;
-  border-right: 2px solid rgba(0,0,0,0.08);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-
-  padding: 18px 14px;
-  z-index: 9999;
-
-  /* Animation */
-  transform: translateX(-110%);
-  transition: transform 220ms ease;
-}
-
-.nav__drawer.is-open{
-  transform: translateX(0);
-}
-
-.nav__drawerItem{
-  display: block;
-  padding: 14px 10px;
-  border-radius: 10px;
-  text-decoration: none;
-  color: #222;
-}
-
-.nav__drawerItem:active{
-  transform: scale(0.99);
-}
-
-.nav__drawerDivider{
-  height: 1px;
-  background: rgba(0,0,0,0.15);
-  margin: 12px 0;
-}
-
-/* Tablet: hide greeting, push Feedback into less prominence */
-@media (max-width: 1023px){
-  .nav__greeting,
-  .nav__greetingDivider{
-    display: none;
-  }
-}
-
-/* Phone: collapse nav into hamburger + logo + view selector */
-@media (max-width: 767px){
-  #main-menu{
-    grid-template-columns: auto 1fr auto; /* toggle | spacer | viewSelect */
-    gap: 12px;
-    min-height: 64px;
-    padding: 0 10px;
-  }
-
-  /* Auth Section */
-  
-
-
-  #nav-links{
-    display: none;
-  }
-
-  .nav__toggle{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Hide desktop clusters */
-  .nav__views{ display: none; }
-  .nav__utils{ display: none; }
-
-  /* Show view selector */
-  .nav__viewSelect{
-    display: inline-block;
-    width: auto;
-    padding: 8px 10px;
-    border-radius: 8px;
-    max-width: 170px;
-  }
-}
 
 
 /* =========================================================
@@ -606,7 +451,7 @@ input:focus{
 
 /* Corkboard container (Desktop default: NOT scrollable) */
 .corkboard{
-  height: 70vh;
+  height: 100vh !important;
   width: 80vw;
   justify-self: center;
   padding: 2%;
@@ -631,7 +476,7 @@ input:focus{
   background-blend-mode: multiply;
 
   /* Frame */
-  border: 6px solid #000;
+  border: 6px solid #A67B4D;
   border-radius: 6px;
 }
 
