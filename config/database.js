@@ -2,6 +2,26 @@ const mongoose = require("mongoose");
 require("dotenv").config(); // Load environment variables
 
 let connectionPromise = null;
+let indexesChecked = false;
+
+async function cleanupLegacyUserIndexes(db) {
+    try {
+        const usersCollection = db.collection("users");
+        const indexes = await usersCollection.indexes();
+        const hasLegacyUsernameIndex = indexes.some((index) => index.name === "username_1");
+
+        if (hasLegacyUsernameIndex) {
+            await usersCollection.dropIndex("username_1");
+            console.log("🧹 Removed legacy users.username_1 index");
+        }
+    } catch (error) {
+        // Ignore missing collection/index races, surface everything else
+        const ignorable = ["NamespaceNotFound", "IndexNotFound"];
+        if (!ignorable.includes(error?.codeName)) {
+            throw error;
+        }
+    }
+}
 
 // Connect to the database
 const connectDB = async () => {
@@ -20,8 +40,14 @@ const connectDB = async () => {
 
     connectionPromise = mongoose
         .connect(process.env.MONGO_URI)
-        .then((connection) => {
+        .then(async (connection) => {
             console.log("✅ MongoDB Connected Successfully!");
+
+            if (!indexesChecked) {
+                await cleanupLegacyUserIndexes(connection.connection.db);
+                indexesChecked = true;
+            }
+
             return connection;
         })
         .catch((err) => {

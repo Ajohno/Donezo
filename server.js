@@ -100,7 +100,14 @@ app.post("/register", async (req, res) => {
     console.error("Error registering user:", error);
 
     if (error && error.code === 11000) {
-      return res.status(400).json({ error: "Email already exists" });
+      const duplicateFields = Object.keys(error.keyPattern || {});
+      const duplicateField = duplicateFields[0] || Object.keys(error.keyValue || {})[0] || "field";
+
+      if (duplicateField === "email") {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+
+      return res.status(400).json({ error: `A duplicate value exists for ${duplicateField}` });
     }
 
     if (error && error.name === "ValidationError") {
