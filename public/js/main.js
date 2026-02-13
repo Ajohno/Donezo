@@ -305,6 +305,19 @@ function updateTaskList(tasks) {
     const taskTemplate = document.querySelector("#task-template");
     tasks = Array.isArray(tasks) ? tasks : [];
 
+    const sortedTasks = tasks.slice().sort((a, b) => {
+        const aCompleted = a.status === "completed";
+        const bCompleted = b.status === "completed";
+
+        if (aCompleted !== bCompleted) {
+            return aCompleted ? 1 : -1;
+        }
+
+        const aCreated = new Date(a.createdAt || 0).getTime();
+        const bCreated = new Date(b.createdAt || 0).getTime();
+        return bCreated - aCreated;
+    });
+
     if (!listOfTasks) {
         return; // Avoid errors on pages without the dashboard
     }
@@ -315,7 +328,7 @@ function updateTaskList(tasks) {
 
     listOfTasks.innerHTML = ""; // Clear existing task list
 
-    tasks.forEach((task) => {
+    sortedTasks.forEach((task) => {
         const clone = taskTemplate.content.cloneNode(true);
         const taskItem = clone.querySelector(".task-item");
         const taskText = clone.querySelector(".task-text");
