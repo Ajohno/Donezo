@@ -446,7 +446,7 @@ input:focus{
 /* =========================================================
    DASHBOARD LAYOUT
    - corkboard = board container
-   - board-grid = 3 columns desktop, collapses on smaller screens
+   - board-grid = 2 columns desktop, collapses on smaller screens
    ========================================================= */
 
 /* Corkboard container (Desktop default: NOT scrollable) */
@@ -483,7 +483,7 @@ input:focus{
 /* Main grid */
 .board-grid{
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   column-gap: 5%;
   row-gap: var(--board-gap);
   height: 100%;
@@ -511,7 +511,7 @@ input:focus{
 /* Right column: Focus mode sits above reflections */
 .board-grid #focus-mode-widget{
   height: auto;
-  flex: 0 0 35%;
+  flex: 0 0 auto;
   margin-bottom: 8px;
 }
 
@@ -529,6 +529,21 @@ input:focus{
   flex: 1;
   min-height: 0;
   height: auto;
+}
+
+/* Left column keeps task list full-height; right column stacks notes naturally */
+.board-grid > div:first-child #task-list-widget{
+  flex: 1;
+}
+
+.board-grid > div:nth-child(2) #create-task-widget,
+.board-grid > div:nth-child(2) #big-3-tasks,
+.board-grid > div:nth-child(2) #focus-mode-widget{
+  flex: 0 0 auto;
+}
+
+.board-grid > div:nth-child(2) #reflection-section{
+  margin-top: auto;
 }
 
 
@@ -870,12 +885,13 @@ input:focus{
    - keep your “board proportions” without breaking mobile
    ========================================================= */
 @media (min-width: 1024px){
-  #big-3-tasks{ height: 50% !important; }
-  #focus-mode-widget{ height: 50% !important; }
-  #reflection-section{ height: 80% !important; }
-  #daily-reflection{ height: 50% !important; }
-  #weekly-reflection{ height: 50% !important; }
-  #create-task-widget{ height: 50% !important; }
+  #task-list-widget{ height: 100% !important; }
+  #create-task-widget,
+  #big-3-tasks,
+  #focus-mode-widget{ height: auto !important; }
+  #reflection-section{ height: auto !important; }
+  #daily-reflection,
+  #weekly-reflection{ height: auto !important; }
 }
 
 
