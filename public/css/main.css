@@ -572,6 +572,21 @@ input:focus{
   background: transparent;
 }
 
+#create-task-widget .task-meta-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+#create-task-widget .task-meta-row .paper-field{
+  margin-bottom: 0;
+}
+
+#create-task-widget .effort-field .effort-options{
+  margin-top: 4px;
+}
+
 /* Effort selector (radio chips) */
 .effort-options{
   display: flex;
@@ -968,6 +983,10 @@ input:focus{
 
   #task-list-widget{ min-height: 380px; }
   #create-task-widget{ min-height: 320px; }
+
+  #create-task-widget .task-meta-row{
+    grid-template-columns: 1fr;
+  }
 
   /* Keep focus mode content inside note */
   #focus-mode-widget{

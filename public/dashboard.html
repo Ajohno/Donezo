@@ -127,39 +127,41 @@
                     required
                   />
                 </div>
-                <div class="paper-field">
-                  <label for="dueDate">Due Date</label>
-                  <input id="dueDate" type="date" name="dueDate" />
-                </div>
-                
-                <div class="paper-field">
-                  <label>Effort Level (1 being easy and 5 being heavy)</label>
+                <div class="task-meta-row">
+                  <div class="paper-field">
+                    <label for="dueDate">Due Date</label>
+                    <input id="dueDate" type="date" name="dueDate" />
+                  </div>
 
-                  <div class="effort-options" role="radiogroup" aria-label="Effort level">
-                    <label class="effort-option">
-                      <input type="radio" name="effortLevel" value="1" required>
-                      1
-                    </label>
+                  <div class="paper-field effort-field">
+                    <label>Effort Level (1–5)</label>
 
-                    <label class="effort-option">
-                      <input type="radio" name="effortLevel" value="2">
-                      2
-                    </label>
+                    <div class="effort-options" role="radiogroup" aria-label="Effort level">
+                      <label class="effort-option">
+                        <input type="radio" name="effortLevel" value="1" required>
+                        1
+                      </label>
 
-                    <label class="effort-option">
-                      <input type="radio" name="effortLevel" value="3" checked>
-                      3
-                    </label>
+                      <label class="effort-option">
+                        <input type="radio" name="effortLevel" value="2">
+                        2
+                      </label>
 
-                    <label class="effort-option">
-                      <input type="radio" name="effortLevel" value="4">
-                      4
-                    </label>
+                      <label class="effort-option">
+                        <input type="radio" name="effortLevel" value="3" checked>
+                        3
+                      </label>
 
-                    <label class="effort-option">
-                      <input type="radio" name="effortLevel" value="5">
-                      5
-                    </label>
+                      <label class="effort-option">
+                        <input type="radio" name="effortLevel" value="4">
+                        4
+                      </label>
+
+                      <label class="effort-option">
+                        <input type="radio" name="effortLevel" value="5">
+                        5
+                      </label>
+                    </div>
                   </div>
                 </div>
 
