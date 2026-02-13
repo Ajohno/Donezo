@@ -911,6 +911,69 @@ input:focus{
     margin: 0;
   }
 
+  /* Right-column content sizing so all widget content stays visible cleanly */
+  .board-grid > div:nth-child(2) .sticky-note{
+    padding: 0.72rem;
+  }
+
+  .board-grid > div:nth-child(2) .widget-title{
+    margin-bottom: 0.4rem;
+    font-size: clamp(1rem, 1.2vw, 1.25rem);
+    line-height: 1.2;
+  }
+
+  #create-task-widget,
+  #big-3-tasks,
+  #focus-mode-widget,
+  #daily-reflection,
+  #weekly-reflection{
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  #create-task-widget .paper-form{
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  #create-task-widget .paper-field label{
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  #create-task-widget .paper-form input{
+    padding: 8px 10px;
+    font-size: 0.95rem;
+  }
+
+  #create-task-widget .task-meta-row{
+    gap: 8px;
+  }
+
+  #create-task-widget .effort-options{
+    gap: 6px;
+  }
+
+  #create-task-widget .effort-option{
+    padding: 6px 9px;
+    font-size: 0.9rem;
+  }
+
+  #create-task-widget #submitBtn{
+    margin-top: 4px;
+    padding: 10px 0;
+  }
+
+  #focus-mode-widget p{
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+  }
+
+  #focus-button{
+    width: min(170px, 70%);
+    margin-top: 6px;
+  }
+
   #reflection-section{ height: 100% !important; }
   #daily-reflection,
   #weekly-reflection{ height: 100% !important; }
