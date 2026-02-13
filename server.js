@@ -25,7 +25,17 @@ if (!process.env.SESSION_SECRET) {
 }
 
 // Connect to MongoDB
-connectDB();
+const dbReady = connectDB();
+
+app.use(async (req, res, next) => {
+  try {
+    await dbReady;
+    return next();
+  } catch (error) {
+    console.error("Database unavailable for request", error);
+    return res.status(503).json({ error: "Service temporarily unavailable" });
+  }
+});
 
 // Middleware -----------------------------------------------------------------------------------
 
