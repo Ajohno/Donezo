@@ -446,7 +446,7 @@ input:focus{
 /* =========================================================
    DASHBOARD LAYOUT
    - corkboard = board container
-   - board-grid = 3 columns desktop, collapses on smaller screens
+   - board-grid = 2 columns desktop, collapses on smaller screens
    ========================================================= */
 
 /* Corkboard container (Desktop default: NOT scrollable) */
@@ -483,7 +483,7 @@ input:focus{
 /* Main grid */
 .board-grid{
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   column-gap: 5%;
   row-gap: var(--board-gap);
   height: 100%;
@@ -511,7 +511,7 @@ input:focus{
 /* Right column: Focus mode sits above reflections */
 .board-grid #focus-mode-widget{
   height: auto;
-  flex: 0 0 35%;
+  flex: 0 0 auto;
   margin-bottom: 8px;
 }
 
@@ -531,6 +531,11 @@ input:focus{
   height: auto;
 }
 
+/* Left column keeps task list full-height */
+.board-grid > div:first-child #task-list-widget{
+  flex: 1;
+}
+
 
 /* =========================================================
    DASHBOARD WIDGETS
@@ -542,12 +547,11 @@ input:focus{
   flex-direction: column;
 }
 
-/* Keep the form usable inside the sticky note */
+/* Keep the form usable inside the sticky note (no scrolling) */
 #create-task-widget .paper-form{
   flex: 1;
-  max-height: calc(100% - 40px);
-  overflow-y: auto;
-  overflow-x: hidden;
+  max-height: none;
+  overflow: hidden;
 }
 
 /* Ensure inputs/selects fill the widget */
@@ -555,6 +559,32 @@ input:focus{
 #create-task-widget .paper-form select{
   width: 100%;
   background: transparent;
+}
+
+/* Create Task layout: task top-left, due below-left, effort top-right, submit bottom-right */
+#create-task-widget .create-task-form-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "task effort"
+    "due effort"
+    ". submit";
+  gap: 8px 10px;
+  align-content: stretch;
+}
+
+#create-task-widget .task-field{ grid-area: task; }
+#create-task-widget .due-field{ grid-area: due; }
+#create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 0; width: 140px; }
+
+#create-task-widget .task-field,
+#create-task-widget .due-field{
+  margin-bottom: 0;
+}
+
+#create-task-widget .effort-field .effort-options{
+  margin-top: 4px;
 }
 
 /* Effort selector (radio chips) */
@@ -870,12 +900,93 @@ input:focus{
    - keep your “board proportions” without breaking mobile
    ========================================================= */
 @media (min-width: 1024px){
-  #big-3-tasks{ height: 50% !important; }
-  #focus-mode-widget{ height: 50% !important; }
-  #reflection-section{ height: 80% !important; }
-  #daily-reflection{ height: 50% !important; }
-  #weekly-reflection{ height: 50% !important; }
-  #create-task-widget{ height: 50% !important; }
+  #task-list-widget{ height: 100% !important; }
+
+  /* Force right column widgets to fit entirely within corkboard height */
+  .board-grid > div:nth-child(2){
+    display: grid;
+    grid-template-rows: minmax(0, 1.55fr) minmax(0, 0.78fr) minmax(0, 0.78fr) minmax(0, 0.9fr);
+    gap: 16px;
+    height: 100%;
+    min-height: 0;
+    padding-top: 14px;
+    overflow: visible;
+  }
+
+  .board-grid > div:nth-child(2) #create-task-widget,
+  .board-grid > div:nth-child(2) #big-3-tasks,
+  .board-grid > div:nth-child(2) #focus-mode-widget,
+  .board-grid > div:nth-child(2) #reflection-section{
+    height: 100% !important;
+    min-height: 0;
+    margin: 0;
+  }
+
+  /* Right-column content sizing so all widget content stays visible cleanly */
+  .board-grid > div:nth-child(2) .sticky-note{
+    padding: 0.72rem;
+  }
+
+  .board-grid > div:nth-child(2) .widget-title{
+    margin-bottom: 0.4rem;
+    font-size: clamp(1rem, 1.2vw, 1.25rem);
+    line-height: 1.2;
+  }
+
+  #big-3-tasks,
+  #focus-mode-widget,
+  #daily-reflection,
+  #weekly-reflection{
+    overflow-y: visible;
+    overflow-x: visible;
+  }
+
+  #create-task-widget{
+    overflow: visible;
+  }
+
+  #create-task-widget .paper-form{
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  #create-task-widget .paper-field label{
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  #create-task-widget .paper-form input{
+    padding: 8px 10px;
+    font-size: 0.95rem;
+  }
+
+    #create-task-widget .effort-options{
+    gap: 6px;
+  }
+
+  #create-task-widget .effort-option{
+    padding: 6px 9px;
+    font-size: 0.9rem;
+  }
+
+  #create-task-widget #submitBtn{
+    margin-top: 4px;
+    padding: 10px 0;
+  }
+
+  #focus-mode-widget p{
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+  }
+
+  #focus-button{
+    width: min(170px, 70%);
+    margin-top: 6px;
+  }
+
+  #reflection-section{ height: 100% !important; }
+  #daily-reflection,
+  #weekly-reflection{ height: 100% !important; }
 }
 
 
@@ -952,6 +1063,20 @@ input:focus{
 
   #task-list-widget{ min-height: 380px; }
   #create-task-widget{ min-height: 320px; }
+
+  #create-task-widget .create-task-form-grid{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "task"
+      "due"
+      "effort"
+      "submit";
+  }
+
+  #create-task-widget #submitBtn{
+    justify-self: stretch;
+    width: 100%;
+  }
 
   /* Keep focus mode content inside note */
   #focus-mode-widget{

@@ -108,16 +108,12 @@
             </div>
           </div>
 
-          <!-- Middle Column -->
+          <!-- Right Column -->
           <div>
             <!-- Create New Task -->
             <div id="create-task-widget" class="sticky-note blue thumbtack">
-              <h2 class="widget-title highlight-on-parent-hover">
-                <i class="fa-solid fa-pen" style="color: #c6534e"></i>
-                New Task
-              </h2>
-              <form id="taskForm" class="paper-form">
-                <div class="paper-field">
+              <form id="taskForm" class="paper-form create-task-form-grid">
+                <div class="paper-field task-field">
                   <label for="taskDescription">Task</label>
                   <input
                     id="taskDescription"
@@ -127,13 +123,14 @@
                     required
                   />
                 </div>
-                <div class="paper-field">
+
+                <div class="paper-field due-field">
                   <label for="dueDate">Due Date</label>
                   <input id="dueDate" type="date" name="dueDate" />
                 </div>
-                
-                <div class="paper-field">
-                  <label>Effort Level (1 being easy and 5 being heavy)</label>
+
+                <div class="paper-field effort-field">
+                  <label>Effort Level (1–5)</label>
 
                   <div class="effort-options" role="radiogroup" aria-label="Effort level">
                     <label class="effort-option">
@@ -164,7 +161,7 @@
                 </div>
 
                 <button id="submitBtn" class="paper-button" type="submit" >
-                  Pin it! 
+                  Pin it!
                 </button>
               </form>
             </div>
@@ -177,10 +174,7 @@
                 Big 3 Tasks
               </h2>
             </div>
-          </div>
 
-          <!-- Right Column -->
-          <div>
             <!-- Focus Mode Widget -->
             <div id="focus-mode-widget" class="sticky-note blue thumbtack">
               <h3 class="widget-title highlight-on-parent-hover">Focus Mode</h3>
