@@ -1,0 +1,70 @@
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: var(--nav-bg);
+  height: 70px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle depth */
+  font-family: var(--font-main);
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+/* Logo Section */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-black);
+}
+
+/* Navigation Links */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: var(--text-black);
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-item.active {
+  color: var(--accent-red);
+  text-decoration: underline var(--accent-red) 2px;
+}
+
+.nav-item:hover {
+  color: var(--accent-red);
+}
+
+
+.tasks-count {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--accent-red);
+}
+
+.tasks-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-black);
+  font-weight: 600;
+  margin-top: 2px;
+}

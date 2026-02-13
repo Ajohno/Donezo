@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Stick A Pin</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="js/notification.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+
+    <!-- iOS home screen icon -->
+    <link rel="apple-touch-icon" href="donezo-logo.png" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/stickies.css" />
+    <link rel="stylesheet" href="css/notification.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- get rid of favicon error -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    
+
+    <!-- Hidden until login -->
+    <div id="main-section">
+      
+
+<!-- NEW NAV BAR -->
+<nav class="navbar">
+  <div class="nav-left">
+    <div class="logo-container">
+      
+      <div class="logo-sticky">
+        
+        <div class="thumbtack">
+          <i class="fa-solid fa-thumbtack" style="color:#c6534e;"></i>
+        </div>
+      </div>
+      <span class="brand-name">Stick A Pin</span>
+    </div>
+    
+    <ul class="nav-links">
+      <li><a href="dashboard.html" class="nav-item active">Board</a></li>
+      <li><a href="calendar-page.html" class="nav-item">Calendar</a></li>
+      <li><a href="feedback-page.html" class="nav-item">Feedback</a></li>
+      <li><a href="settings-page.html" class="nav-item">Setting</a></li>
+      <li><a href="profile-page.html" class="nav-item">Profile</a></li>
+      <li><a href="#" id="logoutBtn" class="nav-item">Logout</a></li>
+    </ul>
+  </div>
+
+  <div class="nav-right">
+    <!-- The "Tasks Left" sticky note -->
+    <div class="">
+      <span class="tasks-count item-counter sticky-note "></span>
+      <span >
+        Tasks Left 
+        | 
+        <span id="authStatus"></span>
+        
+      </span>
+    </div>
+  </div>
+</nav>
+
+
+      <div class="corkboard">
+        <!-- Dashboard -->
+        <div class="board-grid">
+          <!-- Left Column -->
+          <div>
+            <!-- Task List -->
+            <div id="task-list-widget" class="sticky-note thumbtack task-note">
+              <h2 class="widget-title highlight-on-parent-hover">
+                <i class="fa-solid fa-list" style="color: #c6534e;"></i>
+                Task List
+              </h2>
+
+              <ul class="task-list scrollable"></ul>
+              <template id="task-template">
+                <li class="task-item">
+                  <label class="checkbox-container">
+                    <input type="checkbox" class="task-check" />
+                    <span class="checkmark"></span>
+                    <span class="task-text"></span>
+                  </label>
+                  <div class="task-meta">
+                    <span class="task-due"></span>
+                    <span class="task-effort">
+                      <span class="dot"></span><span class="dot"></span>
+                      <span class="dot"></span><span class="dot"></span>
+                      <span class="dot"></span>
+                    </span>
+                  </div>
+                </li>
+              </template>
+            </div>
+          </div>
+
+          <!-- Middle Column -->
+          <div>
+            <!-- Create New Task -->
+            <div id="create-task-widget" class="sticky-note blue thumbtack">
+              <h2 class="widget-title highlight-on-parent-hover">
+                <i class="fa-solid fa-pen" style="color: #c6534e"></i>
+                New Task
+              </h2>
+              <form id="taskForm" class="paper-form">
+                <div class="paper-field">
+                  <label for="taskDescription">Task</label>
+                  <input
+                    id="taskDescription"
+                    type="text"
+                    name="description"
+                    placeholder="What do you need to do?"
+                    required
+                  />
+                </div>
+                <div class="paper-field">
+                  <label for="dueDate">Due Date</label>
+                  <input id="dueDate" type="date" name="dueDate" />
+                </div>
+                
+                <div class="paper-field">
+                  <label>Effort Level (1 being easy and 5 being heavy)</label>
+
+                  <div class="effort-options" role="radiogroup" aria-label="Effort level">
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="1" required>
+                      1
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="2">
+                      2
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="3" checked>
+                      3
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="4">
+                      4
+                    </label>
+
+                    <label class="effort-option">
+                      <input type="radio" name="effortLevel" value="5">
+                      5
+                    </label>
+                  </div>
+                </div>
+
+                <button id="submitBtn" class="paper-button" type="submit" >
+                  Pin it! 
+                </button>
+              </form>
+            </div>
+
+            <!-- Big 3 Tasks -->
+            <div id="big-3-tasks" class="sticky-note pink thumbtack">
+              
+              <h2 class="widget-title highlight-on-parent-hover">
+                <i class="fa-solid fa-star" style="color: #c6534e;"></i>
+                Big 3 Tasks
+              </h2>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div>
+            <!-- Focus Mode Widget -->
+            <div id="focus-mode-widget" class="sticky-note blue thumbtack">
+              <h3 class="widget-title highlight-on-parent-hover">Focus Mode</h3>
+              <p>
+                Focus on one task at a time!
+              </p>
+                <!-- Timer icon -->
+              </p>
+
+              <div id="focus-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                  <!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+                  <path
+                    d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            <!-- Reflection Notes -->
+            <div id="reflection-section">
+              <!-- Daily Reflection -->
+              <div id="daily-reflection" class="sticky-note white tape">
+                <h3 class="widget-title highlight-on-parent-hover">
+                  Daily Relfection
+                </h3>
+              </div>
+              <!-- Weekly Reflection -->
+              <div id="weekly-reflection" class="sticky-note white tape">
+                <h3 class="widget-title highlight-on-parent-hover">
+                  Weekly Reflection
+                </h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script defer src="/_vercel/insights/script.js"></script>
+
+    <div
+      id="toast"
+      class="toast toast--default"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      hidden
+    >
+      <div class="toast__icon" aria-hidden="true">i</div>
+      <div class="toast__content">
+        <div id="toastTitle" class="toast__title" hidden></div>
+        <div id="toastMessage" class="toast__message"></div>
+      </div>
+      <button
+        id="toastClose"
+        class="toast__close"
+        type="button"
+        aria-label="Close notification"
+      >
+        ×
+      </button>
+      <div class="toast__progress"></div>
+    </div>
+    
+  </body>
+</html>

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <title>Donezo</title>
+    <title>Stick A Pin</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
     <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
 
     <!-- iOS home screen icon -->
@@ -18,6 +18,7 @@
       href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- get rid of favicon error -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
@@ -29,24 +30,22 @@
   </head>
   <body>
     <header class="hero-header">
-      <h1>Donezo</h1>
+      <h1>Stick A Pin</h1>
     </header>
 
     <section id="auth-section">
       <div class="paper-header">
-        <h2>Welcome to Donezo!</h2>
-        <p style="justify-self: center; width: 30%">
+        <h2>Welcome to Stick A Pin!</h2>
+        <p>
           A gentle place to focus, one task at a time. No pressure. No guilt.
           Just progress.
         </p>
       </div>
-      <div
-        style="display: flex; justify-content: center; gap: 10%; margin-top: 4%"
-      >
-        <!-- Login auth section -->
-        <div style="width: 20vw; height: 35vh" class="sticky-note thumbtack">
+      <div style="display: flex; margin-top: 5%; gap: 5%">
+        <!-- Login auth stickynote -->
+        <div id="auth-note" class="sticky-note thumbtack">
           <div class="paper-header">
-            <h3 style="justify-self: center; width: 10vw">
+            <h3>
               Already have
               <span style="text-decoration: underline">an account?</span>
             </h3>
@@ -54,8 +53,8 @@
             <a class="paper-button" href="/login.html">Log In</a>
           </div>
         </div>
-        <!-- Register auth section -->
-        <div style="width: 20vw; height: 35vh" class="sticky-note thumbtack">
+        <!-- Register auth stickynote -->
+        <div id="auth-note" class="sticky-note thumbtack">
           <div class="paper-header">
             <h3 style="text-decoration: underline">New here?</h3>
             <p>Let's set up your board together.</p>
@@ -64,167 +63,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Hidden until login -->
-    <div class="hidden" id="main-section">
-      <nav id="main-menu">
-        <!-- Logo/Site Name -->
-        <div id="site-logo">
-          <a href="/index.html">
-            <img
-              src="assets/image/donezo-logo.png"
-              alt="Donezo Logo"
-              style="height: 100%; width: auto"
-            />
-          </a>
-        </div>
-        <!-- Nav Links -->
-        <!-- Could be populated by a mongo db table with names and links -->
-        <div id="nav-links">
-          <div>
-            <a href=""> <h3>Calendar</h3></a>
-          </div>
-          <h3>|</h3>
-          <div>
-            <a href=""> <h3>Feedback</h3></a>
-          </div>
-          <h3>|</h3>
-          <div>
-            <a href=""> <h3>Settings</h3></a>
-          </div>
-        </div>
-
-        <!-- Profile Section -->
-        <div id="profile-section">
-          <!-- Tasks Left -->
-          <div id="task-counter">
-            <h3>
-              Tasks Left: <span><h3 class="item-counter"></h3></span>
-            </h3>
-          </div>
-
-          <!-- Profile Button -->
-          <div id="profile-button">
-            <h4 id="authStatus"></h4>
-          </div>
-
-          <!-- Logout Button -->
-          <button id="logoutBtn" class="paper-button">Log Out</button>
-        </div>
-      </nav>
-
-      <div class="corkboard">
-        <!-- Dashboard -->
-        <div class="board-grid">
-          <!-- Left Column -->
-          <div>
-            <!-- Task List -->
-            <div id="task-list-widget" class="sticky-note thumbtack task-note">
-              <h2 class="widget-title highlight-on-parent-hover">Task List</h2>
-
-              <ul class="task-list scrollable"></ul>
-              <template id="task-template">
-                <li class="task-item">
-                  <label class="task-row">
-                    <input type="checkbox" class="task-check" />
-                    <span class="task-text"></span>
-                  </label>
-                  <div class="task-meta">
-                    <span class="task-due"></span>
-                    <span class="task-effort">
-                      <span class="dot"></span><span class="dot"></span>
-                      <span class="dot"></span><span class="dot"></span>
-                    </span>
-                  </div>
-                </li>
-              </template>
-            </div>
-          </div>
-
-          <!-- Middle Column -->
-          <div>
-            <!-- Create New Task -->
-            <div id="create-task-widget" class="sticky-note blue thumbtack">
-              <h2 class="widget-title highlight-on-parent-hover">New Task</h2>
-              <form id="taskForm" class="paper-form">
-                <div class="paper-field">
-                  <label for="taskDescription">Task</label>
-                  <input
-                    id="taskDescription"
-                    type="text"
-                    name="description"
-                    placeholder="What do you need to do?"
-                    required
-                  />
-                </div>
-                <div class="paper-field">
-                  <label for="dueDate">Due Date</label>
-                  <input id="dueDate" type="date" name="dueDate" required />
-                </div>
-                <div class="paper-field">
-                  <label for="effortLevel">Effort (1-5)</label>
-                  <select id="effortLevel" name="effortLevel" required>
-                    <option value="1">1 - Light</option>
-                    <option value="2">2</option>
-                    <option value="3" selected>3 - Medium</option>
-                    <option value="4">4</option>
-                    <option value="5">5 - Heavy</option>
-                  </select>
-                </div>
-                <button id="submitBtn" class="paper-button" type="submit">
-                  Add Task
-                </button>
-              </form>
-            </div>
-
-            <!-- Big 3 Tasks -->
-            <div id="big-3-tasks" class="sticky-note pink thumbtack">
-              <h2 class="widget-title highlight-on-parent-hover">
-                Big 3 Tasks
-              </h2>
-            </div>
-          </div>
-
-          <!-- Right Column -->
-          <div>
-            <!-- Focus Mode Widget -->
-            <div id="focus-mode-widget" class="sticky-note blue thumbtack">
-              <h3 class="widget-title highlight-on-parent-hover">Focus Mode</h3>
-              <p>
-                Focus on one task at a time!
-              </p>
-                <!-- Timer icon -->
-              </p>
-
-              <div id="focus-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                  <!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                  <path
-                    d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            <!-- Reflection Notes -->
-            <div id="reflection-section">
-              <!-- Daily Reflection -->
-              <div id="daily-reflection" class="sticky-note blue tape">
-                <h3 class="widget-title highlight-on-parent-hover">
-                  Daily Relfection
-                </h3>
-              </div>
-              <!-- Weekly Reflection -->
-              <div id="weekly-reflection" class="sticky-note blue tape">
-                <h3 class="widget-title highlight-on-parent-hover">
-                  Weekly Reflection
-                </h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <script defer src="/_vercel/insights/script.js"></script>
   </body>
