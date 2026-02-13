@@ -387,8 +387,11 @@ function updateTaskList(tasks) {
 
         // Create an Edit button
         const editButton = document.createElement("button");
-        editButton.textContent = "Edit";
-        editButton.classList.add("edit-btn");
+        editButton.type = "button";
+        editButton.innerHTML = '<i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>';
+        editButton.classList.add("task-action-btn", "edit-btn");
+        editButton.setAttribute("aria-label", "Edit task");
+        editButton.title = "Edit";
 
         // Add event listener for editing a task
         editButton.addEventListener("click", async () => {
@@ -416,8 +419,11 @@ function updateTaskList(tasks) {
         
         // Create a Delete button
         const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.classList.add("delete-btn");
+        deleteButton.type = "button";
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
+        deleteButton.classList.add("task-action-btn", "delete-btn");
+        deleteButton.setAttribute("aria-label", "Delete task");
+        deleteButton.title = "Delete";
 
         // Add event listener for deleting a task
         deleteButton.addEventListener("click", async () => {

@@ -561,14 +561,13 @@ input:focus{
   background: transparent;
 }
 
-/* Create Task layout: task top-left, due below-left, effort top-right, submit bottom-right */
+/* Create Task layout: task top-left, effort top-right, due below-left, submit beside due */
 #create-task-widget .create-task-form-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "task effort"
-    "due effort"
-    ". submit";
+    "due submit";
   gap: 8px 10px;
   align-content: stretch;
 }
@@ -576,7 +575,7 @@ input:focus{
 #create-task-widget .task-field{ grid-area: task; }
 #create-task-widget .due-field{ grid-area: due; }
 #create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
-#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; width: 140px; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 0; width: 140px; }
 
 #create-task-widget .task-field,
 #create-task-widget .due-field{
@@ -730,6 +729,7 @@ input:focus{
 .task-item{
   margin-top: 0.6rem;
   padding-bottom: 0.5rem;
+  padding-right: 4rem;
   position: relative;
 }
 
@@ -747,6 +747,37 @@ input:focus{
     rgba(0,0,0,0.2),
     rgba(0,0,0,0.4)
   );
+}
+
+
+.task-actions{
+  position: absolute;
+  top: 0.2rem;
+  right: 0;
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.task-action-btn{
+  width: 1.7rem;
+  height: 1.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #E0C097;
+  border-radius: 6px;
+  background: transparent;
+  color: #5D4037;
+  cursor: pointer;
+  padding: 0;
+}
+
+.task-action-btn:hover{
+  background: rgba(224, 192, 151, 0.12);
+}
+
+.task-action-btn i{
+  font-size: 0.8rem;
 }
 
 .task-row{
@@ -905,11 +936,12 @@ input:focus{
   /* Force right column widgets to fit entirely within corkboard height */
   .board-grid > div:nth-child(2){
     display: grid;
-    grid-template-rows: minmax(0, 1.35fr) minmax(0, 0.85fr) minmax(0, 0.85fr) minmax(0, 1fr);
-    gap: 12px;
+    grid-template-rows: minmax(0, 1.55fr) minmax(0, 0.78fr) minmax(0, 0.78fr) minmax(0, 0.9fr);
+    gap: 16px;
     height: 100%;
     min-height: 0;
-    overflow: hidden;
+    padding-top: 14px;
+    overflow: visible;
   }
 
   .board-grid > div:nth-child(2) #create-task-widget,
@@ -936,12 +968,12 @@ input:focus{
   #focus-mode-widget,
   #daily-reflection,
   #weekly-reflection{
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow-y: visible;
+    overflow-x: visible;
   }
 
   #create-task-widget{
-    overflow: hidden;
+    overflow: visible;
   }
 
   #create-task-widget .paper-form{
