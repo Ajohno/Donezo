@@ -8,17 +8,32 @@ const passport = require("passport"); // Middleware for authentication
 const bcrypt = require("bcryptjs"); // Used to hash passwords
 const User = require("./config/models/user"); // User model for the database
 const Task = require("./config/models/task"); // Task model for the database
+const MongoStore = require("connect-mongo").default; // Store sessions in MongoDB
+
 
 require("dotenv").config(); // Loads environment variables
 require("./config/passport-config")(passport); // Configures Passport authentication
 
 const app = express();
 const port = process.env.PORT || 3000;
+const REMEMBER_ME_MS = 14 * 24 * 60 * 60 * 1000;
 
 let appdata = [];
 
+if (!process.env.SESSION_SECRET) {
+  throw new Error("SESSION_SECRET environment variable is required");
+}
+
 // Connect to MongoDB
-connectDB();
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    return next();
+  } catch (error) {
+    console.error("Database unavailable for request", error);
+    return res.status(503).json({ error: "Service temporarily unavailable" });
+  }
+});
 
 // Middleware -----------------------------------------------------------------------------------
 
@@ -31,11 +46,26 @@ function ensureAuthenticated(req, res, next) {
 }
 
 // Session Handling
+app.set("trust proxy", 1); // important on Vercel / proxies
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || "fallback_secret", // Encryption key
-    resave: false, // Don't save session if nothing has changed
-    saveUninitialized: false // Don't create session until something is stored
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  rolling: true,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI,
+    collectionName: "sessions",
+    ttl: 14 * 24 * 60 * 60 // 14 days
+  }),
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // https only in prod
+    sameSite: "lax",
+    maxAge: REMEMBER_ME_MS
+  }
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session()); // Enables persistent login sessions
@@ -50,35 +80,70 @@ app.use(express.static("public"));
 
 // Register Route
 app.post("/register", async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  try {
+    const { firstName, lastName, email, password } = req.body;
 
-  if (!firstName || !lastName || !email || !password) {
-    return res.status(400).json({ error: "Missing required fields" });
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) return res.status(400).json({ error: "Email already exists" });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    await User.create({ firstName: firstName.trim(), lastName: lastName.trim(), email: normalizedEmail, passwordHash });
+
+    return res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+    console.error("Error registering user:", error);
+
+    if (error && error.code === 11000) {
+      const duplicateFields = Object.keys(error.keyPattern || {});
+      const duplicateField = duplicateFields[0] || Object.keys(error.keyValue || {})[0] || "field";
+
+      if (duplicateField === "email") {
+        return res.status(400).json({ error: "Email already exists" });
+      }
+
+      return res.status(400).json({ error: `A duplicate value exists for ${duplicateField}` });
+    }
+
+    if (error && error.name === "ValidationError") {
+      return res.status(400).json({ error: "Invalid registration data" });
+    }
+
+    return res.status(500).json({ error: "Server error while registering user" });
   }
-
-  const normalizedEmail = email.toLowerCase().trim();
-  const existingUser = await User.findOne({ email: normalizedEmail });
-  if (existingUser) return res.status(400).json({ error: "Email already exists" });
-
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  await User.create({ firstName: firstName.trim(), lastName: lastName.trim(), email: normalizedEmail, passwordHash });
-
-  return res.status(201).json({ message: "User registered successfully" });
 });
 
 
 // Login Route
 app.post("/login", (req, res, next) => {
+  const { rememberMe } = req.body;
+
   passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
     if (!user) return res.status(401).json({ error: info?.message || "Login failed" });
 
-    req.logIn(user, (loginErr) => {
-      if (loginErr) return next(loginErr);
+    req.session.regenerate((regenerateErr) => {
+      if (regenerateErr) return next(regenerateErr);
 
-      return res.json({
-        message: "Logged in successfully",
-        user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+
+        if (rememberMe) {
+          req.session.cookie.maxAge = REMEMBER_ME_MS;
+        } else {
+          // Keep a bounded persistent cookie to improve Safari/PWA reliability.
+          req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
+        }
+
+        return res.json({
+          message: "Logged in successfully",
+          user: { id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+        });
       });
     });
   })(req, res, next);
@@ -86,12 +151,15 @@ app.post("/login", (req, res, next) => {
 
 
 // Logout Route
-app.get("/logout", (req, res) => {
+app.post("/logout", (req, res) => {
     req.logout((err) => {
         if (err) {
             return res.status(500).json({ error: "Error logging out" });
         }
-        res.json({ message: "Logged out successfully" });
+        req.session.destroy(() => {
+          res.clearCookie("connect.sid");
+          res.json({ message: "Logged out successfully" });
+        });
     });
 });
 
@@ -105,7 +173,13 @@ app.get("/", (req, res) => {
 // Handles the submit button
 app.post("/tasks", ensureAuthenticated, async (req, res) => {
   const { description, dueDate, effortLevel } = req.body;
-  const parsedDueDate = new Date(dueDate);
+  let parsedDueDate = null;
+  if (typeof dueDate === "string" && dueDate.trim() !== "") {
+    parsedDueDate = new Date(dueDate);
+    if (Number.isNaN(parsedDueDate.getTime())) {
+      return res.status(400).json({ error: "Invalid due date" });
+    }
+  }
 
   await Task.create({
     userId: req.user.id,
@@ -143,6 +217,27 @@ app.put("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
   await task.save();
   return res.json(task);
 });
+
+// Route to delete a task
+app.delete("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
+  try {
+    const deleted = await Task.findOneAndDelete({
+      _id: req.params.taskId,
+      userId: req.user.id, // important: only delete your own tasks
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    return res.json({ message: "Task deleted successfully" });
+    fetchTasks(); // Refresh the task list on the client side
+  } catch (err) {
+    console.error("Error deleting task:", err);
+    return res.status(500).json({ error: "Server error while deleting task" });
+  }
+});
+
 
 
 

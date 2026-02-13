@@ -1,0 +1,93 @@
+<head>
+  <title>Stick A Pin</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="js/main.js" defer></script>
+  <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+
+  <!-- iOS home screen icon -->
+  <link rel="apple-touch-icon" href="donezo-logo.png" />
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/stickies.css" />
+  <link rel="stylesheet" href="css/notification.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- get rid of favicon error -->
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <script
+    src="https://kit.fontawesome.com/a076d05399.js"
+    crossorigin="anonymous"
+  ></script>
+  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+</head>
+<header class="hero-header">
+  <h1>Donezo</h1>
+</header>
+<nav id="main-menu">
+  <!-- Logo/Site Name -->
+  <div id="site-logo">
+    <a href="/dashboard.html">
+      <h2>Board</h2>
+    </a>
+  </div>
+  <!-- Nav Links -->
+  <!-- Could be populated by a mongo db table with names and links -->
+  <div id="nav-links">
+    <div>
+      <a href="calendar-page.html"> <h3>Calendar</h3></a>
+    </div>
+    <h3>|</h3>
+    <div>
+      <a href="feedback-page.html"> <h3>Feedback</h3></a>
+    </div>
+    <h3>|</h3>
+    <div>
+      <a href="settings-page.html"> <h3>Settings</h3></a>
+    </div>
+  </div>
+
+  <!-- Profile Section -->
+  <div id="profile-section">
+    <!-- Tasks Left -->
+    <div id="task-counter">
+      <h3 style="font-weight: 100">
+        Tasks Left: <span class="item-counter sticky-note thumbtack"></span>
+      </h3>
+    </div>
+
+    <!-- Profile Button -->
+    <div id="profile-button">
+      <button id="logoutBtn">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<div
+  id="toast"
+  class="toast toast--default"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  hidden
+>
+  <div class="toast__icon" aria-hidden="true">i</div>
+  <div class="toast__content">
+    <div id="toastTitle" class="toast__title" hidden></div>
+    <div id="toastMessage" class="toast__message"></div>
+  </div>
+  <button
+    id="toastClose"
+    class="toast__close"
+    type="button"
+    aria-label="Close notification"
+  >
+    ×
+  </button>
+  <div class="toast__progress"></div>
+</div>

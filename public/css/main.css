@@ -4,492 +4,415 @@
    - Core typography, layout, auth UI, dashboard widgets, tasks
    ========================================================= */
 
+
 /* =========================================================
    GLOBAL BASE STYLES
-   - Sets default page background, text color, and font
+   - Page defaults, variables, and safe layout rules
    ========================================================= */
-body {
-    margin: 0;                    /* Remove default browser body margin */
-    background: #F4E6D3;          /* Warm paper-like background color */
-    color: #5B3A34;               /* Default text color (brown) */
-    font-family: "Itim", serif;   /* Playful handwritten font for the app */
+:root{
+  /* Dashboard spacing (used by corkboard + grid) */
+  --board-pad: clamp(12px, 2vw, 22px);
+  --board-gap: clamp(12px, 2vw, 20px);
+  --nav-bg: #f9e4bb;
+  --text-black: #1A1A1A;
+  --accent-red: #D32F2F; /* The signature red */
+  --font-main: 'Inter', sans-serif; /* Modern font */
+  --font-handdrawn: 'Gochi Hand', cursive; /* Optional hand-drawn font for the logo/note */
 }
 
-/* Utility class: force-hide any element (overrides other display rules) */
-.hidden {
-    display: none !important;
+/* Make width math sane across the app */
+*, *::before, *::after{
+  box-sizing: border-box;
+}
+
+/* Global safety net: prevent horizontal scroll */
+html, body{
+  width: 100%;
+  max-width: 100%;
+  /* overflow-x: hidden; */
+}
+
+body{
+  margin: 0;
+  background: #F4E6D3;
+  color: #5B3A34;
+  font-family: "Itim", serif;
+}
+
+/* Media never exceeds the viewport */
+img, svg, canvas, video{
+  max-width: 100%;
+  height: auto;
+}
+
+/* Utility: force-hide any element (overrides other display rules) */
+.hidden{
+  display: none !important;
 }
 
 /* =========================================================
-   HEADING STYLES
-   - Default heading typography + colors
+   Auth Section
    ========================================================= */
-h1 {
-    color: #C45D58;               /* Brand red/pink */
-    text-decoration: underline;   /* Underlined title style */
-    font-size: 72px;              /* Large hero heading */
-    margin: 0;                    /* Remove default spacing */
+
+#auth-section{
+  width: 100%;
+  height: auto;
+  display: grid;
+  justify-content: center;
 }
 
-h2 {
-    color:#E26D67;                /* Accent coral */
-    font-size: 40px;
-    padding: 0%;
-    font-family: "Itim", serif;
-}
+#auth-note{
+  /* width: clamp(25vw, 35vw, 40vw) ; */
+  height: auto;
 
-h3 {
-    color:#E26D67;                /* Accent coral */
-    font-size: 28px;
-    padding: 0%;
-    font-family: "Itim", serif;
+  
 }
 
 /* =========================================================
-   HERO HEADER / TOP BANNER
-   - Centered header section with soft shadow
+   Login Page
    ========================================================= */
-.hero-header {
-    background: #F3E2CD;                       /* Slightly different paper tone */
-    padding: 32px 0 16px;                      /* Top/bottom spacing */
-    text-align: center;                        /* Center heading text */
-    box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15); /* Soft drop shadow */
+#login-page{
+  text-align: center;
+  max-width: fit-content;
+  width: clamp(300px, 40vw, 400px);
+  justify-self: center;
 }
 
 
+/* =========================================================
+   Register Page
+   ========================================================= */
 
-
-
-
-
-
+#register-page{
+  text-align: center;
+  max-width: fit-content;
+  width: clamp(300px, 40vw, 400px);
+  justify-self: center;
+}
 
 
 
 /* =========================================================
-   STANDALONE AUTH PAGE STRUCTURE (BASE)
+   TEXT STYLES
+   - Default typography + colors
+   ========================================================= */
+h1{
+  color: #C45D58;
+  text-decoration: underline;
+  /* font-size: 72px; */
+  font-size: clamp(34px, 9vw, 72px);
+  margin: 0;
+}
+
+h2{
+  color:#E26D67;
+  /* font-size: 40px; */
+  font-size: clamp(24px, 6.5vw, 40px);
+  padding: 0;
+  font-family: "Itim", serif;
+}
+
+h3{
+  color:#E26D67;
+  /* font-size: 28px; */
+  font-size: clamp(10px, 5.4vw, 28px);
+  padding: 0;
+  font-family: "Itim", serif;
+}
+
+p{
+  margin: 4px 0 0;
+  font-size: clamp(14px, 4.5vw, 20px);
+  color: #7c594c;
+  width: fit-content;
+  justify-self: center;
+}
+
+
+/* =========================================================
+   HERO HEADER / TOP BANNER (index.html)
+   ========================================================= */
+.hero-header{
+  background: #F3E2CD;
+  padding: 1% 0;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(196, 109, 96, 0.15);
+}
+
+
+/* =========================================================
+   GLOBAL SCROLLBAR (Webkit)
+   ========================================================= */
+::-webkit-scrollbar{
+  width: 14px;
+}
+
+::-webkit-scrollbar-track{
+  background: #e6d8b8;
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb{
+  background: #c76a63;
+  border-radius: 16px 12px 18px 14px;
+  border: 3px solid #e6d8b8;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.08) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background: #b85a54;
+}
+
+
+/* =========================================================
+   STANDALONE AUTH PAGE STRUCTURE (login/register)
    - IMPORTANT: cork textures + thumbtacks/tape go in stickies.css
    ========================================================= */
-.cork-page {
-    min-height: 80vh;             /* Full viewport height */
-    display: flex;                 /* Center the paper card */
-    align-items: center;
-    justify-content: center;
-    padding: 32px 12px;            /* Breathing room on small screens */
-    color: #6b4b3f;
+.cork-page{
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 12px;
+  color: #6b4b3f;
 }
 
-
-
-
-
 /* Content wrapper sits above overlays */
-.paper-content {
-    position: relative;
-    z-index: 1;                    /* Keep text above any ::after overlays */
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
+.paper-content{
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: fit-content;
 }
 
 /* Brand header area inside paper */
-.paper-header {
-    text-align: center;
+.paper-header{
+  text-align: center;
+  /* max-width: fit-content; */
+  /* width: clamp(300px, 40vw, 400px); */
+  width: 100%;
+
 }
 
-.paper-header h1 {
-    font-size: 52px;
-    color: #c6534e;
-    text-decoration: underline;
-    margin: 10px 0 0;
+.paper-header h1{
+  /* font-size: 52px; */
+  color: #c6534e;
+  text-decoration: underline;
+  margin: 10px 0 0;
 }
 
-.paper-header p {
-    margin: 4px 0 0;
-    font-size: 24px;
-    color: #7c594c;
+.paper-header h3{
+  color:#E26D67;
+  /* font-size: 28px; */
+  padding: 0;
+  font-family: "Itim", serif;
+}
+
+.paper-header p{
+  margin: 4px 0 0;
+  /* font-size: 24px; */
+  color: #7c594c;
 }
 
 /* Form panel inside paper card */
-.paper-form {
-    background: transparent;
-    border: 1px solid #d4b9a3;
-    border-radius: 12px;
-    padding: 18px 18px 22px;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+.paper-form{
+  text-align: left;
+  background: transparent;
+  border: 1px solid #d4b9a3;
+  border-radius: 12px;
+  padding: 18px 18px 22px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.55);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 /* Form field grouping inside paper form */
-.paper-field label {
-    display: block;
-    font-size: 18px;
-    color: #7c594c;
-    margin-bottom: 6px;
+.paper-field label{
+  display: block;
+  /* justify-self: baseline; */
+  text-align: left;
+  font-size: 18px;
+  color: #7c594c;
+  margin-bottom: 6px;
 }
 
 /* Inputs inside paper form */
-.paper-field input {
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 17px;
-    border-radius: 8px;
-    border: 1px solid #c8b099;
-    background: linear-gradient(180deg, #f7f0df 0%, #f0e5cf 100%);
-    color: #5b3a34;
-    font-family: "Itim", serif;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    box-sizing: border-box;
+.paper-field input{
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 17px;
+  border-radius: 8px;
+  border: 1px solid #c8b099;
+  background: transparent;
+  color: #5b3a34;
+  font-family: "Itim", serif;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 }
 
-/* Focus ring for paper inputs */
-.paper-field input:focus {
-    outline: 2px solid #e38884;
-    box-shadow: 0 0 0 3px rgba(227,136,132,0.28);
+.paper-field input:focus{
+  outline: 2px solid #e38884;
+  box-shadow: 0 0 0 3px rgba(227,136,132,0.28);
 }
 
 /* Under-form actions row (checkbox + links) */
-.paper-actions {
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 16px;
-    color: #7c594c;
+.paper-actions{
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  /* font-size: 16px; */
+  color: #7c594c;
+  flex-wrap: wrap;
 }
 
-/* Links inside paper actions row */
-.paper-actions a {
-    color: #c6534e;
-    text-decoration: underline;
+.paper-actions .paper-aux{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.paper-actions a{
+  color: #c6534e;
+  text-decoration: underline;
 }
 
 /* Submit button inside paper form */
-.paper-button {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-    padding: 14px 0;
-    border: none;
-    border-radius: 18px 16px 20px 14px;
-    background:
-        linear-gradient(180deg, #d86f67 0%, #c65551 100%),
-        repeating-linear-gradient(
-            45deg,
-            rgba(255,255,255,0.05),
-            rgba(255,255,255,0.05) 2px,
-            transparent 2px,
-            transparent 4px
-        );
-    background-blend-mode: overlay;
-    color: white;
-    font-size: 20px;
-    font-family: "Itim", serif;
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
+.paper-button{
+  display: block;
+  /* width: clamp(10vw, 20vw, 50vw) !important; */
+  width: min(260px, 100%);
+  justify-self: center;
+  margin: 10px auto 0;
+  padding: 14px 0;
+  border: none;
+  border-radius: 18px 16px 20px 14px;
+  background:
+    linear-gradient(180deg, #d86f67 0%, #c65551 100%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.05),
+      rgba(255,255,255,0.05) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  background-blend-mode: overlay;
+  color: white !important;
+  font-family: "Itim", serif;
+  letter-spacing: 0.5px;
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.18);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.paper-button::before {
-    content: "";
-    position: absolute;
-    inset: 3px;
-    border: 2px solid rgba(0,0,0,0.25);
-    border-radius: 17px 14px 19px 13px;
-    pointer-events: none;
+
+
+.paper-button::before{
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 2px solid rgba(0,0,0,0.25);
+  border-radius: 17px 14px 19px 13px;
+  pointer-events: none;
 }
 
-.paper-button:hover {
-    transform: translateY(-1px) rotate(-0.3deg);
+.paper-button:hover{
+  transform: translateY(-1px) rotate(-0.3deg);
 }
 
-.paper-button:active {
-    transform: translateY(2px) rotate(0.4deg);
+.paper-button:active{
+  transform: translateY(2px) rotate(0.4deg);
 }
-
 
 /* Footer text under paper form */
-.paper-footer {
-    text-align: center;
-    color: #7c594c;
-    font-size: 17px;
+.paper-footer{
+  text-align: center;
+  color: #7c594c;
+  font-size: 17px;
 }
 
-.paper-footer a {
-    color: #c6534e;
-    text-decoration: underline;
-    font-weight: bold;
+.paper-footer a{
+  color: #c6534e;
+  text-decoration: underline;
+  font-weight: bold;
 }
 
 /* Checkbox row helper in paper theme */
-.paper-aux {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.paper-aux{
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Checkbox color in supported browsers */
-.paper-aux input[type="checkbox"] {
-    accent-color: #c6534e;
-    width: auto;
+.paper-aux input[type="checkbox"]{
+  accent-color: #c6534e;
+  width: auto;
 }
-
 
 
 /* =========================================================
    GLOBAL FORM ELEMENT STYLES (GENERAL PAGES)
-   NOTE: These affect ALL labels/inputs unless overridden
+   NOTE:
+   - These affect ALL labels/inputs unless overridden.
+   - Keep them lighter so they don't fight .paper-* inputs.
    ========================================================= */
-label {
-    color: #E26D67;
-    font-size: 24px;
-    font-family: "Itim", serif;
-    margin-left: 2%;
+label{
+  color: #E26D67;
+  font-size: 24px;
+  font-family: "Itim", serif;
+  /* margin-left: 2%; */
+  text-align: left;
 }
 
-/* Global inputs */
-input {
-    width: 500px;
-    padding: 10px;
-    font-size: 16px;
-    background-color: #E38884;
-    opacity: 50%;
-    margin-left: 2%;
-}
-
-input::placeholder {
-    color: black;
-    font-style: italic;
-    font-weight: bold;
-}
-
-/* Focus style for global inputs */
-input:focus {
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-    font-weight: bold;
-}
-
-/* Navbar */
-#main-menu{
-  display: flex;
-  gap: 15%;
-  /* background-color: #cfa36a; */
-  background-color: white;
-  width: 100%;
-  height: 15vh;
-  margin: 0%;
-  justify-self: center;
-  justify-items: center;
-}
-
-/* Links in the main menu */
-#main-menu a {
-  color: black;
-  text-decoration: none;
+/* General inputs (NOT the auth paper inputs) */
+input{
   
+  padding: 10px;
+  font-size: 16px;
+  background-color: #E38884;
+  opacity: 0.5;
+  margin-left: 2%;
 }
 
-#nav-links h3:hover {
-   background: linear-gradient(
-    transparent 50%,
-    rgba(255, 145, 130, 0.65) 55%,
-    rgba(255, 145, 130, 0.55) 65%
-  );
+input::placeholder{
+  color: black;
+  font-style: italic;
+  font-weight: bold;
+}
+
+input:focus{
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  font-weight: bold;
 }
 
 
-#profile-section {
-  display: flex;
-  gap: 10%;
-  height: 10vh;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-}
 
+
+/* =========================================================
+   DASHBOARD: WIDGET TITLES + HIGHLIGHT EFFECT
+   ========================================================= */
 .widget-title{
   text-decoration: underline;
   width: auto;
-  margin-top: 0%;
+  margin-top: 0;
   align-self: center;
 }
 
-#nav-links {
-  display: flex; 
-  gap: 20px; 
-  height: 10vh;
-  margin: auto;
-
-}
-
-/* Create new task section */
-#create-task-widget {
-  height: 50%; 
-  margin-bottom: 10%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Keep the form usable inside the sticky note */
-#create-task-widget .paper-form {
-  flex: 1;
-  max-height: calc(100% - 40px); /* leave room for title */
-  overflow-y: auto;
-}
-
-#create-task-widget .paper-form input,
-#create-task-widget .paper-form select {
-  width: 100%;
-}
-
-/* Big 3 Tasks Sections */
-#big-3-tasks {
-  height: 50%
-}
-
-/* Focus Mode Widget */
-#focus-mode-widget {
-  height: 50%; 
-  margin-bottom: 10%;
-  justify-items: center;
-}
-
-#focus-button{
-  width: 30%;
-  height: 30%;
-  margin: auto;
-  cursor: pointer;
-}
-
-/* Reflection Section */
-#reflection-section {
-  display: flex; 
-  height: 80%
-}
-
-/* Weekly Reflection sticky note */
-#daily-reflection {
-  height: 50%
-}
-
-#daily-reflection .widget-title {
-  font-weight: 200;
-  
-}
-
-#weekly-reflection {
-  height: 50%
-}
-
-#weekly-reflection .widget-title {
-  font-weight: 200;
-  
-}
-
-/* =========================================================
-   DASHBOARD LAYOUT: keep sticky notes inside corkboard only
-   ========================================================= */
-.corkboard {
-  overflow: hidden;
-}
-
-.board-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 5%;
-  height: 100%;
-  min-height: 0;
-}
-
-.board-grid > div {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 0;
-}
-
-.board-grid #task-list-widget,
-.board-grid #focus-mode-widget,
-.board-grid #big-3-tasks,
-.board-grid #create-task-widget,
-.board-grid #reflection-section {
-  flex: 1;
-  /* min-height: 0; */
-  margin-bottom: 0;
-}
-
-.board-grid #focus-mode-widget {
-  height: auto;
-  flex: 0 0 35%;
-  margin-bottom: 8px;
-}
-
-.board-grid #reflection-section {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  flex: 1;
-  min-height: 0;
-}
-
-.board-grid #daily-reflection,
-.board-grid #weekly-reflection {
-  flex: 1;
-  min-height: 0;
-  height: auto;
-}
-
-/* ============================================================
-   CORKBOARD BACKGROUND
-   Creates a corkboard texture using layered gradients
-   ============================================================ */
-.corkboard {
-    height: 70vh;
-    width: 80vw;
-    justify-self: center;
-    padding: 2%;
-
-    /* Base cork color */
-    background-color: #cfa36a;
-
-    /* Cork texture layers */
-    background-image:
-        radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%),
-        radial-gradient(circle at 75% 65%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 45%),
-        repeating-linear-gradient(
-        45deg,
-        rgba(255,255,255,0.04),
-        rgba(255,255,255,0.04) 2px,
-        rgba(0,0,0,0.04) 4px,
-        rgba(0,0,0,0.04) 6px
-        );
-
-    background-size: cover;
-    background-blend-mode: multiply;
-
-    /* Frame */
-    border: 6px solid #000;
-    border-radius: 6px;
-}
-
-
-.three-columns {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 5%;
-  height: 80%;
-
-}
-
-/* Highlighter Effect */
-
-.highlight {
+.highlight{
   background: linear-gradient(
     transparent 50%,
     rgba(255, 145, 130, 0.65) 55%,
@@ -497,9 +420,8 @@ input:focus {
   );
 }
 
-/* Highlight when the parent of the element with this class is hovered over */
 /* Highlight base (no ink initially) */
-.highlight-on-parent-hover {
+.highlight-on-parent-hover{
   --hl: rgba(255, 145, 130, 0.65);
 
   background-image: linear-gradient(
@@ -516,27 +438,302 @@ input:focus {
 }
 
 /* Parent hover triggers the highlight */
-.sticky-note:hover .highlight-on-parent-hover {
+.sticky-note:hover .highlight-on-parent-hover{
   background-size: 100% 100%;
 }
 
 
-.task-list {
+/* =========================================================
+   DASHBOARD LAYOUT
+   - corkboard = board container
+   - board-grid = 2 columns desktop, collapses on smaller screens
+   ========================================================= */
+
+/* Corkboard container (Desktop default: NOT scrollable) */
+.corkboard{
+  height: 100vh !important;
+  width: 80vw;
+  justify-self: center;
+  padding: 2%;
+  overflow: hidden;
+
+  /* Base cork color */
+  background-color: #cfa36a;
+
+  /* Cork texture layers */
+  background-image:
+    radial-gradient(circle at 15% 25%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 40%),
+    radial-gradient(circle at 75% 65%, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 45%),
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.04) 2px,
+      rgba(0,0,0,0.04) 4px,
+      rgba(0,0,0,0.04) 6px
+    );
+
+  background-size: cover;
+  background-blend-mode: multiply;
+
+  /* Frame */
+  border: 6px solid #A67B4D;
+  border-radius: 6px;
+}
+
+/* Main grid */
+.board-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 5%;
+  row-gap: var(--board-gap);
+  height: 100%;
+  min-height: 0;
+}
+
+.board-grid > div{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+/* Widget containers inside columns */
+.board-grid #task-list-widget,
+.board-grid #focus-mode-widget,
+.board-grid #big-3-tasks,
+.board-grid #create-task-widget,
+.board-grid #reflection-section{
+  flex: 1;
+  margin-bottom: 0;
+  min-height: 0;
+}
+
+/* Right column: Focus mode sits above reflections */
+.board-grid #focus-mode-widget{
+  height: auto;
+  flex: 0 0 auto;
+  margin-bottom: 8px;
+}
+
+/* Reflection section is a 2-column grid on desktop */
+.board-grid #reflection-section{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.board-grid #daily-reflection,
+.board-grid #weekly-reflection{
+  flex: 1;
+  min-height: 0;
+  height: auto;
+}
+
+/* Left column keeps task list full-height */
+.board-grid > div:first-child #task-list-widget{
+  flex: 1;
+}
+
+
+/* =========================================================
+   DASHBOARD WIDGETS
+   ========================================================= */
+
+/* Create Task widget (base behavior) */
+#create-task-widget{
+  display: flex;
+  flex-direction: column;
+}
+
+/* Keep the form usable inside the sticky note (no scrolling) */
+#create-task-widget .paper-form{
+  flex: 1;
+  max-height: none;
+  overflow: hidden;
+}
+
+/* Ensure inputs/selects fill the widget */
+#create-task-widget .paper-form input,
+#create-task-widget .paper-form select{
+  width: 100%;
+  background: transparent;
+}
+
+/* Create Task layout: task top-left, effort top-right, due below-left, submit beside due */
+#create-task-widget .create-task-form-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "task effort"
+    "due submit";
+  gap: 8px 10px;
+  align-content: stretch;
+}
+
+#create-task-widget .task-field{ grid-area: task; }
+#create-task-widget .due-field{ grid-area: due; }
+#create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 0; width: 140px; }
+
+#create-task-widget .task-field,
+#create-task-widget .due-field{
+  margin-bottom: 0;
+}
+
+#create-task-widget .effort-field .effort-options{
+  margin-top: 4px;
+}
+
+/* Effort selector (radio chips) */
+.effort-options{
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.effort-option{
+  position: relative;
+  padding: 10px 14px;
+  font-family: "Itim", serif;
+  font-size: 16px;
+  background-color: transparent;
+  border-radius: 16px 14px 18px 13px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+}
+
+/* hide native radio */
+.effort-option input{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* selected */
+.effort-option:has(input:checked){
+  background: #d86f67;
+  color: white;
+  transform: rotate(-0.5deg);
+}
+
+/* hover */
+.effort-option:hover{
+  transform: translateY(-1px) rotate(-0.3deg);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+}
+
+/* pressed */
+.effort-option:active{
+  transform: translateY(1px) rotate(0.4deg);
+}
+
+/* Focus button */
+#focus-button{
+  width: min(220px, 80%);
+  height: auto;
+  aspect-ratio: 3 / 1;
+  margin: 12px auto 0;
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   TASK LIST STYLES
+   ========================================================= */
+
+/* Custom Checkbox Container */
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-family: 'Gochi Hand', cursive; /* Using the hand-drawn font */
+  font-size: 18px;
+  user-select: none;
+  color: #5D4037; /* Dark brown ink color */
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+/* Create a custom checkbox (The Box) */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: transparent;
+  border: 2px solid #E0C097; /* Light brown/tan "pencil" border */
+  border-radius: 4px; /* Slightly rounded for hand-drawn feel */
+  transition: all 0.2s ease;
+}
+
+/* On mouse-over, add a subtle background */
+.checkbox-container:hover input ~ .checkmark {
+  background-color: rgba(224, 192, 151, 0.1);
+}
+
+/* When the checkbox is checked */
+.checkbox-container input:checked ~ .checkmark {
+  border-color: #dc973d; /* Changes to gold when checked */
+}
+
+/* Create the checkmark indicator (The Check) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark (The Check Icon) */
+.checkbox-container .checkmark:after {
+  left: 7px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid #F4511E; /* The signature red/orange check */
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  /* This gives it that "hand-drawn" ink feel */
+  border-radius: 1px;
+}
+
+.task-list{
   list-style: none;
   padding: 0;
   margin: 0;
   height: fit-content;
-
 }
 
-
-.task-item {
+.task-item{
   margin-top: 0.6rem;
   padding-bottom: 0.5rem;
+  padding-right: 4rem;
   position: relative;
 }
 
-.task-item::after {
+.task-item::after{
   content: "";
   position: absolute;
   left: 0;
@@ -553,7 +750,37 @@ input:focus {
 }
 
 
-.task-row {
+.task-actions{
+  position: absolute;
+  top: 0.2rem;
+  right: 0;
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.task-action-btn{
+  width: 1.7rem;
+  height: 1.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #E0C097;
+  border-radius: 6px;
+  background: transparent;
+  color: #5D4037;
+  cursor: pointer;
+  padding: 0;
+}
+
+.task-action-btn:hover{
+  background: rgba(224, 192, 151, 0.12);
+}
+
+.task-action-btn i{
+  font-size: 0.8rem;
+}
+
+.task-row{
   display: grid;
   grid-template-columns: 1.2rem 1fr;
   gap: 0.55rem;
@@ -561,90 +788,401 @@ input:focus {
   cursor: pointer;
 }
 
-.task-check {
+.task-check{
   margin-top: 0.15rem;
   transform: scale(1.05);
   cursor: pointer;
 }
 
-.task-text {
+.task-text{
   line-height: 1.25;
   word-break: break-word;
+  overflow-wrap: anywhere; /* keeps long words from pushing width */
 }
 
 /* Meta row: due date + effort */
-.task-meta {
+.task-meta{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-left: 1.75rem; /* aligns under text (past checkbox) */
+  margin-left: 1.75rem;
   margin-top: 0.2rem;
   font-size: 0.85em;
   opacity: 0.9;
+  min-width: 0; /* allow shrink */
 }
 
-.task-due {
+.task-due{
   padding: 0.08rem 0.4rem;
   border-radius: 999px;
-  background: rgba(255, 145, 130, 0.25); /* soft salmon highlight */
+  background: rgba(255, 145, 130, 0.25);
 }
 
 /* Effort dots */
-.task-effort {
+.task-effort{
   display: inline-flex;
   gap: 0.18rem;
 }
 
-.task-effort .dot {
+.task-effort .dot{
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 999px;
-  border: 2px solid rgba(0,0,0,0.5);
+  border: 2px solid rgb(220, 151, 61);
   opacity: 0.45;
 }
 
-.task-effort .dot.on {
+.task-effort .dot.on{
   opacity: 1;
 }
 
-.task-check:checked + .task-text {
+.checkbox-container .task-check:checked ~ .task-text{
   text-decoration: line-through;
   opacity: 0.6;
 }
 
-.task-list.scrollable {
+/* Scrolling list area (inside a widget) */
+.task-list.scrollable{
   flex: 1;
-  min-height: 0;        /* critical for scrolling */
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 0.25rem;
 }
 
-
-
-.task-list.scrollable::-webkit-scrollbar {
+/* Smaller scrollbar for task list area */
+.task-list.scrollable::-webkit-scrollbar{
   width: 6px;
 }
 
-.task-list.scrollable::-webkit-scrollbar-thumb {
+.task-list.scrollable::-webkit-scrollbar-thumb{
   background: rgba(0,0,0,0.3);
   border-radius: 999px;
 }
 
-.task-list.scrollable::-webkit-scrollbar-track {
+.task-list.scrollable::-webkit-scrollbar-track{
   background: transparent;
 }
 
-.sticky-note.task-note {
+/* Task sticky note wrapper */
+.sticky-note.task-note{
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 
-/* Logout Button Styling */
-#logoutBtn {
-  /* width: 30%; */
-  height: 60%;
-  padding: 0;
+/* =========================================================
+   PROFILE DROPDOWN
+   ========================================================= */
+.profile-dropdown{
+  position: relative;
+}
+
+.profile-trigger{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f7f0df;
+  border: 1px solid #d4b9a3;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: "Itim", serif;
+  font-size: 18px;
+  color: #5b3a34;
+  cursor: pointer;
+}
+
+.profile-trigger .chevron{
+  font-size: 14px;
+}
+
+.profile-menu{
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: #fffaf0;
+  border: 1px solid #d4b9a3;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  padding: 8px;
+  display: none;
+  min-width: 160px;
+  z-index: 5;
+}
+
+.profile-dropdown:hover .profile-menu,
+.profile-dropdown:focus-within .profile-menu{
+  display: block;
+}
+
+.profile-dropdown.open .profile-menu{
+  display: block;
+}
+
+.profile-menu .paper-button{
+  width: 100%;
+  margin: 0;
+}
+
+
+/* =========================================================
+   DESKTOP HEIGHTS (ONLY DESKTOP)
+   - keep your “board proportions” without breaking mobile
+   ========================================================= */
+@media (min-width: 1024px){
+  #task-list-widget{ height: 100% !important; }
+
+  /* Force right column widgets to fit entirely within corkboard height */
+  .board-grid > div:nth-child(2){
+    display: grid;
+    grid-template-rows: minmax(0, 1.55fr) minmax(0, 0.78fr) minmax(0, 0.78fr) minmax(0, 0.9fr);
+    gap: 16px;
+    height: 100%;
+    min-height: 0;
+    padding-top: 14px;
+    overflow: visible;
+  }
+
+  .board-grid > div:nth-child(2) #create-task-widget,
+  .board-grid > div:nth-child(2) #big-3-tasks,
+  .board-grid > div:nth-child(2) #focus-mode-widget,
+  .board-grid > div:nth-child(2) #reflection-section{
+    height: 100% !important;
+    min-height: 0;
+    margin: 0;
+  }
+
+  /* Right-column content sizing so all widget content stays visible cleanly */
+  .board-grid > div:nth-child(2) .sticky-note{
+    padding: 0.72rem;
+  }
+
+  .board-grid > div:nth-child(2) .widget-title{
+    margin-bottom: 0.4rem;
+    font-size: clamp(1rem, 1.2vw, 1.25rem);
+    line-height: 1.2;
+  }
+
+  #big-3-tasks,
+  #focus-mode-widget,
+  #daily-reflection,
+  #weekly-reflection{
+    overflow-y: visible;
+    overflow-x: visible;
+  }
+
+  #create-task-widget{
+    overflow: visible;
+  }
+
+  #create-task-widget .paper-form{
+    padding: 10px 12px 12px;
+    gap: 8px;
+  }
+
+  #create-task-widget .paper-field label{
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+  }
+
+  #create-task-widget .paper-form input{
+    padding: 8px 10px;
+    font-size: 0.95rem;
+  }
+
+    #create-task-widget .effort-options{
+    gap: 6px;
+  }
+
+  #create-task-widget .effort-option{
+    padding: 6px 9px;
+    font-size: 0.9rem;
+  }
+
+  #create-task-widget #submitBtn{
+    margin-top: 4px;
+    padding: 10px 0;
+  }
+
+  #focus-mode-widget p{
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+  }
+
+  #focus-button{
+    width: min(170px, 70%);
+    margin-top: 6px;
+  }
+
+  #reflection-section{ height: 100% !important; }
+  #daily-reflection,
+  #weekly-reflection{ height: 100% !important; }
+}
+
+
+/* =========================================================
+   RESPONSIVE (TABLET + PHONE)
+   - Desktop: corkboard NOT scrollable
+   - <=1023px: corkboard becomes scroll container
+   - No horizontal scroll on small screens
+   ========================================================= */
+
+/* Tablet (2 columns) */
+@media (max-width: 1023px){
+
+  /* Corkboard becomes a responsive container */
+  .corkboard{
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: calc(100dvh - 200px);
+    padding: var(--board-pad);
+    border-width: 4px;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .board-grid{
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--board-gap);
+    row-gap: var(--board-gap);
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Prevent children from forcing overflow */
+  .board-grid > div,
+  .sticky-note,
+  #task-list-widget,
+  #create-task-widget,
+  #big-3-tasks,
+  #focus-mode-widget,
+  #reflection-section,
+  #daily-reflection,
+  #weekly-reflection{
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* Inputs should be fluid on tablet too */
+  input,
+  select,
+  textarea{
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  label{
+    margin-left: 0 !important;
+    text-align: left;
+  }
+
+  /* Widgets stop relying on % heights */
+  #task-list-widget,
+  #create-task-widget,
+  #big-3-tasks,
+  #focus-mode-widget,
+  #reflection-section{
+    height: auto;
+    min-height: 220px;
+  }
+
+  #task-list-widget{ min-height: 380px; }
+  #create-task-widget{ min-height: 320px; }
+
+  #create-task-widget .create-task-form-grid{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "task"
+      "due"
+      "effort"
+      "submit";
+  }
+
+  #create-task-widget #submitBtn{
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  /* Keep focus mode content inside note */
+  #focus-mode-widget{
+    overflow: hidden;
+  }
+
+  #focus-mode-widget *{
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Phone (1 column) */
+@media (max-width: 767px){
+
+  /* Typography scale down (Index + Auth) */
+
+  .hero-header{
+    padding: 14px 10px;
+  }
+
+  /* Auth pages fit */
+  .cork-page{
+    min-height: 100dvh;
+    padding: 18px 10px;
+    align-items: flex-start;
+  }
+
+
+
+  /* Navbar tighten */
+  #main-menu{
+    min-height: 60px;
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  /* Dashboard becomes 1 column */
+  .board-grid{
+    grid-template-columns: 1fr;
+  }
+
+  /* Stack reflections instead of squishing */
+  .board-grid #reflection-section{
+    grid-template-columns: 1fr;
+  }
+
+  /* Keep the task list usable */
+  .task-list.scrollable{
+    max-height: 45vh;
+  }
+
+  /* Force all form controls to be fluid */
+  input,
+  select,
+  textarea{
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  label{
+    margin-left: 0 !important;
+    text-align: left;
+  }
+
+  /* Ensure Focus button fits */
+  #focus-button{
+    width: min(220px, 80%);
+  }
+
+  .paper-actions{
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+  }
 }
