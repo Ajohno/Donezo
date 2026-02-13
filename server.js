@@ -25,16 +25,21 @@ if (!process.env.SESSION_SECRET) {
 }
 
 // Connect to MongoDB
-const dbReady = connectDB();
+let dbInitError = null;
+const dbReady = connectDB().catch((error) => {
+  dbInitError = error;
+  return null;
+});
 
 app.use(async (req, res, next) => {
-  try {
-    await dbReady;
-    return next();
-  } catch (error) {
-    console.error("Database unavailable for request", error);
+  await dbReady;
+
+  if (dbInitError) {
+    console.error("Database unavailable for request", dbInitError);
     return res.status(503).json({ error: "Service temporarily unavailable" });
   }
+
+  return next();
 });
 
 // Middleware -----------------------------------------------------------------------------------
