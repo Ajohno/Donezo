@@ -25,21 +25,14 @@ if (!process.env.SESSION_SECRET) {
 }
 
 // Connect to MongoDB
-let dbInitError = null;
-const dbReady = connectDB().catch((error) => {
-  dbInitError = error;
-  return null;
-});
-
 app.use(async (req, res, next) => {
-  await dbReady;
-
-  if (dbInitError) {
-    console.error("Database unavailable for request", dbInitError);
+  try {
+    await connectDB();
+    return next();
+  } catch (error) {
+    console.error("Database unavailable for request", error);
     return res.status(503).json({ error: "Service temporarily unavailable" });
   }
-
-  return next();
 });
 
 // Middleware -----------------------------------------------------------------------------------
@@ -105,6 +98,15 @@ app.post("/register", async (req, res) => {
     return res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
     console.error("Error registering user:", error);
+
+    if (error && error.code === 11000) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    if (error && error.name === "ValidationError") {
+      return res.status(400).json({ error: "Invalid registration data" });
+    }
+
     return res.status(500).json({ error: "Server error while registering user" });
   }
 });
