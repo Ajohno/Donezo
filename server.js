@@ -149,7 +149,13 @@ app.get("/", (req, res) => {
 // Handles the submit button
 app.post("/tasks", ensureAuthenticated, async (req, res) => {
   const { description, dueDate, effortLevel } = req.body;
-  const parsedDueDate = new Date(dueDate);
+  let parsedDueDate = null;
+  if (typeof dueDate === "string" && dueDate.trim() !== "") {
+    parsedDueDate = new Date(dueDate);
+    if (Number.isNaN(parsedDueDate.getTime())) {
+      return res.status(400).json({ error: "Invalid due date" });
+    }
+  }
 
   await Task.create({
     userId: req.user.id,

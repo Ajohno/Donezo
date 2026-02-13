@@ -380,7 +380,7 @@ label{
 
 /* General inputs (NOT the auth paper inputs) */
 input{
-  width: 500px;
+  
   padding: 10px;
   font-size: 16px;
   background-color: #E38884;
@@ -616,6 +616,80 @@ input:focus{
 /* =========================================================
    TASK LIST STYLES
    ========================================================= */
+
+/* Custom Checkbox Container */
+.checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-family: 'Gochi Hand', cursive; /* Using the hand-drawn font */
+  font-size: 18px;
+  user-select: none;
+  color: #5D4037; /* Dark brown ink color */
+}
+
+/* Hide the browser's default checkbox */
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+/* Create a custom checkbox (The Box) */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px;
+  width: 22px;
+  background-color: transparent;
+  border: 2px solid #E0C097; /* Light brown/tan "pencil" border */
+  border-radius: 4px; /* Slightly rounded for hand-drawn feel */
+  transition: all 0.2s ease;
+}
+
+/* On mouse-over, add a subtle background */
+.checkbox-container:hover input ~ .checkmark {
+  background-color: rgba(224, 192, 151, 0.1);
+}
+
+/* When the checkbox is checked */
+.checkbox-container input:checked ~ .checkmark {
+  border-color: #dc973d; /* Changes to gold when checked */
+}
+
+/* Create the checkmark indicator (The Check) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark (The Check Icon) */
+.checkbox-container .checkmark:after {
+  left: 7px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid #F4511E; /* The signature red/orange check */
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  /* This gives it that "hand-drawn" ink feel */
+  border-radius: 1px;
+}
+
 .task-list{
   list-style: none;
   padding: 0;
@@ -693,7 +767,7 @@ input:focus{
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 999px;
-  border: 2px solid rgba(0,0,0,0.5);
+  border: 2px solid rgb(220, 151, 61);
   opacity: 0.45;
 }
 
@@ -701,7 +775,7 @@ input:focus{
   opacity: 1;
 }
 
-.task-check:checked + .task-text{
+.checkbox-container .task-check:checked ~ .task-text{
   text-decoration: line-through;
   opacity: 0.6;
 }

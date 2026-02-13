@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
 
@@ -44,7 +44,7 @@
       <div class="logo-sticky">
         
         <div class="thumbtack">
-          <i class="fa-solid fa-thumbtack" style="color: rgba(237, 28, 28, 1.00);"></i>
+          <i class="fa-solid fa-thumbtack" style="color:#c6534e;"></i>
         </div>
       </div>
       <span class="brand-name">Stick A Pin</span>
@@ -56,6 +56,7 @@
       <li><a href="feedback-page.html" class="nav-item">Feedback</a></li>
       <li><a href="settings-page.html" class="nav-item">Setting</a></li>
       <li><a href="profile-page.html" class="nav-item">Profile</a></li>
+      <li><a href="#" id="logoutBtn" class="nav-item">Logout</a></li>
     </ul>
   </div>
 
@@ -63,9 +64,12 @@
     <!-- The "Tasks Left" sticky note -->
     <div class="">
       <span class="tasks-count item-counter sticky-note "></span>
-      <span >Tasks Left | <span id="authStatus"></span></span>
-      
-    </a>
+      <span >
+        Tasks Left 
+        | 
+        <span id="authStatus"></span>
+        
+      </span>
     </div>
   </div>
 </nav>
@@ -78,13 +82,17 @@
           <div>
             <!-- Task List -->
             <div id="task-list-widget" class="sticky-note thumbtack task-note">
-              <h2 class="widget-title highlight-on-parent-hover">Task List</h2>
+              <h2 class="widget-title highlight-on-parent-hover">
+                <i class="fa-solid fa-list" style="color: #c6534e;"></i>
+                Task List
+              </h2>
 
               <ul class="task-list scrollable"></ul>
               <template id="task-template">
                 <li class="task-item">
-                  <label class="task-row">
+                  <label class="checkbox-container">
                     <input type="checkbox" class="task-check" />
+                    <span class="checkmark"></span>
                     <span class="task-text"></span>
                   </label>
                   <div class="task-meta">
@@ -92,6 +100,7 @@
                     <span class="task-effort">
                       <span class="dot"></span><span class="dot"></span>
                       <span class="dot"></span><span class="dot"></span>
+                      <span class="dot"></span>
                     </span>
                   </div>
                 </li>
@@ -103,7 +112,10 @@
           <div>
             <!-- Create New Task -->
             <div id="create-task-widget" class="sticky-note blue thumbtack">
-              <h2 class="widget-title highlight-on-parent-hover">New Task</h2>
+              <h2 class="widget-title highlight-on-parent-hover">
+                <i class="fa-solid fa-pen" style="color: #c6534e"></i>
+                New Task
+              </h2>
               <form id="taskForm" class="paper-form">
                 <div class="paper-field">
                   <label for="taskDescription">Task</label>
@@ -117,7 +129,7 @@
                 </div>
                 <div class="paper-field">
                   <label for="dueDate">Due Date</label>
-                  <input id="dueDate" type="date" name="dueDate" required />
+                  <input id="dueDate" type="date" name="dueDate" />
                 </div>
                 
                 <div class="paper-field">
@@ -152,14 +164,16 @@
                 </div>
 
                 <button id="submitBtn" class="paper-button" type="submit" >
-                  Pin it!
+                  Pin it! 
                 </button>
               </form>
             </div>
 
             <!-- Big 3 Tasks -->
             <div id="big-3-tasks" class="sticky-note pink thumbtack">
+              
               <h2 class="widget-title highlight-on-parent-hover">
+                <i class="fa-solid fa-star" style="color: #c6534e;"></i>
                 Big 3 Tasks
               </h2>
             </div>

@@ -8,7 +8,7 @@ const TaskSchema = new mongoose.Schema(
     title: { type: String, trim: true, default: "" },
     description: { type: String, required: true, trim: true },
 
-    dueDate: { type: Date, required: true },
+    dueDate: { type: Date, default: null },
 
     effortLevel: { type: Number, min: 1, max: 5, default: 3 },
 

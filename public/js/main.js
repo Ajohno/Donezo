@@ -128,7 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (response.ok) {
-                alert("Logged out successfully!");
+                // alert("Logged out successfully!");
+                Toast.show({ message: "Logged out successfully", type: "success", duration: 2000 });
                 // Send the user back to login after logout
                 window.location.href = "/login.html";
             } else {
@@ -253,17 +254,18 @@ const submit = async function(event) {
 
     const taskInput = document.querySelector("#taskDescription");
     const dateInput = document.querySelector("#dueDate");
-    const effortInput = document.querySelector("#effortLevel");
+    const effortInput = document.querySelector('input[name="effortLevel"]:checked');
 
     // Create JSON object with form data
+    const dueDateValue = dateInput.value.trim();
     const json = {
     description: taskInput.value.trim(),
-    dueDate: dateInput.value,     // "YYYY-MM-DD"
+    dueDate: dueDateValue || null,
     effortLevel: effortInput ? parseInt(effortInput.value, 10) : 3
     };
 
-    if (!json.description || !json.dueDate) {
-    alert("Please enter a task and a due date.");
+    if (!json.description) {
+    alert("Please enter a task description.");
     return;
     }
 
@@ -311,14 +313,57 @@ function updateTaskList(tasks) {
         const clone = taskTemplate.content.cloneNode(true);
         const taskItem = clone.querySelector(".task-item");
         const taskText = clone.querySelector(".task-text");
+        const taskCheck = clone.querySelector(".task-check");
         const dueText = clone.querySelector(".task-due");
+        const effortDots = clone.querySelectorAll(".task-effort .dot");
 
         if (taskItem && taskText) {
             taskText.textContent = task.description;
         }
-        if (dueText && task.dueDate) {
-            const date = new Date(task.dueDate);
-            dueText.textContent = `Due: ${date.toLocaleDateString()}`;
+        if (taskCheck) {
+            taskCheck.checked = task.status === "completed";
+
+            taskCheck.addEventListener("change", async () => {
+                const nextStatus = taskCheck.checked ? "completed" : "active";
+
+                try {
+                    const updateResponse = await fetch(`/tasks/${task._id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ status: nextStatus })
+                    });
+
+                    if (updateResponse.ok) {
+                        task.status = nextStatus;
+                        if (nextStatus === "completed") {
+                            Toast.show({ message: "Task Completed! One step down, time for the next.", type: "success", duration: 4000 });
+                        }
+                        fetchTasks();
+                    } else {
+                        taskCheck.checked = !taskCheck.checked;
+                        console.error("Error updating task status");
+                    }
+                } catch (error) {
+                    taskCheck.checked = !taskCheck.checked;
+                    console.error("Task status update failed:", error);
+                }
+            });
+        }
+        if (dueText) {
+            if (task.dueDate) {
+                const date = new Date(task.dueDate);
+                dueText.textContent = `Due: ${date.toLocaleDateString()}`;
+                dueText.hidden = false;
+            } else {
+                dueText.textContent = "";
+                dueText.hidden = true;
+            }
+        }
+        if (effortDots.length > 0) {
+            const effortLevel = Math.max(1, Math.min(5, parseInt(task.effortLevel, 10) || 3));
+            effortDots.forEach((dot, index) => {
+                dot.classList.toggle("on", index < effortLevel);
+            });
         }
 
         // Create an Edit button
