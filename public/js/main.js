@@ -385,16 +385,11 @@ function updateTaskList(tasks) {
             });
         }
 
-        // Create an Edit button
-        const editButton = document.createElement("button");
-        editButton.type = "button";
-        editButton.innerHTML = '<i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>';
-        editButton.classList.add("task-action-btn", "edit-btn");
-        editButton.setAttribute("aria-label", "Edit task");
-        editButton.title = "Edit";
+        const editButton = clone.querySelector(".edit-btn");
+        const deleteButton = clone.querySelector(".delete-btn");
 
         // Add event listener for editing a task
-        editButton.addEventListener("click", async () => {
+        editButton?.addEventListener("click", async () => {
             const newDescription = prompt("Edit task description:", task.description);
             if (newDescription !== null && newDescription.trim() !== "") {
                 console.log("New Description:", newDescription);
@@ -416,17 +411,9 @@ function updateTaskList(tasks) {
                 }
             }
         });
-        
-        // Create a Delete button
-        const deleteButton = document.createElement("button");
-        deleteButton.type = "button";
-        deleteButton.innerHTML = '<i class="fa-solid fa-trash" aria-hidden="true"></i>';
-        deleteButton.classList.add("task-action-btn", "delete-btn");
-        deleteButton.setAttribute("aria-label", "Delete task");
-        deleteButton.title = "Delete";
 
         // Add event listener for deleting a task
-        deleteButton.addEventListener("click", async () => {
+        deleteButton?.addEventListener("click", async () => {
             const confirmDelete = confirm("Are you sure you want to delete this task?");
             if (confirmDelete) {
                 const deleteResponse = await fetch(`/tasks/${task._id}`, {
@@ -443,12 +430,6 @@ function updateTaskList(tasks) {
             }
         });
 
-        // Append Edit and Delete buttons beside each other
-        const actionsContainer = document.createElement("div");
-        actionsContainer.classList.add("task-actions");
-        actionsContainer.appendChild(editButton);
-        actionsContainer.appendChild(deleteButton);
-        clone.prepend(actionsContainer);
         listOfTasks.appendChild(clone);
     });
 

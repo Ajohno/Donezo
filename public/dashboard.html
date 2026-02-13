@@ -90,6 +90,14 @@
               <ul class="task-list scrollable"></ul>
               <template id="task-template">
                 <li class="task-item">
+                  <div class="task-actions">
+                    <button type="button" class="task-action-btn edit-btn" aria-label="Edit task" title="Edit">
+                      <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="task-action-btn delete-btn" aria-label="Delete task" title="Delete">
+                      <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
                   <label class="checkbox-container">
                     <input type="checkbox" class="task-check" />
                     <span class="checkmark"></span>
