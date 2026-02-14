@@ -340,6 +340,8 @@ p{
 
 /* Footer text under paper form */
 .paper-footer{
+  justify-self: center;
+  width: auto;
   text-align: center;
   color: #7c594c;
   font-size: 17px;
@@ -410,6 +412,7 @@ input:focus{
   width: auto;
   margin-top: 0;
   align-self: center;
+  justify-self: center;
 }
 
 .highlight{
