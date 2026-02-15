@@ -511,6 +511,8 @@ input:focus{
   min-height: 0;
 }
 
+
+
 /* Right column: Focus mode sits above reflections */
 .board-grid #focus-mode-widget{
   height: auto;
@@ -732,7 +734,7 @@ input:focus{
 .task-item{
   margin-top: 0.6rem;
   padding-bottom: 0.5rem;
-  padding-right: 4rem;
+  padding-right: 5.4rem;
   position: relative;
 }
 
@@ -781,6 +783,16 @@ input:focus{
 
 .task-action-btn i{
   font-size: 0.8rem;
+}
+
+.task-action-btn.big-three-btn.is-active{
+  border-color: rgba(237, 28, 28, 0.7);
+  background: rgba(237, 28, 28, 0.12);
+}
+
+.task-action-btn.big-three-btn:disabled{
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .task-row{
@@ -872,6 +884,47 @@ input:focus{
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+#big-3-tasks{
+  display: flex;
+  flex-direction: column;
+}
+
+.big-three-empty{
+  margin: 0.25rem 0 0;
+  width: auto;
+  justify-self: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.big-three-empty[hidden]{
+  display: none !important;
+}
+
+.big-three-list{
+  list-style: none;
+  padding: 0;
+  margin: 0.45rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.big-three-list[hidden]{
+  display: none !important;
+}
+
+.big-three-item{
+  padding: 0.3rem 0.5rem;
+  border: 1px solid rgba(198, 83, 78, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.32);
+  color: #5D4037;
+  line-height: 1.3;
 }
 
 

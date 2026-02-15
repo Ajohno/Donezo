@@ -299,6 +299,48 @@ const submit = async function(event) {
     dateInput.value = "";
 };
 
+function setBigThreeButtonState(button, isBigThree) {
+    if (!button) return;
+
+    const icon = button.querySelector("i");
+    const active = Boolean(isBigThree);
+
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+    button.title = active ? "Remove from Big 3" : "Add to Big 3";
+
+    if (icon) {
+        icon.classList.toggle("fa-solid", active);
+        icon.classList.toggle("fa-regular", !active);
+        icon.style.color = "rgba(237, 28, 28, 1.00)";
+    }
+}
+
+function updateBigThreeWidget(tasks) {
+    const bigThreeList = document.getElementById("big-three-list");
+    const emptyState = document.querySelector("#big-3-tasks .big-three-empty");
+    if (!bigThreeList || !emptyState) return;
+
+    const bigThreeTasks = tasks.filter((task) => task.isBigThree).slice(0, 3);
+    bigThreeList.innerHTML = "";
+
+    if (bigThreeTasks.length === 0) {
+        emptyState.hidden = false;
+        bigThreeList.hidden = true;
+        return;
+    }
+
+    emptyState.hidden = true;
+    bigThreeList.hidden = false;
+
+    bigThreeTasks.forEach((task, index) => {
+        const item = document.createElement("li");
+        item.className = "big-three-item task-text";
+        item.textContent = `${index + 1}. ${task.description}`;
+        bigThreeList.appendChild(item);
+    });
+}
+
 // Function to update the UI with fetched tasks
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
@@ -335,6 +377,7 @@ function updateTaskList(tasks) {
         const taskCheck = clone.querySelector(".task-check");
         const dueText = clone.querySelector(".task-due");
         const effortDots = clone.querySelectorAll(".task-effort .dot");
+        const bigThreeButton = clone.querySelector(".big-three-btn");
 
         if (taskItem && taskText) {
             taskText.textContent = task.description;
@@ -384,9 +427,42 @@ function updateTaskList(tasks) {
                 dot.classList.toggle("on", index < effortLevel);
             });
         }
+        setBigThreeButtonState(bigThreeButton, task.isBigThree);
 
         const editButton = clone.querySelector(".edit-btn");
         const deleteButton = clone.querySelector(".delete-btn");
+
+        bigThreeButton?.addEventListener("click", async () => {
+            const nextIsBigThree = !task.isBigThree;
+            bigThreeButton.disabled = true;
+
+            try {
+                const updateResponse = await fetch(`/tasks/${task._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ isBigThree: nextIsBigThree })
+                });
+
+                const updatedTask = await parseApiResponse(updateResponse);
+                if (updateResponse.ok) {
+                    task.isBigThree = Boolean(updatedTask.isBigThree);
+                    setBigThreeButtonState(bigThreeButton, task.isBigThree);
+                    if (task.isBigThree) {
+                        Toast.show({ message: "Task added to your Big 3", type: "success", duration: 2200 });
+                    }
+                    fetchTasks();
+                } else {
+                    Toast.show({ message: updatedTask.error || "Could not update Big 3 status.", type: "error", duration: 3500 });
+                    setBigThreeButtonState(bigThreeButton, task.isBigThree);
+                }
+            } catch (error) {
+                console.error("Task Big 3 toggle failed:", error);
+                Toast.show({ message: "Could not update Big 3 status.", type: "error", duration: 3000 });
+                setBigThreeButtonState(bigThreeButton, task.isBigThree);
+            } finally {
+                bigThreeButton.disabled = false;
+            }
+        });
 
         // Add event listener for editing a task
         editButton?.addEventListener("click", async () => {
@@ -432,6 +508,8 @@ function updateTaskList(tasks) {
 
         listOfTasks.appendChild(clone);
     });
+
+    updateBigThreeWidget(sortedTasks);
 
     // Update the task counter
     document.querySelectorAll(".item-counter").forEach((el) => {
