@@ -865,18 +865,33 @@ input:focus{
   padding-right: 0.25rem;
 }
 
-/* Smaller scrollbar for task list area */
+/* Task list scrollbar matches dashboard scrollbar style */
 .task-list.scrollable::-webkit-scrollbar{
-  width: 6px;
+  width: 14px;
 }
 
 .task-list.scrollable::-webkit-scrollbar-thumb{
-  background: rgba(0,0,0,0.3);
-  border-radius: 999px;
+  background: #c76a63;
+  border-radius: 16px 12px 18px 14px;
+  border: 3px solid #e6d8b8;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,0.15);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.08),
+      rgba(255,255,255,0.08) 2px,
+      transparent 2px,
+      transparent 4px
+    );
 }
 
 .task-list.scrollable::-webkit-scrollbar-track{
-  background: transparent;
+  background: #e6d8b8;
+  border-radius: 12px;
+}
+
+.task-list.scrollable::-webkit-scrollbar-thumb:hover{
+  background: #b85a54;
 }
 
 /* Task sticky note wrapper */
@@ -992,7 +1007,7 @@ input:focus{
   /* Force right column widgets to fit entirely within corkboard height */
   .board-grid > div:nth-child(2){
     display: grid;
-    grid-template-rows: minmax(0, 1.55fr) minmax(0, 0.78fr) minmax(0, 0.78fr) minmax(0, 0.9fr);
+    grid-template-rows: minmax(0, 1.45fr) minmax(0, 0.95fr) minmax(0, 1fr);
     gap: 16px;
     height: 100%;
     min-height: 0;
@@ -1002,7 +1017,6 @@ input:focus{
 
   .board-grid > div:nth-child(2) #create-task-widget,
   .board-grid > div:nth-child(2) #big-3-tasks,
-  .board-grid > div:nth-child(2) #focus-mode-widget,
   .board-grid > div:nth-child(2) #reflection-section{
     height: 100% !important;
     min-height: 0;
@@ -1020,12 +1034,29 @@ input:focus{
     line-height: 1.2;
   }
 
-  #big-3-tasks,
-  #focus-mode-widget,
   #daily-reflection,
   #weekly-reflection{
     overflow-y: visible;
     overflow-x: visible;
+  }
+
+  #big-3-tasks{
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+  }
+
+  #big-3-tasks .big-three-list{
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 0.2rem;
+  }
+
+  #big-3-tasks .big-three-item{
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   #create-task-widget{
@@ -1080,25 +1111,23 @@ input:focus{
 /* =========================================================
    RESPONSIVE (TABLET + PHONE)
    - Desktop: corkboard NOT scrollable
-   - <=1023px: corkboard becomes scroll container
+   - <=1023px: corkboard grows with content
    - No horizontal scroll on small screens
    ========================================================= */
 
 /* Tablet + phone baseline (single centered column) */
-@media (max-width: 1023px){
+@media (max-width: 1023px), (hover: none) and (pointer: coarse){
 
-  /* Corkboard becomes a responsive container */
+  /* Corkboard grows naturally with content so all widgets remain visible */
   .corkboard{
     width: 100% !important;
     max-width: 100% !important;
-    height: auto;
-    min-height: calc(100dvh - 200px);
+    height: auto !important;
+    min-height: 0;
     padding: var(--board-pad);
     border-width: 4px;
 
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
   }
 
   .board-grid{
@@ -1109,6 +1138,25 @@ input:focus{
     width: 100%;
     max-width: 900px;
     margin-inline: auto;
+  }
+
+  /* Undo desktop fixed right-column grid sizing */
+  .board-grid > div:nth-child(2){
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    height: auto;
+    min-height: 0;
+    padding-top: 0;
+    overflow: visible;
+  }
+
+  .board-grid > div:nth-child(2) #create-task-widget,
+  .board-grid > div:nth-child(2) #big-3-tasks,
+  .board-grid > div:nth-child(2) #reflection-section{
+    height: auto !important;
+    min-height: 0;
+    margin: 0;
   }
 
   /* Prevent children from forcing overflow */
@@ -1141,8 +1189,6 @@ input:focus{
 
   /* Widgets stop relying on % heights */
   #task-list-widget,
-  #create-task-widget,
-  #big-3-tasks,
   #focus-mode-widget,
   #reflection-section{
     height: auto;
@@ -1150,7 +1196,33 @@ input:focus{
   }
 
   #task-list-widget{ min-height: 380px; }
-  #create-task-widget{ min-height: 320px; }
+  .board-grid #create-task-widget{
+    flex: 0 0 auto;
+    align-self: start;
+    height: auto;
+    min-height: fit-content;
+  }
+
+  .board-grid #create-task-widget .paper-form{
+    flex: 0 0 auto;
+    height: auto;
+    overflow: hidden;
+    align-content: start;
+  }
+
+  .board-grid #big-3-tasks{
+    flex: 0 0 auto;
+    align-self: start;
+    height: auto;
+    min-height: fit-content;
+    overflow: visible;
+  }
+
+  .board-grid #big-3-tasks .big-three-empty,
+  .board-grid #big-3-tasks .big-three-item{
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
 
   #create-task-widget .create-task-form-grid{
     grid-template-columns: 1fr;
