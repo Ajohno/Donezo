@@ -204,8 +204,9 @@ async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, i
             // const welcomeMessage = messages[randomIndex];
             // authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
 
-            const welcomeMessage = "Welcome back,";
-            authStatus.textContent = `${welcomeMessage} ${data.user.firstName}`;
+            const rawName = String(data?.user?.firstName || data?.user?.name || "").trim();
+            const firstName = rawName.split(/\s+/)[0] || "there";
+            authStatus.textContent = `Welcome back, ${firstName}`;
 
         }
         authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
@@ -558,32 +559,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav__toggle");
   const drawer = document.getElementById("nav-drawer");
   const backdrop = document.getElementById("nav-backdrop");
+  const compactNav = window.matchMedia("(max-width: 1023px)");
 
   if (toggle && drawer && backdrop) {
     const openDrawer = () => {
-      drawer.hidden = false;
-      backdrop.hidden = false;
-
-      // allow CSS transition to kick in
-      requestAnimationFrame(() => drawer.classList.add("is-open"));
-
+      drawer.classList.add("is-open");
+      backdrop.classList.add("is-visible");
       toggle.setAttribute("aria-expanded", "true");
       document.body.style.overflow = "hidden";
     };
 
     const closeDrawer = () => {
       drawer.classList.remove("is-open");
+      backdrop.classList.remove("is-visible");
       toggle.setAttribute("aria-expanded", "false");
       document.body.style.overflow = "";
-
-      // wait for animation to finish before hiding
-      setTimeout(() => {
-        drawer.hidden = true;
-        backdrop.hidden = true;
-      }, 230);
     };
 
     toggle.addEventListener("click", () => {
+      if (!compactNav.matches) return;
       const expanded = toggle.getAttribute("aria-expanded") === "true";
       expanded ? closeDrawer() : openDrawer();
     });
@@ -591,11 +585,17 @@ document.addEventListener("DOMContentLoaded", () => {
     backdrop.addEventListener("click", closeDrawer);
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !drawer.hidden) closeDrawer();
+      if (e.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer();
     });
 
     drawer.querySelectorAll("a").forEach((a) => {
       a.addEventListener("click", closeDrawer);
+    });
+
+    compactNav.addEventListener("change", (event) => {
+      if (!event.matches) {
+        closeDrawer();
+      }
     });
   }
 });

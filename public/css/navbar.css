@@ -1,39 +1,65 @@
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
 
 .navbar {
+  position: relative;
+  z-index: 1000;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 40px;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 28px;
+  min-height: 70px;
   background-color: var(--nav-bg);
-  height: 70px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle depth */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   font-family: var(--font-main);
 }
 
 .nav-left {
   display: flex;
   align-items: center;
-  gap: 40px;
+  gap: 14px;
+  min-width: 0;
 }
 
-/* Logo Section */
+.nav__toggle {
+  display: none;
+  border: 0;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-black);
+  font-size: 20px;
+  cursor: pointer;
+}
+
 .logo-container {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .brand-name {
   font-size: 22px;
   font-weight: 700;
   color: var(--text-black);
+  white-space: nowrap;
 }
 
-/* Navigation Links */
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 25px;
+  align-items: center;
+  gap: 22px;
   margin: 0;
   padding: 0;
 }
@@ -54,17 +80,160 @@
   color: var(--accent-red);
 }
 
+.nav-right {
+  margin-left: auto;
+  min-width: 0;
+}
+
+.nav-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  color: var(--text-black);
+}
+
+.nav-tasks {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+}
 
 .tasks-count {
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 16px;
   font-weight: 800;
   color: var(--accent-red);
 }
 
-.tasks-label {
-  font-size: 10px;
+.tasks-label-text {
+  font-size: 12px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--text-black);
+  font-weight: 700;
+}
+
+.nav-welcome {
+  font-size: 14px;
   font-weight: 600;
-  margin-top: 2px;
+  color: #5b3a34;
+}
+
+#nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 1090;
+}
+
+#nav-backdrop.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 1023px) {
+  .navbar {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-name {
+    font-size: 19px;
+  }
+
+  .nav-right {
+    flex-shrink: 0;
+  }
+
+  .nav-status {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .tasks-count {
+    min-width: 22px;
+    font-size: 14px;
+    padding: 2px 7px;
+  }
+
+  .tasks-label-text {
+    font-size: 11px;
+  }
+
+  .nav-welcome {
+    font-size: 12px;
+    max-width: 30ch;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #nav-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(290px, 80vw);
+    height: 100dvh;
+    margin: 0;
+    padding: 82px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    background: #f9e4bb;
+    box-shadow: 6px 0 14px rgba(0, 0, 0, 0.18);
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    z-index: 1100;
+  }
+
+  #nav-drawer.is-open {
+    transform: translateX(0);
+  }
+
+  #nav-drawer .nav-item {
+    display: block;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.55);
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar {
+    padding: 9px 10px;
+  }
+
+  .brand-name {
+    font-size: 17px;
+  }
+
+  .nav__toggle {
+    padding: 7px 9px;
+    font-size: 18px;
+  }
+
+  .tasks-label-text {
+    font-size: 10px;
+  }
+
+  .nav-welcome {
+    max-width: 18ch;
+  }
 }

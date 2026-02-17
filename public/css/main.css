@@ -1084,13 +1084,13 @@ input:focus{
    - No horizontal scroll on small screens
    ========================================================= */
 
-/* Tablet (2 columns) */
+/* Tablet + phone baseline (single centered column) */
 @media (max-width: 1023px){
 
   /* Corkboard becomes a responsive container */
   .corkboard{
-    width: 100%;
-    max-width: 100%;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto;
     min-height: calc(100dvh - 200px);
     padding: var(--board-pad);
@@ -1102,12 +1102,13 @@ input:focus{
   }
 
   .board-grid{
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     column-gap: var(--board-gap);
     row-gap: var(--board-gap);
     height: auto;
     width: 100%;
-    max-width: 100%;
+    max-width: 900px;
+    margin-inline: auto;
   }
 
   /* Prevent children from forcing overflow */
