@@ -1,0 +1,15 @@
+{
+  "name": "Stick A Pin",
+  "short_name": "Stick A Pin",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5ecd7",
+  "theme_color": "#f5ecd7",
+  "icons": [
+    {
+      "src": "/assets/image/donezo-logo.png",
+      "sizes": "1536x1024",
+      "type": "image/png"
+    }
+  ]
+}
