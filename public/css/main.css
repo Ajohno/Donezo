@@ -1466,3 +1466,7 @@ body.task-panel-open {
   width: 100%;
   justify-content: center;
 }
+
+.task-detail-effort-options[hidden] {
+  display: none !important;
+}
