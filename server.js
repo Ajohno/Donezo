@@ -170,13 +170,29 @@ app.get("/", (req, res) => {
 
 
 
+function parseDateOnlyInput(value) {
+  if (typeof value !== "string" || value.trim() === "") return null;
+
+  const match = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+
+  const year = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+  const day = parseInt(match[3], 10);
+
+  // Store as local midday to avoid timezone day-shift edge cases.
+  const date = new Date(year, month - 1, day, 12, 0, 0, 0);
+  if (Number.isNaN(date.getTime())) return null;
+  return date;
+}
+
 // Handles the submit button
 app.post("/tasks", ensureAuthenticated, async (req, res) => {
   const { description, dueDate, effortLevel } = req.body;
   let parsedDueDate = null;
   if (typeof dueDate === "string" && dueDate.trim() !== "") {
-    parsedDueDate = new Date(dueDate);
-    if (Number.isNaN(parsedDueDate.getTime())) {
+    parsedDueDate = parseDateOnlyInput(dueDate);
+    if (!parsedDueDate) {
       return res.status(400).json({ error: "Invalid due date" });
     }
   }
@@ -228,8 +244,8 @@ app.put("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
       if (req.body.dueDate === null || req.body.dueDate === "") {
         task.dueDate = null;
       } else {
-        const parsedDueDate = new Date(req.body.dueDate);
-        if (Number.isNaN(parsedDueDate.getTime())) {
+        const parsedDueDate = parseDateOnlyInput(req.body.dueDate);
+        if (!parsedDueDate) {
           return res.status(400).json({ error: "Invalid due date" });
         }
         task.dueDate = parsedDueDate;
