@@ -559,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav__toggle");
   const drawer = document.getElementById("nav-drawer");
   const backdrop = document.getElementById("nav-backdrop");
-  const compactNav = window.matchMedia("(max-width: 1023px)");
+  const compactNav = window.matchMedia("(max-width: 1023px), (hover: none) and (pointer: coarse)");
 
   if (toggle && drawer && backdrop) {
     const openDrawer = () => {
