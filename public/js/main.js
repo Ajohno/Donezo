@@ -387,14 +387,20 @@ function formatTaskEffortLevel(effortLevel) {
     return `${safeEffort} / 5`;
 }
 
-async function updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem) {
+async function updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, controls = {}) {
     const nextStatus = isCompleted ? "completed" : "active";
+    const shouldRemoveBigThree = isCompleted && Boolean(task.isBigThree);
 
     try {
+        const payload = { status: nextStatus };
+        if (shouldRemoveBigThree) {
+            payload.isBigThree = false;
+        }
+
         const updateResponse = await fetch(`/tasks/${task._id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: nextStatus })
+            body: JSON.stringify(payload)
         });
 
         if (!updateResponse.ok) {
@@ -403,6 +409,13 @@ async function updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem
         }
 
         task.status = nextStatus;
+
+        if (shouldRemoveBigThree) {
+            task.isBigThree = false;
+            setBigThreeButtonState(controls.bigThreeButton, false);
+            setBigThreeButtonState(controls.panelBigThreeButton, false);
+        }
+
         if (taskCheck) {
             taskCheck.checked = isCompleted;
         }
@@ -538,6 +551,7 @@ function updateTaskList(tasks) {
         const dueText = clone.querySelector(".task-due");
         const effortDots = clone.querySelectorAll(".task-effort .dot");
         const bigThreeButton = clone.querySelector(".big-three-btn");
+        const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
 
         if (taskItem && taskText) {
             taskText.textContent = task.description;
@@ -549,7 +563,10 @@ function updateTaskList(tasks) {
 
             taskCheck.addEventListener("change", async () => {
                 const isCompleted = taskCheck.checked;
-                const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem);
+                const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, {
+                    bigThreeButton,
+                    panelBigThreeButton
+                });
 
                 if (!updated) {
                     taskCheck.checked = !isCompleted;
@@ -574,8 +591,6 @@ function updateTaskList(tasks) {
             });
         }
         setBigThreeButtonState(bigThreeButton, task.isBigThree);
-
-        const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
 
         const toggleBigThree = async () => {
             const nextIsBigThree = !task.isBigThree;
@@ -684,7 +699,10 @@ function updateTaskList(tasks) {
 
                     panelTaskComplete.disabled = true;
                     const isCompleted = panelTaskComplete.checked;
-                    const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem);
+                    const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, {
+                    bigThreeButton,
+                    panelBigThreeButton
+                });
 
                     if (updated) {
                         activeTaskInPanel?.syncCompletion(task.status);
