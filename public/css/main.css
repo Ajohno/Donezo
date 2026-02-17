@@ -811,6 +811,8 @@ input:focus{
 }
 
 .task-text{
+  display: block;
+  margin-left: 2.1rem;
   line-height: 1.25;
   word-break: break-word;
   overflow-wrap: anywhere; /* keeps long words from pushing width */
@@ -852,7 +854,7 @@ input:focus{
   opacity: 1;
 }
 
-.checkbox-container .task-check:checked ~ .task-text{
+.task-item.is-completed .task-text{
   text-decoration: line-through;
   opacity: 0.6;
 }
