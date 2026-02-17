@@ -857,6 +857,11 @@ input:focus{
   opacity: 0.6;
 }
 
+.login-page .paper-actions .checkbox-container .task-text{
+  font-family: "Itim", serif;
+  font-style: normal;
+}
+
 /* Scrolling list area (inside a widget) */
 .task-list.scrollable{
   flex: 1;
