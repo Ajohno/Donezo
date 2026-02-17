@@ -593,6 +593,11 @@ function updateTaskList(tasks) {
         setBigThreeButtonState(bigThreeButton, task.isBigThree);
 
         const toggleBigThree = async () => {
+            if (task.status === "completed") {
+                Toast.show({ message: "Completed tasks can't be added to Big 3.", type: "error", duration: 3200 });
+                return;
+            }
+
             const nextIsBigThree = !task.isBigThree;
             if (bigThreeButton) bigThreeButton.disabled = true;
 
