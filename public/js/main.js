@@ -447,7 +447,6 @@ function getPanelEffortInputValue() {
 
 function setTaskDetailEditMode(task, isEditing) {
     const panelEditButton = document.getElementById("panelEditBtn");
-    const panelSaveButton = document.getElementById("panelSaveBtn");
     const descriptionDisplay = document.getElementById("panelTaskDescription");
     const dueDateDisplay = document.getElementById("panelTaskDueDate");
     const effortDisplay = document.getElementById("panelTaskEffort");
@@ -455,7 +454,7 @@ function setTaskDetailEditMode(task, isEditing) {
     const dueDateInput = document.getElementById("panelTaskDueDateInput");
     const effortInput = document.getElementById("panelTaskEffortInput");
 
-    if (!panelEditButton || !panelSaveButton || !descriptionDisplay || !dueDateDisplay || !effortDisplay || !descriptionInput || !dueDateInput || !effortInput) {
+    if (!panelEditButton || !descriptionDisplay || !dueDateDisplay || !effortDisplay || !descriptionInput || !dueDateInput || !effortInput) {
         return;
     }
 
@@ -467,8 +466,14 @@ function setTaskDetailEditMode(task, isEditing) {
     dueDateInput.hidden = !isEditing;
     effortInput.hidden = !isEditing;
 
-    panelSaveButton.hidden = !isEditing;
-    panelEditButton.querySelector("span").textContent = isEditing ? "Cancel" : "Edit";
+    const editLabel = panelEditButton.querySelector("span");
+    const editIcon = panelEditButton.querySelector("i");
+    if (editLabel) {
+        editLabel.textContent = isEditing ? "Save" : "Edit";
+    }
+    if (editIcon) {
+        editIcon.className = isEditing ? "fa-solid fa-floppy-disk" : "fa-solid fa-pen-to-square";
+    }
 
     if (isEditing) {
         descriptionInput.value = task.description || "";
@@ -547,7 +552,6 @@ function wireTaskDetailPanel() {
     const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
     const panelEditButton = document.getElementById("panelEditBtn");
     const panelDeleteButton = document.getElementById("panelDeleteBtn");
-    const panelSaveButton = document.getElementById("panelSaveBtn");
     const panelTaskComplete = document.getElementById("panelTaskComplete");
 
     closeButton.addEventListener("click", closeTaskDetailPanel);
@@ -560,8 +564,7 @@ function wireTaskDetailPanel() {
     });
 
     panelBigThreeButton?.addEventListener("click", () => activeTaskInPanel?.toggleBigThree?.());
-    panelEditButton?.addEventListener("click", () => activeTaskInPanel?.toggleEdit?.());
-    panelSaveButton?.addEventListener("click", () => activeTaskInPanel?.saveEdits?.());
+    panelEditButton?.addEventListener("click", () => activeTaskInPanel?.handleEditOrSave?.());
     panelDeleteButton?.addEventListener("click", () => activeTaskInPanel?.deleteTask?.());
     panelTaskComplete?.addEventListener("change", () => activeTaskInPanel?.toggleComplete?.());
 
@@ -607,11 +610,13 @@ function openTaskDetailPanel(task, handlers) {
             task.status = nextStatus;
             panelTaskComplete.checked = nextStatus === "completed";
         },
-        toggleEdit() {
-            isEditing = !isEditing;
-            setTaskDetailEditMode(task, isEditing);
-        },
-        async saveEdits() {
+        async handleEditOrSave() {
+            if (!isEditing) {
+                isEditing = true;
+                setTaskDetailEditMode(task, true);
+                return;
+            }
+
             const nextDescription = panelDescriptionInput.value.trim();
             const nextDueDate = panelDueDateInput.value || null;
             const nextEffortLevel = getPanelEffortInputValue();
