@@ -212,8 +212,37 @@ app.put("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
     if (!task) return res.status(404).json({ error: "Task not found" });
 
     // allow updates
-    if (req.body.description) task.description = req.body.description.trim();
-    if (req.body.status) task.status = req.body.status;
+    if (Object.prototype.hasOwnProperty.call(req.body, "description")) {
+      const nextDescription = String(req.body.description || "").trim();
+      if (!nextDescription) {
+        return res.status(400).json({ error: "Description cannot be empty" });
+      }
+      task.description = nextDescription;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(req.body, "status")) {
+      task.status = req.body.status;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(req.body, "dueDate")) {
+      if (req.body.dueDate === null || req.body.dueDate === "") {
+        task.dueDate = null;
+      } else {
+        const parsedDueDate = new Date(req.body.dueDate);
+        if (Number.isNaN(parsedDueDate.getTime())) {
+          return res.status(400).json({ error: "Invalid due date" });
+        }
+        task.dueDate = parsedDueDate;
+      }
+    }
+
+    if (Object.prototype.hasOwnProperty.call(req.body, "effortLevel")) {
+      const parsedEffortLevel = parseInt(req.body.effortLevel, 10);
+      if (!Number.isInteger(parsedEffortLevel) || parsedEffortLevel < 1 || parsedEffortLevel > 5) {
+        return res.status(400).json({ error: "Effort level must be a number from 1 to 5" });
+      }
+      task.effortLevel = parsedEffortLevel;
+    }
 
     if (Object.prototype.hasOwnProperty.call(req.body, "isBigThree")) {
       if (typeof req.body.isBigThree !== "boolean") {
