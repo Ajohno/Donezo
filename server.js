@@ -207,15 +207,41 @@ app.get("/tasks", ensureAuthenticated, async (req, res) => {
 
 // Route to update tasks in the MongoDB database
 app.put("/tasks/:taskId", ensureAuthenticated, async (req, res) => {
-  const task = await Task.findOne({ _id: req.params.taskId, userId: req.user.id });
-  if (!task) return res.status(404).json({ error: "Task not found" });
+  try {
+    const task = await Task.findOne({ _id: req.params.taskId, userId: req.user.id });
+    if (!task) return res.status(404).json({ error: "Task not found" });
 
-  // allow updates
-  if (req.body.description) task.description = req.body.description.trim();
-  if (req.body.status) task.status = req.body.status;
+    // allow updates
+    if (req.body.description) task.description = req.body.description.trim();
+    if (req.body.status) task.status = req.body.status;
 
-  await task.save();
-  return res.json(task);
+    if (Object.prototype.hasOwnProperty.call(req.body, "isBigThree")) {
+      if (typeof req.body.isBigThree !== "boolean") {
+        return res.status(400).json({ error: "isBigThree must be a boolean value" });
+      }
+
+      const nextIsBigThree = req.body.isBigThree;
+      if (nextIsBigThree && !task.isBigThree) {
+        const existingBigThreeCount = await Task.countDocuments({
+          userId: req.user.id,
+          isBigThree: true,
+          _id: { $ne: task._id }
+        });
+
+        if (existingBigThreeCount >= 3) {
+          return res.status(400).json({ error: "You can only have 3 Big 3 tasks at once." });
+        }
+      }
+
+      task.isBigThree = nextIsBigThree;
+    }
+
+    await task.save();
+    return res.json(task);
+  } catch (err) {
+    console.error("Error updating task:", err);
+    return res.status(500).json({ error: "Server error while updating task" });
+  }
 });
 
 // Route to delete a task
