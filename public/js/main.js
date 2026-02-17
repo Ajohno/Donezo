@@ -204,8 +204,9 @@ async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, i
             // const welcomeMessage = messages[randomIndex];
             // authStatus.textContent += `${welcomeMessage} ${data.user.firstName}`;
 
-            const welcomeMessage = "Welcome back,";
-            authStatus.textContent = `${welcomeMessage} ${data.user.firstName}`;
+            const rawName = String(data?.user?.firstName || data?.user?.name || "").trim();
+            const firstName = rawName.split(/\s+/)[0] || "there";
+            authStatus.textContent = `Welcome back, ${firstName}`;
 
         }
         authSection?.classList.add("hidden"); // Hide login/register CTA on dashboard
@@ -299,11 +300,66 @@ const submit = async function(event) {
     dateInput.value = "";
 };
 
+function setBigThreeButtonState(button, isBigThree) {
+    if (!button) return;
+
+    const icon = button.querySelector("i");
+    const active = Boolean(isBigThree);
+
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", active ? "true" : "false");
+    button.title = active ? "Remove from Big 3" : "Add to Big 3";
+
+    if (icon) {
+        icon.classList.toggle("fa-solid", active);
+        icon.classList.toggle("fa-regular", !active);
+        icon.style.color = "rgba(237, 28, 28, 1.00)";
+    }
+}
+
+function updateBigThreeWidget(tasks) {
+    const bigThreeList = document.getElementById("big-three-list");
+    const emptyState = document.querySelector("#big-3-tasks .big-three-empty");
+    if (!bigThreeList || !emptyState) return;
+
+    const bigThreeTasks = tasks.filter((task) => task.isBigThree).slice(0, 3);
+    bigThreeList.innerHTML = "";
+
+    if (bigThreeTasks.length === 0) {
+        emptyState.hidden = false;
+        bigThreeList.hidden = true;
+        return;
+    }
+
+    emptyState.hidden = true;
+    bigThreeList.hidden = false;
+
+    bigThreeTasks.forEach((task, index) => {
+        const item = document.createElement("li");
+        item.className = "big-three-item task-text";
+        item.textContent = `${index + 1}. ${task.description}`;
+        bigThreeList.appendChild(item);
+    });
+}
+
 // Function to update the UI with fetched tasks
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
     const taskTemplate = document.querySelector("#task-template");
     tasks = Array.isArray(tasks) ? tasks : [];
+
+    const sortedTasks = tasks.slice().sort((a, b) => {
+        const aCompleted = a.status === "completed";
+        const bCompleted = b.status === "completed";
+
+        if (aCompleted !== bCompleted) {
+            return aCompleted ? 1 : -1;
+        }
+
+        const aCreated = new Date(a.createdAt || 0).getTime();
+        const bCreated = new Date(b.createdAt || 0).getTime();
+        return bCreated - aCreated;
+    });
 
     if (!listOfTasks) {
         return; // Avoid errors on pages without the dashboard
@@ -315,13 +371,14 @@ function updateTaskList(tasks) {
 
     listOfTasks.innerHTML = ""; // Clear existing task list
 
-    tasks.forEach((task) => {
+    sortedTasks.forEach((task) => {
         const clone = taskTemplate.content.cloneNode(true);
         const taskItem = clone.querySelector(".task-item");
         const taskText = clone.querySelector(".task-text");
         const taskCheck = clone.querySelector(".task-check");
         const dueText = clone.querySelector(".task-due");
         const effortDots = clone.querySelectorAll(".task-effort .dot");
+        const bigThreeButton = clone.querySelector(".big-three-btn");
 
         if (taskItem && taskText) {
             taskText.textContent = task.description;
@@ -371,14 +428,45 @@ function updateTaskList(tasks) {
                 dot.classList.toggle("on", index < effortLevel);
             });
         }
+        setBigThreeButtonState(bigThreeButton, task.isBigThree);
 
-        // Create an Edit button
-        const editButton = document.createElement("button");
-        editButton.textContent = "Edit";
-        editButton.classList.add("edit-btn");
+        const editButton = clone.querySelector(".edit-btn");
+        const deleteButton = clone.querySelector(".delete-btn");
+
+        bigThreeButton?.addEventListener("click", async () => {
+            const nextIsBigThree = !task.isBigThree;
+            bigThreeButton.disabled = true;
+
+            try {
+                const updateResponse = await fetch(`/tasks/${task._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ isBigThree: nextIsBigThree })
+                });
+
+                const updatedTask = await parseApiResponse(updateResponse);
+                if (updateResponse.ok) {
+                    task.isBigThree = Boolean(updatedTask.isBigThree);
+                    setBigThreeButtonState(bigThreeButton, task.isBigThree);
+                    if (task.isBigThree) {
+                        Toast.show({ message: "Task added to your Big 3", type: "success", duration: 2200 });
+                    }
+                    fetchTasks();
+                } else {
+                    Toast.show({ message: updatedTask.error || "Could not update Big 3 status.", type: "error", duration: 3500 });
+                    setBigThreeButtonState(bigThreeButton, task.isBigThree);
+                }
+            } catch (error) {
+                console.error("Task Big 3 toggle failed:", error);
+                Toast.show({ message: "Could not update Big 3 status.", type: "error", duration: 3000 });
+                setBigThreeButtonState(bigThreeButton, task.isBigThree);
+            } finally {
+                bigThreeButton.disabled = false;
+            }
+        });
 
         // Add event listener for editing a task
-        editButton.addEventListener("click", async () => {
+        editButton?.addEventListener("click", async () => {
             const newDescription = prompt("Edit task description:", task.description);
             if (newDescription !== null && newDescription.trim() !== "") {
                 console.log("New Description:", newDescription);
@@ -400,14 +488,9 @@ function updateTaskList(tasks) {
                 }
             }
         });
-        
-        // Create a Delete button
-        const deleteButton = document.createElement("button");
-        deleteButton.textContent = "Delete";
-        deleteButton.classList.add("delete-btn");
 
         // Add event listener for deleting a task
-        deleteButton.addEventListener("click", async () => {
+        deleteButton?.addEventListener("click", async () => {
             const confirmDelete = confirm("Are you sure you want to delete this task?");
             if (confirmDelete) {
                 const deleteResponse = await fetch(`/tasks/${task._id}`, {
@@ -424,14 +507,10 @@ function updateTaskList(tasks) {
             }
         });
 
-        // Append Edit and Delete buttons beside each other
-        const actionsContainer = document.createElement("div");
-        actionsContainer.classList.add("task-actions");
-        actionsContainer.appendChild(editButton);
-        actionsContainer.appendChild(deleteButton);
-        clone.prepend(actionsContainer);
         listOfTasks.appendChild(clone);
     });
+
+    updateBigThreeWidget(sortedTasks);
 
     // Update the task counter
     document.querySelectorAll(".item-counter").forEach((el) => {
@@ -480,32 +559,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav__toggle");
   const drawer = document.getElementById("nav-drawer");
   const backdrop = document.getElementById("nav-backdrop");
+  const compactNav = window.matchMedia("(max-width: 1023px), (hover: none) and (pointer: coarse)");
 
   if (toggle && drawer && backdrop) {
     const openDrawer = () => {
-      drawer.hidden = false;
-      backdrop.hidden = false;
-
-      // allow CSS transition to kick in
-      requestAnimationFrame(() => drawer.classList.add("is-open"));
-
+      drawer.classList.add("is-open");
+      backdrop.classList.add("is-visible");
       toggle.setAttribute("aria-expanded", "true");
       document.body.style.overflow = "hidden";
     };
 
     const closeDrawer = () => {
       drawer.classList.remove("is-open");
+      backdrop.classList.remove("is-visible");
       toggle.setAttribute("aria-expanded", "false");
       document.body.style.overflow = "";
-
-      // wait for animation to finish before hiding
-      setTimeout(() => {
-        drawer.hidden = true;
-        backdrop.hidden = true;
-      }, 230);
     };
 
     toggle.addEventListener("click", () => {
+      if (!compactNav.matches) return;
       const expanded = toggle.getAttribute("aria-expanded") === "true";
       expanded ? closeDrawer() : openDrawer();
     });
@@ -513,11 +585,67 @@ document.addEventListener("DOMContentLoaded", () => {
     backdrop.addEventListener("click", closeDrawer);
 
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !drawer.hidden) closeDrawer();
+      if (e.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer();
     });
 
     drawer.querySelectorAll("a").forEach((a) => {
       a.addEventListener("click", closeDrawer);
     });
+
+    compactNav.addEventListener("change", (event) => {
+      if (!event.matches) {
+        closeDrawer();
+      }
+    });
   }
+});
+
+// ----------------------------
+// Mobile/tablet sticky-note center activation
+// ----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const compactView = window.matchMedia("(max-width: 1023px), (hover: none) and (pointer: coarse)");
+  const stickyNotes = Array.from(document.querySelectorAll(".board-grid .sticky-note"));
+  if (stickyNotes.length === 0) return;
+
+  let rafId = null;
+
+  const clearActiveNotes = () => {
+    stickyNotes.forEach((note) => note.classList.remove("in-view-hover"));
+  };
+
+  const updateStickyNoteStates = () => {
+    rafId = null;
+
+    if (!compactView.matches) {
+      clearActiveNotes();
+      return;
+    }
+
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const centerY = viewportHeight * 0.5;
+    const activeHalfBand = viewportHeight * 0.18; // ~36% total active zone around center
+    const upperBound = centerY - activeHalfBand;
+    const lowerBound = centerY + activeHalfBand;
+
+    stickyNotes.forEach((note) => {
+      const rect = note.getBoundingClientRect();
+      const noteCenter = rect.top + rect.height / 2;
+      const isVisible = rect.bottom > 0 && rect.top < viewportHeight;
+      const inCenterBand = noteCenter >= upperBound && noteCenter <= lowerBound;
+
+      note.classList.toggle("in-view-hover", isVisible && inCenterBand);
+    });
+  };
+
+  const requestUpdate = () => {
+    if (rafId !== null) return;
+    rafId = window.requestAnimationFrame(updateStickyNoteStates);
+  };
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+  compactView.addEventListener("change", requestUpdate);
+
+  updateStickyNoteStates();
 });

@@ -39,6 +39,17 @@
 <!-- NEW NAV BAR -->
 <nav class="navbar">
   <div class="nav-left">
+    <button
+      class="nav__toggle"
+      type="button"
+      aria-label="Open menu"
+      aria-controls="nav-drawer"
+      aria-expanded="false"
+    >
+      <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      <span class="sr-only">Menu</span>
+    </button>
+
     <div class="logo-container">
       
       <div class="logo-sticky">
@@ -49,30 +60,28 @@
       </div>
       <span class="brand-name">Stick A Pin</span>
     </div>
-    
-    <ul class="nav-links">
-      <li><a href="dashboard.html" class="nav-item active">Board</a></li>
-      <li><a href="calendar-page.html" class="nav-item">Calendar</a></li>
-      <li><a href="feedback-page.html" class="nav-item">Feedback</a></li>
-      <li><a href="settings-page.html" class="nav-item">Setting</a></li>
-      <li><a href="profile-page.html" class="nav-item">Profile</a></li>
-      <li><a href="#" id="logoutBtn" class="nav-item">Logout</a></li>
-    </ul>
   </div>
 
+  <ul class="nav-links" id="nav-drawer">
+    <li><a href="dashboard.html" class="nav-item active">Board</a></li>
+    <li><a href="calendar-page.html" class="nav-item">Calendar</a></li>
+    <li><a href="feedback-page.html" class="nav-item">Feedback</a></li>
+    <li><a href="settings-page.html" class="nav-item">Setting</a></li>
+    <li><a href="profile-page.html" class="nav-item">Profile</a></li>
+    <li><a href="#" id="logoutBtn" class="nav-item">Logout</a></li>
+  </ul>
+
   <div class="nav-right">
-    <!-- The "Tasks Left" sticky note -->
-    <div class="">
-      <span class="tasks-count item-counter sticky-note "></span>
-      <span >
-        Tasks Left 
-        | 
-        <span id="authStatus"></span>
-        
-      </span>
+    <div class="nav-status">
+      <div class="nav-tasks">
+        <span class="tasks-count item-counter"></span>
+        <span class="tasks-label-text">Tasks Left</span>
+      </div>
+      <span id="authStatus" class="nav-welcome"></span>
     </div>
   </div>
 </nav>
+<div id="nav-backdrop" aria-hidden="true"></div>
 
 
       <div class="corkboard">
@@ -90,6 +99,17 @@
               <ul class="task-list scrollable"></ul>
               <template id="task-template">
                 <li class="task-item">
+                  <div class="task-actions">
+                    <button type="button" class="task-action-btn big-three-btn" aria-label="Toggle Big 3 task" title="Toggle Big 3">
+                      <i class="fa-regular fa-star" style="color: rgba(237, 28, 28, 1.00);" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="task-action-btn edit-btn" aria-label="Edit task" title="Edit">
+                      <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="task-action-btn delete-btn" aria-label="Delete task" title="Delete">
+                      <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                    </button>
+                  </div>
                   <label class="checkbox-container">
                     <input type="checkbox" class="task-check" />
                     <span class="checkmark"></span>
@@ -108,16 +128,12 @@
             </div>
           </div>
 
-          <!-- Middle Column -->
+          <!-- Right Column -->
           <div>
             <!-- Create New Task -->
             <div id="create-task-widget" class="sticky-note blue thumbtack">
-              <h2 class="widget-title highlight-on-parent-hover">
-                <i class="fa-solid fa-pen" style="color: #c6534e"></i>
-                New Task
-              </h2>
-              <form id="taskForm" class="paper-form">
-                <div class="paper-field">
+              <form id="taskForm" class="paper-form create-task-form-grid">
+                <div class="paper-field task-field">
                   <label for="taskDescription">Task</label>
                   <input
                     id="taskDescription"
@@ -127,13 +143,14 @@
                     required
                   />
                 </div>
-                <div class="paper-field">
+
+                <div class="paper-field due-field">
                   <label for="dueDate">Due Date</label>
                   <input id="dueDate" type="date" name="dueDate" />
                 </div>
-                
-                <div class="paper-field">
-                  <label>Effort Level (1 being easy and 5 being heavy)</label>
+
+                <div class="paper-field effort-field">
+                  <label>Effort Level (1–5)</label>
 
                   <div class="effort-options" role="radiogroup" aria-label="Effort level">
                     <label class="effort-option">
@@ -164,7 +181,7 @@
                 </div>
 
                 <button id="submitBtn" class="paper-button" type="submit" >
-                  Pin it! 
+                  Pin it!
                 </button>
               </form>
             </div>
@@ -172,32 +189,17 @@
             <!-- Big 3 Tasks -->
             <div id="big-3-tasks" class="sticky-note pink thumbtack">
               
+              <!-- Title -->
               <h2 class="widget-title highlight-on-parent-hover">
                 <i class="fa-solid fa-star" style="color: #c6534e;"></i>
                 Big 3 Tasks
               </h2>
-            </div>
-          </div>
 
-          <!-- Right Column -->
-          <div>
-            <!-- Focus Mode Widget -->
-            <div id="focus-mode-widget" class="sticky-note blue thumbtack">
-              <h3 class="widget-title highlight-on-parent-hover">Focus Mode</h3>
-              <p>
-                Focus on one task at a time!
+              <p class="big-three-empty">
+                <i class="fa-regular fa-star" style="color: rgba(237, 28, 28, 1.00);"></i>
+                No Big 3 tasks yet. Star up to 3 tasks from your list.
               </p>
-                <!-- Timer icon -->
-              </p>
-
-              <div id="focus-button">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
-                  <!--!Font Awesome Free v7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                  <path
-                    d="M528 320C528 434.9 434.9 528 320 528C205.1 528 112 434.9 112 320C112 205.1 205.1 112 320 112C434.9 112 528 205.1 528 320zM64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64C178.6 64 64 178.6 64 320zM296 184L296 320C296 328 300 335.5 306.7 340L402.7 404C413.7 411.4 428.6 408.4 436 397.3C443.4 386.2 440.4 371.4 429.3 364L344 307.2L344 184C344 170.7 333.3 160 320 160C306.7 160 296 170.7 296 184z"
-                  />
-                </svg>
-              </div>
+              <ul id="big-three-list" class="big-three-list"></ul>
             </div>
 
             <!-- Reflection Notes -->
