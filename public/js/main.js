@@ -377,9 +377,26 @@ function updateBigThreeWidget(tasks) {
 let activeTaskInPanel = null;
 let panelTypewriterRunId = 0;
 
+function toDisplayDate(value) {
+    if (!value) return null;
+
+    if (typeof value === "string") {
+        const match = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (match) {
+            const year = parseInt(match[1], 10);
+            const month = parseInt(match[2], 10);
+            const day = parseInt(match[3], 10);
+            return new Date(year, month - 1, day, 12, 0, 0, 0);
+        }
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
 function formatTaskDueDate(dueDate) {
-    if (!dueDate) return "No due date";
-    const date = new Date(dueDate);
+    const date = toDisplayDate(dueDate);
+    if (!date) return "No due date";
     return `Due: ${date.toLocaleDateString()}`;
 }
 
@@ -638,17 +655,17 @@ function openTaskDetailPanel(task, handlers) {
                 return;
             }
 
-            const saved = await handlers.saveTaskEdits?.({
+            const savedTask = await handlers.saveTaskEdits?.({
                 description: nextDescription,
                 dueDate: nextDueDate,
                 effortLevel: nextEffortLevel
             });
 
-            if (!saved) return;
+            if (!savedTask) return;
 
-            task.description = nextDescription;
-            task.dueDate = nextDueDate;
-            task.effortLevel = nextEffortLevel;
+            task.description = savedTask.description ?? nextDescription;
+            task.dueDate = savedTask.dueDate ?? nextDueDate;
+            task.effortLevel = savedTask.effortLevel ?? nextEffortLevel;
 
             isEditing = false;
             setTaskDetailEditMode(task, false);
@@ -732,8 +749,7 @@ function updateTaskList(tasks) {
         }
         if (dueText) {
             if (task.dueDate) {
-                const date = new Date(task.dueDate);
-                dueText.textContent = `Due: ${date.toLocaleDateString()}`;
+                dueText.textContent = formatTaskDueDate(task.dueDate);
                 dueText.hidden = false;
             } else {
                 dueText.textContent = "";
@@ -798,11 +814,11 @@ function updateTaskList(tasks) {
             if (updateResponse.ok) {
                 Toast.show({ message: "Task Updated", type: "success", duration: 2000 });
                 fetchTasks();
-                return true;
+                return updateData;
             }
 
             Toast.show({ message: updateData.error || "Error updating task", type: "error", duration: 3200 });
-            return false;
+            return null;
         };
 
         // Add event listener for deleting a task
