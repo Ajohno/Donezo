@@ -1,99 +1,90 @@
-<head>
-  <title>Stick A Pin</title>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="js/main.js" defer></script>
-  <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Stick A Pin</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="js/notification.js" defer></script>
+    <script src="js/main.js" defer></script>
+    <link rel="icon" type="image/png" href="\assets\image\donezo-logo.png" />
+    <link rel="apple-touch-icon" href="donezo-logo.png" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/stickies.css" />
+    <link rel="stylesheet" href="css/notification.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gochi+Hand&family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="hero-header">
+      <h1>Stick A Pin</h1>
+    </header>
 
-  <!-- iOS home screen icon -->
-  <link rel="apple-touch-icon" href="donezo-logo.png" />
+    <nav class="navbar">
+      <div class="nav-left">
+        <button class="nav__toggle" type="button" aria-label="Open menu" aria-controls="nav-drawer" aria-expanded="false">
+          <i class="fa-solid fa-bars" aria-hidden="true"></i>
+          <span class="sr-only">Menu</span>
+        </button>
 
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/stickies.css" />
-  <link rel="stylesheet" href="css/notification.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Itim&family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-    rel="stylesheet"
-  />
-
-  <!-- get rid of favicon error -->
-  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-  <link rel="stylesheet" href="css/navbar.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
-  />
-  <!-- <script src="https://cdn.tailwindcss.com"></script> -->
-</head>
-<header class="hero-header">
-  <h1>Donezo</h1>
-</header>
-<nav class="navbar">
-  <div class="nav-left">
-    <button
-      class="nav__toggle"
-      type="button"
-      aria-label="Open menu"
-      aria-controls="nav-drawer"
-      aria-expanded="false"
-    >
-      <i class="fa-solid fa-bars" aria-hidden="true"></i>
-      <span class="sr-only">Menu</span>
-    </button>
-
-    <div class="logo-container">
-      <div class="logo-sticky">
-        <div class="thumbtack">
-          <i class="fa-solid fa-thumbtack" style="color:#c6534e;"></i>
+        <div class="logo-container">
+          <div class="logo-sticky">
+            <div class="thumbtack">
+              <i class="fa-solid fa-thumbtack" style="color:#c6534e;"></i>
+            </div>
+          </div>
+          <span class="brand-name">Stick A Pin</span>
         </div>
       </div>
-      <span class="brand-name">Stick A Pin</span>
-    </div>
-  </div>
 
-  <ul class="nav-links" id="nav-drawer">
-    <li><a href="/dashboard.html" class="nav-item">Board</a></li>
-    <li><a href="/calendar-page.html" class="nav-item">Calendar</a></li>
-    <li><a href="/feedback-page.html" class="nav-item">Feedback</a></li>
-    <li><a href="/settings-page.html" class="nav-item">Settings</a></li>
-    <li><a href="/profile-page.html" class="nav-item active">Profile</a></li>
-    <li><a href="#" id="logoutBtn" class="nav-item">Logout</a></li>
-  </ul>
+      <ul class="nav-links" id="nav-drawer">
+        <li><a href="/dashboard.html" class="nav-item">Board</a></li>
+        <li><a href="/calendar-page.html" class="nav-item">Calendar</a></li>
+        <li><a href="/feedback-page.html" class="nav-item">Feedback</a></li>
+        <li><a href="/settings-page.html" class="nav-item">Settings</a></li>
+        <li><a href="/profile-page.html" class="nav-item active">Profile</a></li>
+        <li><a href="#" id="logoutBtn" class="nav-item">Logout</a></li>
+      </ul>
 
-  <div class="nav-right">
-    <div class="nav-status">
-      <div class="nav-tasks">
-        <span class="tasks-count item-counter"></span>
-        <span class="tasks-label-text">Tasks Left</span>
+      <div class="nav-right">
+        <div class="nav-status">
+          <div class="nav-tasks">
+            <span class="tasks-count item-counter"></span>
+            <span class="tasks-label-text">Tasks Left</span>
+          </div>
+          <span id="authStatus" class="nav-welcome"></span>
+        </div>
       </div>
-      <span id="authStatus" class="nav-welcome"></span>
-    </div>
-  </div>
-</nav>
-<div id="nav-backdrop" aria-hidden="true"></div>
+    </nav>
+    <div id="nav-backdrop" aria-hidden="true"></div>
 
-<div
-  id="toast"
-  class="toast toast--default"
-  role="status"
-  aria-live="polite"
-  aria-atomic="true"
-  hidden
->
-  <div class="toast__icon" aria-hidden="true">i</div>
-  <div class="toast__content">
-    <div id="toastTitle" class="toast__title" hidden></div>
-    <div id="toastMessage" class="toast__message"></div>
-  </div>
-  <button
-    id="toastClose"
-    class="toast__close"
-    type="button"
-    aria-label="Close notification"
-  >
-    ×
-  </button>
-  <div class="toast__progress"></div>
-</div>
+    <main class="corkboard" style="max-width: 1100px; margin: 2rem auto;">
+      <section class="sticky-note thumbtack" style="padding: 1.25rem;">
+        <h2 class="widget-title">
+          <i class="fa-solid fa-user" style="color: #c6534e;"></i>
+          Profile
+        </h2>
+        <p>Your profile details will appear here.</p>
+      </section>
+    </main>
+
+    <div id="toast" class="toast toast--default" role="status" aria-live="polite" aria-atomic="true" hidden>
+      <div class="toast__icon" aria-hidden="true">i</div>
+      <div class="toast__content">
+        <div id="toastTitle" class="toast__title" hidden></div>
+        <div id="toastMessage" class="toast__message"></div>
+      </div>
+      <button id="toastClose" class="toast__close" type="button" aria-label="Close notification">×</button>
+      <div class="toast__progress"></div>
+    </div>
+  </body>
+</html>

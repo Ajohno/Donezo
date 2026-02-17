@@ -164,6 +164,28 @@ document.addEventListener("DOMContentLoaded", () => {
     checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, isHomePage }); // Check authentication status on page load
 });
 
+
+async function updateNavTaskCounter() {
+    const counters = document.querySelectorAll(".item-counter");
+    if (!counters.length) return;
+
+    try {
+        const response = await fetch("/tasks", { credentials: "include" });
+        if (!response.ok) return;
+
+        const tasks = await response.json();
+        const activeCount = Array.isArray(tasks)
+            ? tasks.filter((task) => task.status === "active").length
+            : 0;
+
+        counters.forEach((el) => {
+            el.textContent = String(activeCount);
+        });
+    } catch (error) {
+        console.error("Error updating nav task counter:", error);
+    }
+}
+
 // Function to check if a user is currently logged in
 async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, isHomePage }) {
     const authSection = document.getElementById("auth-section");
@@ -223,6 +245,8 @@ async function checkAuthStatus({ isLoginPage, isRegisterPage, isProtectedPage, i
         if (mainSection) {
             fetchTasks(); // Automatically load tasks if user is logged in
         }
+
+        updateNavTaskCounter();
     } else {
         // Protected pages should send logged-out users to login instead of showing a blank shell.
         if (isProtectedPage) {
