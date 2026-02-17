@@ -141,12 +141,14 @@
 }
 
 /* Thumbtack comes off when note is hovered */
-.sticky-note.thumbtack:hover::before {
+.sticky-note.thumbtack:hover::before,
+.sticky-note.thumbtack.in-view-hover::before {
   transform: translateX(-50%) translateY(-18px) rotate(-10deg);
   opacity: 0;
 }
 
-.sticky-note.thumbtack:hover::after {
+.sticky-note.thumbtack:hover::after,
+.sticky-note.thumbtack.in-view-hover::after {
   transform: translateX(-50%) translateY(-18px);
   opacity: 0;
 }
@@ -183,7 +185,8 @@
 }
 
 .sticky-note:hover,
-.sticky-note:focus-within {
+.sticky-note:focus-within,
+.sticky-note.in-view-hover {
   z-index: 10;
 }
 
@@ -192,7 +195,8 @@
    HOVER INTERACTION
    Raises note to feel touchable
    ============================================================ */
-.sticky-note:hover {
+.sticky-note:hover,
+.sticky-note.in-view-hover {
   transform: translateY(-4px) scale(1.02);
 
   box-shadow:
@@ -254,7 +258,9 @@
 
 /* Tape comes off when note is hovered */
 .sticky-note.tape:hover::before,
-.sticky-note.tape:hover::after {
+.sticky-note.tape:hover::after,
+.sticky-note.tape.in-view-hover::before,
+.sticky-note.tape.in-view-hover::after {
   transform: translateX(-50%) translateY(-18px) rotate(10deg);
   opacity: 0;
 }
@@ -310,12 +316,14 @@
 }
 
 /* Double tape comes off when note is hovered */
-.sticky-note.double-tape:hover::before {
+.sticky-note.double-tape:hover::before,
+.sticky-note.double-tape.in-view-hover::before {
   transform: translateY(-18px) rotate(-15deg);
   opacity: 0;
 }
 
-.sticky-note.double-tape:hover::after {
+.sticky-note.double-tape:hover::after,
+.sticky-note.double-tape.in-view-hover::after {
   transform: translateY(-18px) rotate(15deg);
   opacity: 0;
 }

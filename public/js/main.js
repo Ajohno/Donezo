@@ -127,20 +127,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to log out a user (dashboard only)
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
-        logoutBtn.addEventListener("click", async () => {
-            const response = await fetch("/logout", {
-                credentials: "include",
-                method: "POST"
-            });
+        logoutBtn.addEventListener("click", async (event) => {
+            event.preventDefault();
 
-            if (response.ok) {
-                // alert("Logged out successfully!");
-                Toast.show({ message: "Logged out successfully", type: "success", duration: 2000 });
-                // Send the user back to login after logout
-                window.location.href = "/login.html";
-            } else {
-                const data = await parseApiResponse(response);
-                alert("Logout failed: " + (data.error || "Unknown error"));
+            try {
+                const response = await fetch("/logout", {
+                    credentials: "include",
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    Toast.show({ message: "Logged out successfully", type: "success", duration: 2000 });
+                    // Send the user back to login after logout
+                    window.location.href = "/login.html";
+                } else {
+                    const data = await parseApiResponse(response);
+                    alert("Logout failed: " + (data.error || "Unknown error"));
+                }
+            } catch (error) {
+                console.error("Logout request failed:", error);
+                alert("Logout failed due to a network/server issue.");
             }
         });
     }
@@ -598,4 +604,54 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+});
+
+// ----------------------------
+// Mobile/tablet sticky-note center activation
+// ----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const compactView = window.matchMedia("(max-width: 1023px), (hover: none) and (pointer: coarse)");
+  const stickyNotes = Array.from(document.querySelectorAll(".board-grid .sticky-note"));
+  if (stickyNotes.length === 0) return;
+
+  let rafId = null;
+
+  const clearActiveNotes = () => {
+    stickyNotes.forEach((note) => note.classList.remove("in-view-hover"));
+  };
+
+  const updateStickyNoteStates = () => {
+    rafId = null;
+
+    if (!compactView.matches) {
+      clearActiveNotes();
+      return;
+    }
+
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const centerY = viewportHeight * 0.5;
+    const activeHalfBand = viewportHeight * 0.18; // ~36% total active zone around center
+    const upperBound = centerY - activeHalfBand;
+    const lowerBound = centerY + activeHalfBand;
+
+    stickyNotes.forEach((note) => {
+      const rect = note.getBoundingClientRect();
+      const noteCenter = rect.top + rect.height / 2;
+      const isVisible = rect.bottom > 0 && rect.top < viewportHeight;
+      const inCenterBand = noteCenter >= upperBound && noteCenter <= lowerBound;
+
+      note.classList.toggle("in-view-hover", isVisible && inCenterBand);
+    });
+  };
+
+  const requestUpdate = () => {
+    if (rafId !== null) return;
+    rafId = window.requestAnimationFrame(updateStickyNoteStates);
+  };
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+  compactView.addEventListener("change", requestUpdate);
+
+  updateStickyNoteStates();
 });

@@ -441,7 +441,8 @@ input:focus{
 }
 
 /* Parent hover triggers the highlight */
-.sticky-note:hover .highlight-on-parent-hover{
+.sticky-note:hover .highlight-on-parent-hover,
+.sticky-note.in-view-hover .highlight-on-parent-hover{
   background-size: 100% 100%;
 }
 
@@ -854,6 +855,11 @@ input:focus{
 .checkbox-container .task-check:checked ~ .task-text{
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+.login-page .paper-actions .checkbox-container .task-text{
+  font-family: "Itim", serif;
+  font-style: normal;
 }
 
 /* Scrolling list area (inside a widget) */
