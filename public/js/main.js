@@ -415,6 +415,7 @@ function updateTaskList(tasks) {
         }
         if (taskCheck) {
             taskCheck.checked = task.status === "completed";
+            taskItem?.classList.toggle("is-completed", taskCheck.checked);
 
             taskCheck.addEventListener("change", async () => {
                 const nextStatus = taskCheck.checked ? "completed" : "active";
@@ -428,16 +429,19 @@ function updateTaskList(tasks) {
 
                     if (updateResponse.ok) {
                         task.status = nextStatus;
+                        taskItem?.classList.toggle("is-completed", taskCheck.checked);
                         if (nextStatus === "completed") {
                             Toast.show({ message: "Task Completed! One step down, time for the next.", type: "success", duration: 4000 });
                         }
                         fetchTasks();
                     } else {
                         taskCheck.checked = !taskCheck.checked;
+                        taskItem?.classList.toggle("is-completed", taskCheck.checked);
                         console.error("Error updating task status");
                     }
                 } catch (error) {
                     taskCheck.checked = !taskCheck.checked;
+                    taskItem?.classList.toggle("is-completed", taskCheck.checked);
                     console.error("Task status update failed:", error);
                 }
             });
