@@ -372,6 +372,93 @@ function updateBigThreeWidget(tasks) {
     });
 }
 
+
+
+let activeTaskInPanel = null;
+
+function formatTaskDueDate(dueDate) {
+    if (!dueDate) return "No due date";
+    const date = new Date(dueDate);
+    return `Due: ${date.toLocaleDateString()}`;
+}
+
+function formatTaskEffortLevel(effortLevel) {
+    const safeEffort = Math.max(1, Math.min(5, parseInt(effortLevel, 10) || 3));
+    return `${safeEffort} / 5`;
+}
+
+function closeTaskDetailPanel() {
+    const panel = document.getElementById("task-detail-panel");
+    const backdrop = document.getElementById("task-detail-backdrop");
+    if (!panel || !backdrop) return;
+
+    panel.classList.remove("is-open");
+    panel.setAttribute("aria-hidden", "true");
+    backdrop.classList.remove("is-visible");
+    backdrop.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("task-panel-open");
+    activeTaskInPanel = null;
+}
+
+function wireTaskDetailPanel() {
+    const panel = document.getElementById("task-detail-panel");
+    const backdrop = document.getElementById("task-detail-backdrop");
+    const closeButton = document.getElementById("taskDetailClose");
+    if (!panel || !backdrop || !closeButton || panel.dataset.ready === "true") return;
+
+    const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
+    const panelEditButton = document.getElementById("panelEditBtn");
+    const panelDeleteButton = document.getElementById("panelDeleteBtn");
+
+    closeButton.addEventListener("click", closeTaskDetailPanel);
+    backdrop.addEventListener("click", closeTaskDetailPanel);
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && panel.classList.contains("is-open")) {
+            closeTaskDetailPanel();
+        }
+    });
+
+    panelBigThreeButton?.addEventListener("click", () => activeTaskInPanel?.toggleBigThree?.());
+    panelEditButton?.addEventListener("click", () => activeTaskInPanel?.editTask?.());
+    panelDeleteButton?.addEventListener("click", () => activeTaskInPanel?.deleteTask?.());
+
+    panel.dataset.ready = "true";
+}
+
+function openTaskDetailPanel(task, handlers) {
+    const panel = document.getElementById("task-detail-panel");
+    const backdrop = document.getElementById("task-detail-backdrop");
+    const descriptionEl = document.getElementById("panelTaskDescription");
+    const dueDateEl = document.getElementById("panelTaskDueDate");
+    const effortEl = document.getElementById("panelTaskEffort");
+    const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
+    if (!panel || !backdrop || !descriptionEl || !dueDateEl || !effortEl || !panelBigThreeButton) return;
+
+    wireTaskDetailPanel();
+
+    descriptionEl.textContent = task.description || "No description";
+    dueDateEl.textContent = formatTaskDueDate(task.dueDate);
+    effortEl.textContent = formatTaskEffortLevel(task.effortLevel);
+
+    setBigThreeButtonState(panelBigThreeButton, task.isBigThree);
+    panelBigThreeButton.disabled = false;
+
+    activeTaskInPanel = {
+        ...handlers,
+        syncBigThree(nextValue) {
+            task.isBigThree = nextValue;
+            setBigThreeButtonState(panelBigThreeButton, nextValue);
+        }
+    };
+
+    panel.classList.add("is-open");
+    panel.setAttribute("aria-hidden", "false");
+    backdrop.classList.add("is-visible");
+    backdrop.setAttribute("aria-hidden", "false");
+    document.body.classList.add("task-panel-open");
+}
+
 // Function to update the UI with fetched tasks
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
@@ -405,6 +492,7 @@ function updateTaskList(tasks) {
         const clone = taskTemplate.content.cloneNode(true);
         const taskItem = clone.querySelector(".task-item");
         const taskText = clone.querySelector(".task-text");
+        const taskDetailsTrigger = clone.querySelector(".task-details-trigger");
         const taskCheck = clone.querySelector(".task-check");
         const dueText = clone.querySelector(".task-due");
         const effortDots = clone.querySelectorAll(".task-effort .dot");
@@ -412,6 +500,7 @@ function updateTaskList(tasks) {
 
         if (taskItem && taskText) {
             taskText.textContent = task.description;
+            taskText.title = "Open task details";
         }
         if (taskCheck) {
             taskCheck.checked = task.status === "completed";
@@ -464,12 +553,11 @@ function updateTaskList(tasks) {
         }
         setBigThreeButtonState(bigThreeButton, task.isBigThree);
 
-        const editButton = clone.querySelector(".edit-btn");
-        const deleteButton = clone.querySelector(".delete-btn");
+        const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
 
-        bigThreeButton?.addEventListener("click", async () => {
+        const toggleBigThree = async () => {
             const nextIsBigThree = !task.isBigThree;
-            bigThreeButton.disabled = true;
+            if (bigThreeButton) bigThreeButton.disabled = true;
 
             try {
                 const updateResponse = await fetch(`/tasks/${task._id}`, {
@@ -495,12 +583,14 @@ function updateTaskList(tasks) {
                 Toast.show({ message: "Could not update Big 3 status.", type: "error", duration: 3000 });
                 setBigThreeButtonState(bigThreeButton, task.isBigThree);
             } finally {
-                bigThreeButton.disabled = false;
+                if (bigThreeButton) bigThreeButton.disabled = false;
             }
-        });
+        };
+
+        bigThreeButton?.addEventListener("click", toggleBigThree);
 
         // Add event listener for editing a task
-        editButton?.addEventListener("click", async () => {
+        const editTask = async () => {
             const newDescription = prompt("Edit task description:", task.description);
             if (newDescription !== null && newDescription.trim() !== "") {
                 console.log("New Description:", newDescription);
@@ -521,10 +611,10 @@ function updateTaskList(tasks) {
                     console.error("Error updating task");
                 }
             }
-        });
+        };
 
         // Add event listener for deleting a task
-        deleteButton?.addEventListener("click", async () => {
+        const deleteTask = async () => {
             const confirmDelete = confirm("Are you sure you want to delete this task?");
             if (confirmDelete) {
                 const deleteResponse = await fetch(`/tasks/${task._id}`, {
@@ -539,6 +629,34 @@ function updateTaskList(tasks) {
                     console.error("Error deleting task");
                 }
             }
+        };
+
+        const rowBigThreeButton = clone.querySelector(".big-three-btn");
+        const rowEditButton = clone.querySelector(".edit-btn");
+        const rowDeleteButton = clone.querySelector(".delete-btn");
+
+        rowBigThreeButton?.addEventListener("click", toggleBigThree);
+        rowEditButton?.addEventListener("click", editTask);
+        rowDeleteButton?.addEventListener("click", deleteTask);
+
+        taskDetailsTrigger?.addEventListener("click", () => {
+            openTaskDetailPanel(task, {
+                toggleBigThree: async () => {
+                    panelBigThreeButton.disabled = true;
+                    await toggleBigThree();
+                    if (activeTaskInPanel) {
+                        activeTaskInPanel.syncBigThree(Boolean(task.isBigThree));
+                    }
+                    panelBigThreeButton.disabled = false;
+                },
+                editTask: async () => {
+                    await editTask();
+                },
+                deleteTask: async () => {
+                    await deleteTask();
+                    closeTaskDetailPanel();
+                }
+            });
         });
 
         listOfTasks.appendChild(clone);
@@ -597,6 +715,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (toggle && drawer && backdrop) {
     const openDrawer = () => {
+      closeTaskDetailPanel();
       drawer.classList.add("is-open");
       backdrop.classList.add("is-visible");
       toggle.setAttribute("aria-expanded", "true");
