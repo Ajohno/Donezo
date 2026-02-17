@@ -377,9 +377,26 @@ function updateBigThreeWidget(tasks) {
 let activeTaskInPanel = null;
 let panelTypewriterRunId = 0;
 
+function toDisplayDate(value) {
+    if (!value) return null;
+
+    if (typeof value === "string") {
+        const match = value.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (match) {
+            const year = parseInt(match[1], 10);
+            const month = parseInt(match[2], 10);
+            const day = parseInt(match[3], 10);
+            return new Date(year, month - 1, day, 12, 0, 0, 0);
+        }
+    }
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+}
+
 function formatTaskDueDate(dueDate) {
-    if (!dueDate) return "No due date";
-    const date = new Date(dueDate);
+    const date = toDisplayDate(dueDate);
+    if (!date) return "No due date";
     return `Due: ${date.toLocaleDateString()}`;
 }
 
@@ -420,6 +437,67 @@ async function animateTaskDetailFields(task, runId) {
     await typeTextIntoElement(descriptionEl, descriptionText, runId, 18);
     await typeTextIntoElement(dueDateEl, dueDateText, runId, 16);
     await typeTextIntoElement(effortEl, effortText, runId, 16);
+}
+
+function formatDateInputValue(dueDate) {
+    if (!dueDate) return "";
+    const date = new Date(dueDate);
+    if (Number.isNaN(date.getTime())) return "";
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function setPanelEffortInputValue(effortLevel) {
+    const safeEffort = Math.max(1, Math.min(5, parseInt(effortLevel, 10) || 3));
+    document.querySelectorAll('input[name="panelEffortLevel"]').forEach((radio) => {
+        radio.checked = parseInt(radio.value, 10) === safeEffort;
+    });
+}
+
+function getPanelEffortInputValue() {
+    const checked = document.querySelector('input[name="panelEffortLevel"]:checked');
+    return checked ? parseInt(checked.value, 10) : 3;
+}
+
+function setTaskDetailEditMode(task, isEditing) {
+    const panelEditButton = document.getElementById("panelEditBtn");
+    const descriptionDisplay = document.getElementById("panelTaskDescription");
+    const dueDateDisplay = document.getElementById("panelTaskDueDate");
+    const effortDisplay = document.getElementById("panelTaskEffort");
+    const descriptionInput = document.getElementById("panelTaskDescriptionInput");
+    const dueDateInput = document.getElementById("panelTaskDueDateInput");
+    const effortInput = document.getElementById("panelTaskEffortInput");
+
+    if (!panelEditButton || !descriptionDisplay || !dueDateDisplay || !effortDisplay || !descriptionInput || !dueDateInput || !effortInput) {
+        return;
+    }
+
+    descriptionDisplay.hidden = isEditing;
+    dueDateDisplay.hidden = isEditing;
+    effortDisplay.hidden = isEditing;
+
+    descriptionInput.hidden = !isEditing;
+    dueDateInput.hidden = !isEditing;
+    effortInput.hidden = !isEditing;
+
+    const editLabel = panelEditButton.querySelector("span");
+    const editIcon = panelEditButton.querySelector("i");
+    if (editLabel) {
+        editLabel.textContent = isEditing ? "Save" : "Edit";
+    }
+    if (editIcon) {
+        editIcon.className = isEditing ? "fa-solid fa-floppy-disk" : "fa-solid fa-pen-to-square";
+    }
+
+    if (isEditing) {
+        descriptionInput.value = task.description || "";
+        dueDateInput.value = formatDateInputValue(task.dueDate);
+        setPanelEffortInputValue(task.effortLevel);
+        descriptionInput.focus();
+    }
 }
 
 async function updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, controls = {}) {
@@ -478,6 +556,18 @@ function closeTaskDetailPanel() {
     backdrop.classList.remove("is-visible");
     backdrop.setAttribute("aria-hidden", "true");
     document.body.classList.remove("task-panel-open");
+
+    const effortInput = document.getElementById("panelTaskEffortInput");
+    if (effortInput) {
+        effortInput.hidden = true;
+    }
+
+    const panelEditButton = document.getElementById("panelEditBtn");
+    const editLabel = panelEditButton?.querySelector("span");
+    const editIcon = panelEditButton?.querySelector("i");
+    if (editLabel) editLabel.textContent = "Edit";
+    if (editIcon) editIcon.className = "fa-solid fa-pen-to-square";
+
     panelTypewriterRunId += 1;
     activeTaskInPanel = null;
 }
@@ -503,7 +593,7 @@ function wireTaskDetailPanel() {
     });
 
     panelBigThreeButton?.addEventListener("click", () => activeTaskInPanel?.toggleBigThree?.());
-    panelEditButton?.addEventListener("click", () => activeTaskInPanel?.editTask?.());
+    panelEditButton?.addEventListener("click", () => activeTaskInPanel?.handleEditOrSave?.());
     panelDeleteButton?.addEventListener("click", () => activeTaskInPanel?.deleteTask?.());
     panelTaskComplete?.addEventListener("change", () => activeTaskInPanel?.toggleComplete?.());
 
@@ -518,7 +608,10 @@ function openTaskDetailPanel(task, handlers) {
     const effortEl = document.getElementById("panelTaskEffort");
     const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
     const panelTaskComplete = document.getElementById("panelTaskComplete");
-    if (!panel || !backdrop || !descriptionEl || !dueDateEl || !effortEl || !panelBigThreeButton || !panelTaskComplete) return;
+    const panelDescriptionInput = document.getElementById("panelTaskDescriptionInput");
+    const panelDueDateInput = document.getElementById("panelTaskDueDateInput");
+    const panelEffortInput = document.getElementById("panelTaskEffortInput");
+    if (!panel || !backdrop || !descriptionEl || !dueDateEl || !effortEl || !panelBigThreeButton || !panelTaskComplete || !panelDescriptionInput || !panelDueDateInput || !panelEffortInput) return;
 
     wireTaskDetailPanel();
 
@@ -533,6 +626,9 @@ function openTaskDetailPanel(task, handlers) {
     panelBigThreeButton.disabled = false;
     panelTaskComplete.checked = task.status === "completed";
 
+    let isEditing = false;
+    setTaskDetailEditMode(task, false);
+
     activeTaskInPanel = {
         ...handlers,
         syncBigThree(nextValue) {
@@ -542,6 +638,44 @@ function openTaskDetailPanel(task, handlers) {
         syncCompletion(nextStatus) {
             task.status = nextStatus;
             panelTaskComplete.checked = nextStatus === "completed";
+        },
+        async handleEditOrSave() {
+            if (!isEditing) {
+                isEditing = true;
+                setTaskDetailEditMode(task, true);
+                return;
+            }
+
+            const nextDescription = panelDescriptionInput.value.trim();
+            const nextDueDate = panelDueDateInput.value || null;
+            const nextEffortLevel = getPanelEffortInputValue();
+
+            if (!nextDescription) {
+                Toast.show({ message: "Task description cannot be empty.", type: "error", duration: 3000 });
+                return;
+            }
+
+            const savedTask = await handlers.saveTaskEdits?.({
+                description: nextDescription,
+                dueDate: nextDueDate,
+                effortLevel: nextEffortLevel
+            });
+
+            if (!savedTask) return;
+
+            task.description = savedTask.description ?? nextDescription;
+            task.dueDate = savedTask.dueDate ?? nextDueDate;
+            task.effortLevel = savedTask.effortLevel ?? nextEffortLevel;
+
+            isEditing = false;
+            setTaskDetailEditMode(task, false);
+
+            panelTypewriterRunId += 1;
+            const updatedRunId = panelTypewriterRunId;
+            descriptionEl.textContent = "";
+            dueDateEl.textContent = "";
+            effortEl.textContent = "";
+            animateTaskDetailFields(task, updatedRunId);
         }
     };
 
@@ -615,8 +749,7 @@ function updateTaskList(tasks) {
         }
         if (dueText) {
             if (task.dueDate) {
-                const date = new Date(task.dueDate);
-                dueText.textContent = `Due: ${date.toLocaleDateString()}`;
+                dueText.textContent = formatTaskDueDate(task.dueDate);
                 dueText.hidden = false;
             } else {
                 dueText.textContent = "";
@@ -670,28 +803,22 @@ function updateTaskList(tasks) {
 
         bigThreeButton?.addEventListener("click", toggleBigThree);
 
-        // Add event listener for editing a task
-        const editTask = async () => {
-            const newDescription = prompt("Edit task description:", task.description);
-            if (newDescription !== null && newDescription.trim() !== "") {
-                console.log("New Description:", newDescription);
-        
-                //Send updated task to the server
-                const updateResponse = await fetch(`/tasks/${task._id}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ description: newDescription })
+        const saveTaskEdits = async (updates) => {
+            const updateResponse = await fetch(`/tasks/${task._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updates)
+            });
 
-                });
-        
-                if (updateResponse.ok) {
-                    console.log("Task updated successfully");
-                    fetchTasks(); // Automatically reload the task list after editing
-                    Toast.show({ message: "Task Updated", type: "success", duration: 2000 });
-                } else {
-                    console.error("Error updating task");
-                }
+            const updateData = await parseApiResponse(updateResponse);
+            if (updateResponse.ok) {
+                Toast.show({ message: "Task Updated", type: "success", duration: 2000 });
+                fetchTasks();
+                return updateData;
             }
+
+            Toast.show({ message: updateData.error || "Error updating task", type: "error", duration: 3200 });
+            return null;
         };
 
         // Add event listener for deleting a task
@@ -713,11 +840,9 @@ function updateTaskList(tasks) {
         };
 
         const rowBigThreeButton = clone.querySelector(".big-three-btn");
-        const rowEditButton = clone.querySelector(".edit-btn");
         const rowDeleteButton = clone.querySelector(".delete-btn");
 
         rowBigThreeButton?.addEventListener("click", toggleBigThree);
-        rowEditButton?.addEventListener("click", editTask);
         rowDeleteButton?.addEventListener("click", deleteTask);
 
         taskDetailsTrigger?.addEventListener("click", () => {
@@ -730,9 +855,7 @@ function updateTaskList(tasks) {
                     }
                     panelBigThreeButton.disabled = false;
                 },
-                editTask: async () => {
-                    await editTask();
-                },
+                saveTaskEdits,
                 deleteTask: async () => {
                     await deleteTask();
                     closeTaskDetailPanel();
@@ -744,9 +867,9 @@ function updateTaskList(tasks) {
                     panelTaskComplete.disabled = true;
                     const isCompleted = panelTaskComplete.checked;
                     const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, {
-                    bigThreeButton,
-                    panelBigThreeButton
-                });
+                        bigThreeButton,
+                        panelBigThreeButton
+                    });
 
                     if (updated) {
                         activeTaskInPanel?.syncCompletion(task.status);

@@ -262,12 +262,21 @@
       <div class="task-detail-content">
         <p class="task-detail-label">Task Description</p>
         <p id="panelTaskDescription" class="task-detail-value"></p>
+        <input id="panelTaskDescriptionInput" class="task-detail-input" type="text" hidden />
 
         <p class="task-detail-label">Due Date</p>
         <p id="panelTaskDueDate" class="task-detail-value"></p>
+        <input id="panelTaskDueDateInput" class="task-detail-input" type="date" hidden />
 
         <p class="task-detail-label">Effort Level</p>
         <p id="panelTaskEffort" class="task-detail-value"></p>
+        <div id="panelTaskEffortInput" class="effort-options task-detail-effort-options" role="radiogroup" aria-label="Edit effort level" hidden>
+          <label class="effort-option"><input type="radio" name="panelEffortLevel" value="1">1</label>
+          <label class="effort-option"><input type="radio" name="panelEffortLevel" value="2">2</label>
+          <label class="effort-option"><input type="radio" name="panelEffortLevel" value="3">3</label>
+          <label class="effort-option"><input type="radio" name="panelEffortLevel" value="4">4</label>
+          <label class="effort-option"><input type="radio" name="panelEffortLevel" value="5">5</label>
+        </div>
 
         <label class="task-detail-complete checkbox-container" aria-label="Mark task complete from details panel">
           <input type="checkbox" id="panelTaskComplete" />

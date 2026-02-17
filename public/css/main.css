@@ -1450,3 +1450,23 @@ body.task-panel-open {
   margin-left: 0.15rem;
   font-weight: 600;
 }
+
+
+.task-detail-input {
+  width: 100%;
+  border: 2px solid #E0C097;
+  border-radius: 8px;
+  padding: 0.4rem 0.5rem;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.task-detail-effort-options {
+  margin-top: 0.1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.task-detail-effort-options[hidden] {
+  display: none !important;
+}
