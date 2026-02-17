@@ -1425,3 +1425,28 @@ input:focus{
 body.task-panel-open {
   overflow: hidden;
 }
+
+
+.task-detail-complete {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-left: 0;
+}
+
+.task-detail-complete .checkmark {
+  position: static;
+  flex-shrink: 0;
+}
+
+.task-detail-complete input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.task-detail-complete-text {
+  margin-left: 0.15rem;
+  font-weight: 600;
+}

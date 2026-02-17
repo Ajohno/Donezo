@@ -387,6 +387,39 @@ function formatTaskEffortLevel(effortLevel) {
     return `${safeEffort} / 5`;
 }
 
+async function updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem) {
+    const nextStatus = isCompleted ? "completed" : "active";
+
+    try {
+        const updateResponse = await fetch(`/tasks/${task._id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: nextStatus })
+        });
+
+        if (!updateResponse.ok) {
+            console.error("Error updating task status");
+            return false;
+        }
+
+        task.status = nextStatus;
+        if (taskCheck) {
+            taskCheck.checked = isCompleted;
+        }
+        taskItem?.classList.toggle("is-completed", isCompleted);
+
+        if (nextStatus === "completed") {
+            Toast.show({ message: "Task Completed! One step down, time for the next.", type: "success", duration: 4000 });
+        }
+
+        fetchTasks();
+        return true;
+    } catch (error) {
+        console.error("Task status update failed:", error);
+        return false;
+    }
+}
+
 function closeTaskDetailPanel() {
     const panel = document.getElementById("task-detail-panel");
     const backdrop = document.getElementById("task-detail-backdrop");
@@ -409,6 +442,7 @@ function wireTaskDetailPanel() {
     const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
     const panelEditButton = document.getElementById("panelEditBtn");
     const panelDeleteButton = document.getElementById("panelDeleteBtn");
+    const panelTaskComplete = document.getElementById("panelTaskComplete");
 
     closeButton.addEventListener("click", closeTaskDetailPanel);
     backdrop.addEventListener("click", closeTaskDetailPanel);
@@ -422,6 +456,7 @@ function wireTaskDetailPanel() {
     panelBigThreeButton?.addEventListener("click", () => activeTaskInPanel?.toggleBigThree?.());
     panelEditButton?.addEventListener("click", () => activeTaskInPanel?.editTask?.());
     panelDeleteButton?.addEventListener("click", () => activeTaskInPanel?.deleteTask?.());
+    panelTaskComplete?.addEventListener("change", () => activeTaskInPanel?.toggleComplete?.());
 
     panel.dataset.ready = "true";
 }
@@ -433,7 +468,8 @@ function openTaskDetailPanel(task, handlers) {
     const dueDateEl = document.getElementById("panelTaskDueDate");
     const effortEl = document.getElementById("panelTaskEffort");
     const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
-    if (!panel || !backdrop || !descriptionEl || !dueDateEl || !effortEl || !panelBigThreeButton) return;
+    const panelTaskComplete = document.getElementById("panelTaskComplete");
+    if (!panel || !backdrop || !descriptionEl || !dueDateEl || !effortEl || !panelBigThreeButton || !panelTaskComplete) return;
 
     wireTaskDetailPanel();
 
@@ -443,12 +479,17 @@ function openTaskDetailPanel(task, handlers) {
 
     setBigThreeButtonState(panelBigThreeButton, task.isBigThree);
     panelBigThreeButton.disabled = false;
+    panelTaskComplete.checked = task.status === "completed";
 
     activeTaskInPanel = {
         ...handlers,
         syncBigThree(nextValue) {
             task.isBigThree = nextValue;
             setBigThreeButtonState(panelBigThreeButton, nextValue);
+        },
+        syncCompletion(nextStatus) {
+            task.status = nextStatus;
+            panelTaskComplete.checked = nextStatus === "completed";
         }
     };
 
@@ -507,31 +548,12 @@ function updateTaskList(tasks) {
             taskItem?.classList.toggle("is-completed", taskCheck.checked);
 
             taskCheck.addEventListener("change", async () => {
-                const nextStatus = taskCheck.checked ? "completed" : "active";
+                const isCompleted = taskCheck.checked;
+                const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem);
 
-                try {
-                    const updateResponse = await fetch(`/tasks/${task._id}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ status: nextStatus })
-                    });
-
-                    if (updateResponse.ok) {
-                        task.status = nextStatus;
-                        taskItem?.classList.toggle("is-completed", taskCheck.checked);
-                        if (nextStatus === "completed") {
-                            Toast.show({ message: "Task Completed! One step down, time for the next.", type: "success", duration: 4000 });
-                        }
-                        fetchTasks();
-                    } else {
-                        taskCheck.checked = !taskCheck.checked;
-                        taskItem?.classList.toggle("is-completed", taskCheck.checked);
-                        console.error("Error updating task status");
-                    }
-                } catch (error) {
-                    taskCheck.checked = !taskCheck.checked;
+                if (!updated) {
+                    taskCheck.checked = !isCompleted;
                     taskItem?.classList.toggle("is-completed", taskCheck.checked);
-                    console.error("Task status update failed:", error);
                 }
             });
         }
@@ -655,6 +677,22 @@ function updateTaskList(tasks) {
                 deleteTask: async () => {
                     await deleteTask();
                     closeTaskDetailPanel();
+                },
+                toggleComplete: async () => {
+                    const panelTaskComplete = document.getElementById("panelTaskComplete");
+                    if (!panelTaskComplete) return;
+
+                    panelTaskComplete.disabled = true;
+                    const isCompleted = panelTaskComplete.checked;
+                    const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem);
+
+                    if (updated) {
+                        activeTaskInPanel?.syncCompletion(task.status);
+                    } else {
+                        panelTaskComplete.checked = !isCompleted;
+                    }
+
+                    panelTaskComplete.disabled = false;
                 }
             });
         });
