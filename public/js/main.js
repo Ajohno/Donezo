@@ -539,6 +539,18 @@ function closeTaskDetailPanel() {
     backdrop.classList.remove("is-visible");
     backdrop.setAttribute("aria-hidden", "true");
     document.body.classList.remove("task-panel-open");
+
+    const effortInput = document.getElementById("panelTaskEffortInput");
+    if (effortInput) {
+        effortInput.hidden = true;
+    }
+
+    const panelEditButton = document.getElementById("panelEditBtn");
+    const editLabel = panelEditButton?.querySelector("span");
+    const editIcon = panelEditButton?.querySelector("i");
+    if (editLabel) editLabel.textContent = "Edit";
+    if (editIcon) editIcon.className = "fa-solid fa-pen-to-square";
+
     panelTypewriterRunId += 1;
     activeTaskInPanel = null;
 }
