@@ -375,6 +375,7 @@ function updateBigThreeWidget(tasks) {
 
 
 let activeTaskInPanel = null;
+let panelTypewriterRunId = 0;
 
 function formatTaskDueDate(dueDate) {
     if (!dueDate) return "No due date";
@@ -385,6 +386,40 @@ function formatTaskDueDate(dueDate) {
 function formatTaskEffortLevel(effortLevel) {
     const safeEffort = Math.max(1, Math.min(5, parseInt(effortLevel, 10) || 3));
     return `${safeEffort} / 5`;
+}
+
+
+
+function wait(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function typeTextIntoElement(element, text, runId, speedMs = 20) {
+    if (!element) return;
+
+    const value = String(text || "");
+    element.textContent = "";
+
+    for (let index = 0; index < value.length; index += 1) {
+        if (runId !== panelTypewriterRunId) return;
+        element.textContent += value[index];
+        await wait(speedMs);
+    }
+}
+
+async function animateTaskDetailFields(task, runId) {
+    const descriptionEl = document.getElementById("panelTaskDescription");
+    const dueDateEl = document.getElementById("panelTaskDueDate");
+    const effortEl = document.getElementById("panelTaskEffort");
+    if (!descriptionEl || !dueDateEl || !effortEl) return;
+
+    const descriptionText = task.description || "No description";
+    const dueDateText = formatTaskDueDate(task.dueDate);
+    const effortText = formatTaskEffortLevel(task.effortLevel);
+
+    await typeTextIntoElement(descriptionEl, descriptionText, runId, 18);
+    await typeTextIntoElement(dueDateEl, dueDateText, runId, 16);
+    await typeTextIntoElement(effortEl, effortText, runId, 16);
 }
 
 async function updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, controls = {}) {
@@ -443,6 +478,7 @@ function closeTaskDetailPanel() {
     backdrop.classList.remove("is-visible");
     backdrop.setAttribute("aria-hidden", "true");
     document.body.classList.remove("task-panel-open");
+    panelTypewriterRunId += 1;
     activeTaskInPanel = null;
 }
 
@@ -486,9 +522,12 @@ function openTaskDetailPanel(task, handlers) {
 
     wireTaskDetailPanel();
 
-    descriptionEl.textContent = task.description || "No description";
-    dueDateEl.textContent = formatTaskDueDate(task.dueDate);
-    effortEl.textContent = formatTaskEffortLevel(task.effortLevel);
+    panelTypewriterRunId += 1;
+    const currentRunId = panelTypewriterRunId;
+    descriptionEl.textContent = "";
+    dueDateEl.textContent = "";
+    effortEl.textContent = "";
+    animateTaskDetailFields(task, currentRunId);
 
     setBigThreeButtonState(panelBigThreeButton, task.isBigThree);
     panelBigThreeButton.disabled = false;
