@@ -127,20 +127,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Function to log out a user (dashboard only)
     const logoutBtn = document.getElementById("logoutBtn");
     if (logoutBtn) {
-        logoutBtn.addEventListener("click", async () => {
-            const response = await fetch("/logout", {
-                credentials: "include",
-                method: "POST"
-            });
+        logoutBtn.addEventListener("click", async (event) => {
+            event.preventDefault();
 
-            if (response.ok) {
-                // alert("Logged out successfully!");
-                Toast.show({ message: "Logged out successfully", type: "success", duration: 2000 });
-                // Send the user back to login after logout
-                window.location.href = "/login.html";
-            } else {
-                const data = await parseApiResponse(response);
-                alert("Logout failed: " + (data.error || "Unknown error"));
+            try {
+                const response = await fetch("/logout", {
+                    credentials: "include",
+                    method: "POST"
+                });
+
+                if (response.ok) {
+                    Toast.show({ message: "Logged out successfully", type: "success", duration: 2000 });
+                    // Send the user back to login after logout
+                    window.location.href = "/login.html";
+                } else {
+                    const data = await parseApiResponse(response);
+                    alert("Logout failed: " + (data.error || "Unknown error"));
+                }
+            } catch (error) {
+                console.error("Logout request failed:", error);
+                alert("Logout failed due to a network/server issue.");
             }
         });
     }
