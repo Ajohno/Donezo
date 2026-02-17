@@ -11,7 +11,7 @@
 
 .navbar {
   position: relative;
-  z-index: 1000;
+  z-index: 1200;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -200,7 +200,7 @@
     box-shadow: 6px 0 14px rgba(0, 0, 0, 0.18);
     transform: translateX(-105%);
     transition: transform 0.22s ease;
-    z-index: 1100;
+    z-index: 1210;
   }
 
   #nav-drawer.is-open {
