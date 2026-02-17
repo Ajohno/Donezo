@@ -441,7 +441,8 @@ input:focus{
 }
 
 /* Parent hover triggers the highlight */
-.sticky-note:hover .highlight-on-parent-hover{
+.sticky-note:hover .highlight-on-parent-hover,
+.sticky-note.in-view-hover .highlight-on-parent-hover{
   background-size: 100% 100%;
 }
 

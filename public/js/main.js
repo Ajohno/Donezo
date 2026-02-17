@@ -599,3 +599,53 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// ----------------------------
+// Mobile/tablet sticky-note center activation
+// ----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const compactView = window.matchMedia("(max-width: 1023px), (hover: none) and (pointer: coarse)");
+  const stickyNotes = Array.from(document.querySelectorAll(".board-grid .sticky-note"));
+  if (stickyNotes.length === 0) return;
+
+  let rafId = null;
+
+  const clearActiveNotes = () => {
+    stickyNotes.forEach((note) => note.classList.remove("in-view-hover"));
+  };
+
+  const updateStickyNoteStates = () => {
+    rafId = null;
+
+    if (!compactView.matches) {
+      clearActiveNotes();
+      return;
+    }
+
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const centerY = viewportHeight * 0.5;
+    const activeHalfBand = viewportHeight * 0.18; // ~36% total active zone around center
+    const upperBound = centerY - activeHalfBand;
+    const lowerBound = centerY + activeHalfBand;
+
+    stickyNotes.forEach((note) => {
+      const rect = note.getBoundingClientRect();
+      const noteCenter = rect.top + rect.height / 2;
+      const isVisible = rect.bottom > 0 && rect.top < viewportHeight;
+      const inCenterBand = noteCenter >= upperBound && noteCenter <= lowerBound;
+
+      note.classList.toggle("in-view-hover", isVisible && inCenterBand);
+    });
+  };
+
+  const requestUpdate = () => {
+    if (rafId !== null) return;
+    rafId = window.requestAnimationFrame(updateStickyNoteStates);
+  };
+
+  window.addEventListener("scroll", requestUpdate, { passive: true });
+  window.addEventListener("resize", requestUpdate, { passive: true });
+  compactView.addEventListener("change", requestUpdate);
+
+  updateStickyNoteStates();
+});
