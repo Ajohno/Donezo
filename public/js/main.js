@@ -347,7 +347,7 @@ function setBigThreeButtonState(button, isBigThree) {
     }
 }
 
-function updateBigThreeWidget(tasks) {
+function updateBigThreeWidget(tasks, taskInteractions = new Map()) {
     const bigThreeList = document.getElementById("big-three-list");
     const emptyState = document.querySelector("#big-3-tasks .big-three-empty");
     if (!bigThreeList || !emptyState) return;
@@ -366,8 +366,43 @@ function updateBigThreeWidget(tasks) {
 
     bigThreeTasks.forEach((task, index) => {
         const item = document.createElement("li");
-        item.className = "big-three-item task-text";
-        item.textContent = `${index + 1}. ${task.description}`;
+        item.className = "big-three-item";
+
+        const interactions = taskInteractions.get(task._id) || {};
+
+        const completeInput = document.createElement("input");
+        completeInput.type = "checkbox";
+        completeInput.className = "task-check big-three-check";
+        completeInput.checked = task.status === "completed";
+        completeInput.setAttribute("aria-label", `Mark task ${index + 1} complete`);
+
+        if (typeof interactions.toggleComplete === "function") {
+            completeInput.addEventListener("change", async () => {
+                completeInput.disabled = true;
+                const isCompleted = completeInput.checked;
+                const updated = await interactions.toggleComplete(isCompleted);
+                if (!updated) {
+                    completeInput.checked = !isCompleted;
+                }
+                completeInput.disabled = false;
+            });
+        } else {
+            completeInput.disabled = true;
+        }
+
+        const descriptionButton = document.createElement("button");
+        descriptionButton.type = "button";
+        descriptionButton.className = "big-three-details-trigger";
+        descriptionButton.textContent = `${index + 1}. ${task.description}`;
+        descriptionButton.title = "Open task details";
+
+        if (typeof interactions.openTaskDetails === "function") {
+            descriptionButton.addEventListener("click", interactions.openTaskDetails);
+        } else {
+            descriptionButton.disabled = true;
+        }
+
+        item.append(completeInput, descriptionButton);
         bigThreeList.appendChild(item);
     });
 }
@@ -690,6 +725,7 @@ function openTaskDetailPanel(task, handlers) {
 function updateTaskList(tasks) {
     const listOfTasks = document.querySelector(".task-list");
     const taskTemplate = document.querySelector("#task-template");
+    const bigThreeInteractions = new Map();
     tasks = Array.isArray(tasks) ? tasks : [];
 
     const sortedTasks = tasks.slice().sort((a, b) => {
@@ -723,6 +759,7 @@ function updateTaskList(tasks) {
         const taskCheck = clone.querySelector(".task-check");
         const dueText = clone.querySelector(".task-due");
         const effortDots = clone.querySelectorAll(".task-effort .dot");
+        const bigThreeIndicator = clone.querySelector(".task-big-three-indicator");
         const bigThreeButton = clone.querySelector(".big-three-btn");
         const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
 
@@ -730,16 +767,27 @@ function updateTaskList(tasks) {
             taskText.textContent = task.description;
             taskText.title = "Open task details";
         }
+        const setTaskCompletion = async (isCompleted) => {
+            const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, {
+                bigThreeButton,
+                panelBigThreeButton
+            });
+
+            if (updated && activeTaskInPanel) {
+                activeTaskInPanel.syncCompletion(task.status);
+                activeTaskInPanel.syncBigThree(Boolean(task.isBigThree));
+            }
+
+            return updated;
+        };
+
         if (taskCheck) {
             taskCheck.checked = task.status === "completed";
             taskItem?.classList.toggle("is-completed", taskCheck.checked);
 
             taskCheck.addEventListener("change", async () => {
                 const isCompleted = taskCheck.checked;
-                const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, {
-                    bigThreeButton,
-                    panelBigThreeButton
-                });
+                const updated = await setTaskCompletion(isCompleted);
 
                 if (!updated) {
                     taskCheck.checked = !isCompleted;
@@ -761,6 +809,10 @@ function updateTaskList(tasks) {
             effortDots.forEach((dot, index) => {
                 dot.classList.toggle("on", index < effortLevel);
             });
+        }
+        if (bigThreeIndicator) {
+            bigThreeIndicator.hidden = !task.isBigThree;
+            bigThreeIndicator.title = task.isBigThree ? "In Big 3" : "";
         }
         setBigThreeButtonState(bigThreeButton, task.isBigThree);
 
@@ -845,7 +897,7 @@ function updateTaskList(tasks) {
         rowBigThreeButton?.addEventListener("click", toggleBigThree);
         rowDeleteButton?.addEventListener("click", deleteTask);
 
-        taskDetailsTrigger?.addEventListener("click", () => {
+        const openTaskDetails = () => {
             openTaskDetailPanel(task, {
                 toggleBigThree: async () => {
                     panelBigThreeButton.disabled = true;
@@ -866,26 +918,29 @@ function updateTaskList(tasks) {
 
                     panelTaskComplete.disabled = true;
                     const isCompleted = panelTaskComplete.checked;
-                    const updated = await updateTaskCompletionStatus(task, isCompleted, taskCheck, taskItem, {
-                        bigThreeButton,
-                        panelBigThreeButton
-                    });
+                    const updated = await setTaskCompletion(isCompleted);
 
-                    if (updated) {
-                        activeTaskInPanel?.syncCompletion(task.status);
-                    } else {
+                    if (!updated) {
                         panelTaskComplete.checked = !isCompleted;
                     }
 
                     panelTaskComplete.disabled = false;
                 }
             });
-        });
+        };
+
+        taskDetailsTrigger?.addEventListener("click", openTaskDetails);
+        if (task?._id) {
+            bigThreeInteractions.set(task._id, {
+                openTaskDetails,
+                toggleComplete: setTaskCompletion
+            });
+        }
 
         listOfTasks.appendChild(clone);
     });
 
-    updateBigThreeWidget(sortedTasks);
+    updateBigThreeWidget(sortedTasks, bigThreeInteractions);
 
     // Update the task counter
     document.querySelectorAll(".item-counter").forEach((el) => {
