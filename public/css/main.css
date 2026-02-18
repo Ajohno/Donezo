@@ -551,6 +551,7 @@ input:focus{
 #create-task-widget{
   display: flex;
   flex-direction: column;
+  
 }
 
 /* Keep the form usable inside the sticky note (no scrolling) */
@@ -558,6 +559,8 @@ input:focus{
   flex: 1;
   max-height: none;
   overflow: hidden;
+ 
+
 }
 
 /* Ensure inputs/selects fill the widget */
@@ -581,7 +584,7 @@ input:focus{
 #create-task-widget .task-field{ grid-area: task; }
 #create-task-widget .due-field{ grid-area: due; }
 #create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
-#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 0; width: 140px; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 10%; width: 140px; }
 
 #create-task-widget .task-field,
 #create-task-widget .due-field{
@@ -1030,16 +1033,26 @@ input:focus{
   /* Force right column widgets to fit entirely within corkboard height */
   .board-grid > div:nth-child(2){
     display: grid;
-    grid-template-rows: minmax(0, 1.45fr) minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.80fr) minmax(0, 0.95fr) minmax(0, 1fr);
     gap: 16px;
     height: 100%;
     min-height: 0;
-    padding-top: 14px;
     overflow: visible;
   }
 
-  .board-grid > div:nth-child(2) #create-task-widget,
-  .board-grid > div:nth-child(2) #big-3-tasks,
+  .board-grid > div:nth-child(2) #create-task-widget{
+    min-height: 0;
+    margin: 0;
+    height: 25vh;
+  }
+
+  .board-grid > div:nth-child(2) #big-3-tasks{
+    min-height: 0;
+    margin: 0;
+    height: 30vh;
+  }
+
+
   .board-grid > div:nth-child(2) #reflection-section{
     height: 100% !important;
     min-height: 0;
@@ -1105,13 +1118,17 @@ input:focus{
     gap: 6px;
   }
 
+  #create-task-widget .effort-field{
+    margin-left: 10%;
+  }
+  
   #create-task-widget .effort-option{
     padding: 6px 9px;
     font-size: 0.9rem;
   }
 
   #create-task-widget #submitBtn{
-    margin-top: 4px;
+    margin-top: 8%;
     padding: 10px 0;
   }
 
