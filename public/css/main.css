@@ -860,6 +860,22 @@ input:focus{
   gap: 0.18rem;
 }
 
+.task-meta-right{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.task-big-three-indicator{
+  color: rgba(237, 28, 28, 1);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.task-big-three-indicator[hidden]{
+  display: none !important;
+}
+
 .task-effort .dot{
   width: 0.5rem;
   height: 0.5rem;

@@ -759,6 +759,7 @@ function updateTaskList(tasks) {
         const taskCheck = clone.querySelector(".task-check");
         const dueText = clone.querySelector(".task-due");
         const effortDots = clone.querySelectorAll(".task-effort .dot");
+        const bigThreeIndicator = clone.querySelector(".task-big-three-indicator");
         const bigThreeButton = clone.querySelector(".big-three-btn");
         const panelBigThreeButton = document.getElementById("panelBigThreeBtn");
 
@@ -808,6 +809,10 @@ function updateTaskList(tasks) {
             effortDots.forEach((dot, index) => {
                 dot.classList.toggle("on", index < effortLevel);
             });
+        }
+        if (bigThreeIndicator) {
+            bigThreeIndicator.hidden = !task.isBigThree;
+            bigThreeIndicator.title = task.isBigThree ? "In Big 3" : "";
         }
         setBigThreeButtonState(bigThreeButton, task.isBigThree);
 
