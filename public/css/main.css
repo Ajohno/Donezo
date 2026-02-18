@@ -292,11 +292,10 @@ p{
 /* Submit button inside paper form */
 .paper-button{
   display: block;
-  /* width: clamp(10vw, 20vw, 50vw) !important; */
-  width: min(260px, 100%);
+  width: clamp(132px, 30vw, 260px);
   justify-self: center;
   margin: 10px auto 0;
-  padding: 14px 0;
+  padding: clamp(10px, 1.2vw, 14px) 0;
   border: none;
   border-radius: 18px 16px 20px 14px;
   background:
@@ -311,6 +310,8 @@ p{
   background-blend-mode: overlay;
   color: white !important;
   font-family: "Itim", serif;
+  font-size: clamp(0.9rem, 0.35vw + 0.82rem, 1.05rem);
+  line-height: 1.15;
   letter-spacing: 0.5px;
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
   box-shadow: 0 10px 20px rgba(0,0,0,0.18);
@@ -584,7 +585,7 @@ input:focus{
 #create-task-widget .task-field{ grid-area: task; }
 #create-task-widget .due-field{ grid-area: due; }
 #create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
-#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 10%; width: 140px; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 10%; width: clamp(120px, 40%, 160px); }
 
 #create-task-widget .task-field,
 #create-task-widget .due-field{
@@ -975,6 +976,16 @@ input:focus{
   display: none !important;
 }
 
+.paper-button.big-three-cta{
+  width: clamp(140px, 62%, 205px);
+  max-width: 205px;
+  justify-self: center;
+  margin-top: auto;
+  margin-bottom: 0;
+  padding: 11px 0;
+  font-size: 0.98rem;
+}
+
 .big-three-item{
   display: grid;
   grid-template-columns: 1.35rem 1fr;
@@ -1140,7 +1151,7 @@ input:focus{
   /* Force right column widgets to fit entirely within corkboard height */
   .board-grid > div:nth-child(2){
     display: grid;
-    grid-template-rows: minmax(0, 0.80fr) minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.80fr) minmax(0, 1fr) minmax(0, 1fr);
     gap: 16px;
     height: 100%;
     min-height: 0;
@@ -1161,7 +1172,7 @@ input:focus{
 
 
   .board-grid > div:nth-child(2) #reflection-section{
-    height: 100% !important;
+    height: 60vh;
     min-height: 0;
     margin: 0;
   }
@@ -1186,15 +1197,14 @@ input:focus{
   #big-3-tasks{
     position: relative;
     z-index: 2;
-    overflow: visible;
+    overflow: hidden;
   }
 
   #big-3-tasks .big-three-list{
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 0.2rem;
+    overflow: hidden;
+    padding-right: 0;
   }
 
   #big-3-tasks .big-three-item{
@@ -1237,6 +1247,7 @@ input:focus{
   #create-task-widget #submitBtn{
     margin-top: 8%;
     padding: 10px 0;
+    width: clamp(120px, 45%, 170px);
   }
 
   #focus-mode-widget p{
@@ -1381,19 +1392,17 @@ input:focus{
   }
 
   #create-task-widget #submitBtn{
-    justify-self: stretch;
-    width: 100%;
+    justify-self: center;
+    width: clamp(150px, 62%, 230px);
   }
 
-  /* Keep focus mode content inside note */
-  #focus-mode-widget{
-    overflow: hidden;
+  .paper-button{
+    width: min(100%, 320px);
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+    padding: 11px 0;
   }
 
-  #focus-mode-widget *{
-    max-width: 100%;
-    min-width: 0;
-  }
+  
 }
 
 /* Phone (1 column) */
@@ -1460,6 +1469,16 @@ input:focus{
     align-items: flex-start;
     justify-content: flex-start;
     gap: 8px;
+  }
+
+  #create-task-widget #submitBtn{
+    width: clamp(140px, 68%, 200px);
+  }
+
+  .paper-button{
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 10px 0;
   }
 }
 
