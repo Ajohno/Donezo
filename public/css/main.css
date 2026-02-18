@@ -292,11 +292,10 @@ p{
 /* Submit button inside paper form */
 .paper-button{
   display: block;
-  /* width: clamp(10vw, 20vw, 50vw) !important; */
-  width: min(260px, 100%);
+  width: clamp(132px, 30vw, 260px);
   justify-self: center;
   margin: 10px auto 0;
-  padding: 14px 0;
+  padding: clamp(10px, 1.2vw, 14px) 0;
   border: none;
   border-radius: 18px 16px 20px 14px;
   background:
@@ -311,6 +310,8 @@ p{
   background-blend-mode: overlay;
   color: white !important;
   font-family: "Itim", serif;
+  font-size: clamp(0.9rem, 0.35vw + 0.82rem, 1.05rem);
+  line-height: 1.15;
   letter-spacing: 0.5px;
   text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
   box-shadow: 0 10px 20px rgba(0,0,0,0.18);
@@ -551,6 +552,7 @@ input:focus{
 #create-task-widget{
   display: flex;
   flex-direction: column;
+  
 }
 
 /* Keep the form usable inside the sticky note (no scrolling) */
@@ -558,6 +560,8 @@ input:focus{
   flex: 1;
   max-height: none;
   overflow: hidden;
+ 
+
 }
 
 /* Ensure inputs/selects fill the widget */
@@ -581,7 +585,7 @@ input:focus{
 #create-task-widget .task-field{ grid-area: task; }
 #create-task-widget .due-field{ grid-area: due; }
 #create-task-widget .effort-field{ grid-area: effort; margin-bottom: 0; }
-#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 0; width: 140px; }
+#create-task-widget #submitBtn{ grid-area: submit; justify-self: end; align-self: start; margin-top: 10%; width: clamp(120px, 40%, 160px); }
 
 #create-task-widget .task-field,
 #create-task-widget .due-field{
@@ -857,6 +861,22 @@ input:focus{
   gap: 0.18rem;
 }
 
+.task-meta-right{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.task-big-three-indicator{
+  color: rgba(237, 28, 28, 1);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+.task-big-three-indicator[hidden]{
+  display: none !important;
+}
+
 .task-effort .dot{
   width: 0.5rem;
   height: 0.5rem;
@@ -956,13 +976,114 @@ input:focus{
   display: none !important;
 }
 
+.paper-button.big-three-cta{
+  width: clamp(140px, 62%, 205px);
+  max-width: 205px;
+  justify-self: center;
+  margin-top: auto;
+  margin-bottom: 0;
+  padding: 11px 0;
+  font-size: 0.98rem;
+}
+
 .big-three-item{
+  display: grid;
+  grid-template-columns: 1.35rem 1fr;
+  gap: 0.45rem;
+  align-items: start;
   padding: 0.3rem 0.5rem;
   border: 1px solid rgba(198, 83, 78, 0.3);
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.32);
   color: #5D4037;
   line-height: 1.3;
+  transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+}
+
+.big-three-check{
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 0.18rem;
+  transform: none;
+  border: 2px solid #e7a0b8;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  position: relative;
+  transition: background-color 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+}
+
+.big-three-check:hover{
+  background: rgba(247, 204, 220, 0.45);
+  border-color: #d97a9d;
+}
+
+.big-three-check:checked{
+  border-color: #d97a9d;
+  background: rgba(247, 204, 220, 0.55);
+}
+
+.big-three-check:checked::after{
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border: solid #c84e78;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+  border-radius: 1px;
+}
+
+.big-three-check:focus-visible{
+  outline: 2px solid rgba(200, 78, 120, 0.5);
+  outline-offset: 2px;
+}
+
+.big-three-check:disabled{
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.big-three-details-trigger{
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  line-height: 1.3;
+}
+
+.big-three-details-trigger:hover{
+  color: #8B3A2E;
+}
+
+.big-three-details-trigger:focus-visible{
+  outline: 2px solid rgba(198, 83, 78, 0.45);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.big-three-item:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+  border-color: rgba(198, 83, 78, 0.5);
+}
+
+.big-three-item:focus-within{
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.12);
+  border-color: rgba(198, 83, 78, 0.5);
+}
+
+.big-three-item:active{
+  transform: translateY(0);
 }
 
 
@@ -1030,18 +1151,28 @@ input:focus{
   /* Force right column widgets to fit entirely within corkboard height */
   .board-grid > div:nth-child(2){
     display: grid;
-    grid-template-rows: minmax(0, 1.45fr) minmax(0, 0.95fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.80fr) minmax(0, 1fr) minmax(0, 1fr);
     gap: 16px;
     height: 100%;
     min-height: 0;
-    padding-top: 14px;
     overflow: visible;
   }
 
-  .board-grid > div:nth-child(2) #create-task-widget,
-  .board-grid > div:nth-child(2) #big-3-tasks,
+  .board-grid > div:nth-child(2) #create-task-widget{
+    min-height: 0;
+    margin: 0;
+    height: 25vh;
+  }
+
+  .board-grid > div:nth-child(2) #big-3-tasks{
+    min-height: 0;
+    margin: 0;
+    height: 30vh;
+  }
+
+
   .board-grid > div:nth-child(2) #reflection-section{
-    height: 100% !important;
+    height: 60vh;
     min-height: 0;
     margin: 0;
   }
@@ -1066,15 +1197,14 @@ input:focus{
   #big-3-tasks{
     position: relative;
     z-index: 2;
-    overflow: visible;
+    overflow: hidden;
   }
 
   #big-3-tasks .big-three-list{
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 0.2rem;
+    overflow: hidden;
+    padding-right: 0;
   }
 
   #big-3-tasks .big-three-item{
@@ -1105,14 +1235,19 @@ input:focus{
     gap: 6px;
   }
 
+  #create-task-widget .effort-field{
+    margin-left: 10%;
+  }
+  
   #create-task-widget .effort-option{
     padding: 6px 9px;
     font-size: 0.9rem;
   }
 
   #create-task-widget #submitBtn{
-    margin-top: 4px;
+    margin-top: 8%;
     padding: 10px 0;
+    width: clamp(120px, 45%, 170px);
   }
 
   #focus-mode-widget p{
@@ -1257,19 +1392,17 @@ input:focus{
   }
 
   #create-task-widget #submitBtn{
-    justify-self: stretch;
-    width: 100%;
+    justify-self: center;
+    width: clamp(150px, 62%, 230px);
   }
 
-  /* Keep focus mode content inside note */
-  #focus-mode-widget{
-    overflow: hidden;
+  .paper-button{
+    width: min(100%, 320px);
+    font-size: clamp(0.95rem, 2.2vw, 1.05rem);
+    padding: 11px 0;
   }
 
-  #focus-mode-widget *{
-    max-width: 100%;
-    min-width: 0;
-  }
+  
 }
 
 /* Phone (1 column) */
@@ -1336,6 +1469,16 @@ input:focus{
     align-items: flex-start;
     justify-content: flex-start;
     gap: 8px;
+  }
+
+  #create-task-widget #submitBtn{
+    width: clamp(140px, 68%, 200px);
+  }
+
+  .paper-button{
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 10px 0;
   }
 }
 

@@ -107,10 +107,13 @@
                   <button type="button" class="task-text task-details-trigger"></button>
                   <div class="task-meta">
                     <span class="task-due"></span>
-                    <span class="task-effort">
-                      <span class="dot"></span><span class="dot"></span>
-                      <span class="dot"></span><span class="dot"></span>
-                      <span class="dot"></span>
+                    <span class="task-meta-right">
+                      <span class="task-effort">
+                        <span class="dot"></span><span class="dot"></span>
+                        <span class="dot"></span><span class="dot"></span>
+                        <span class="dot"></span>
+                      </span>
+                      <i class="fa-solid fa-star task-big-three-indicator" aria-hidden="true" hidden></i>
                     </span>
                   </div>
                 </li>
@@ -190,6 +193,9 @@
                 No Big 3 tasks yet. Star up to 3 tasks from your list.
               </p>
               <ul id="big-three-list" class="big-three-list"></ul>
+              <button id="drown-noise-btn" class="paper-button big-three-cta" type="button">
+                Drown the Noise
+              </button>
             </div>
 
             <!-- Reflection Notes -->
